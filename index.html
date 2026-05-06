@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liav Chanoch — Project Manager & Operations Lead</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f4ee;
+    --surface: #edeae2;
+    --surface2: #e4e0d6;
+    --border: rgba(26,24,20,0.10);
+    --border2: rgba(26,24,20,0.18);
+    --text: #1a1814;
+    --muted: #7a7569;
+    --accent: #1a1814;
+    --accent2: #3d3830;
+    --accent-bg: rgba(26,24,20,0.06);
+    --accent-border: rgba(26,24,20,0.20);
+    --teal: #4a6741;
+    --teal-bg: rgba(74,103,65,0.09);
+    --amber: #7a5c2e;
+    --amber-bg: rgba(122,92,46,0.09);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'Inter', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(247,244,238,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* SECTIONS */
+  section { padding: 5rem 0; }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+  /* HERO */
+  #hero {
+    padding: 7rem 0 5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .hero-name {
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .hero-title {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2.5rem; }
+  .tag {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    background: var(--surface);
+  }
+  .tag.accent { border-color: var(--accent-border); color: var(--accent2); background: var(--accent-bg); }
+  .tag.teal { border-color: rgba(45,212,170,0.3); color: var(--teal); background: var(--teal-bg); }
+  .hero-contact { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .hero-contact a {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  .hero-contact a:hover { color: var(--text); }
+
+  /* SECTION HEADER */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .section-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 3rem;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  /* STRENGTHS GRID */
+  .strengths-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .strength-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .strength-card:hover { border-color: var(--border2); }
+  .strength-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+  }
+  .strength-icon svg { width: 16px; height: 16px; stroke: var(--accent2); fill: none; stroke-width: 1.8; }
+  .strength-icon.teal { background: var(--teal-bg); border-color: rgba(45,212,170,0.3); }
+  .strength-icon.teal svg { stroke: var(--teal); }
+  .strength-icon.amber { background: var(--amber-bg); border-color: rgba(245,158,11,0.3); }
+  .strength-icon.amber svg { stroke: var(--amber); }
+  .strength-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .strength-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* EXPERIENCE */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .exp-item:last-child { border-bottom: none; }
+  .exp-meta { padding-top: 2px; }
+  .exp-period { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .exp-company {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .exp-role { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+  .exp-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 0.75rem; }
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .exp-bullets li {
+    font-size: 13px;
+    color: var(--muted);
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.55;
+  }
+  .exp-bullets li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 0;
+    top: 8px;
+  }
+
+  /* CASE STUDIES */
+  #cases { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .cases-grid { display: flex; flex-direction: column; gap: 24px; }
+  .case-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .case-card:hover { border-color: var(--border2); }
+  .case-header {
+    padding: 1.5rem 1.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .case-number {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .case-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .case-context { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .case-body { padding: 1.25rem 1.75rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .case-section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .case-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .case-solution-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .case-solution-items li { font-size: 13px; color: var(--muted); padding-left: 1rem; position: relative; line-height: 1.5; }
+  .case-solution-items li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--teal); position: absolute; left: 0; top: 8px; }
+  .case-outcome {
+    margin: 0 1.75rem 1.5rem;
+    background: var(--teal-bg);
+    border: 1px solid rgba(45,212,170,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: var(--teal);
+    line-height: 1.55;
+  }
+  .outcome-label { font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; opacity: 0.7; }
+
+  /* SKILLS */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .skill-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .skill-group-title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .skill-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .skill-item:last-child { margin-bottom: 0; }
+  .skill-name { font-size: 13px; color: var(--text); }
+  .skill-level {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .level-expert { background: var(--accent-bg); color: var(--accent2); }
+  .level-skillful { background: var(--teal-bg); color: var(--teal); }
+  .level-experienced { background: rgba(255,255,255,0.06); color: var(--muted); }
+
+  /* EDUCATION */
+  .edu-list { display: flex; flex-direction: column; gap: 16px; }
+  .edu-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .edu-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .edu-icon svg { width: 16px; height: 16px; stroke: var(--accent2); fill: none; stroke-width: 1.8; }
+  .edu-degree { font-size: 14px; font-weight: 600; color: var(--text); }
+  .edu-school { font-size: 13px; color: var(--muted); }
+  .edu-period { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 0;
+    text-align: center;
+  }
+  .footer-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .footer-sub { font-size: 12px; color: var(--muted); }
+  .footer-contact { display: flex; justify-content: center; gap: 1.5rem; margin-top: 1rem; }
+  .footer-contact a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-contact a:hover { color: var(--accent2); }
+
+  @media (max-width: 640px) {
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .case-body { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="nav-logo">LC</a>
+  <div class="nav-links">
+    <a href="#experience">Experience</a>
+    <a href="#cases">Case Studies</a>
+    <a href="#skills">Skills</a>
+    <a href="#education">Education</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Available for new opportunities</p>
+    <h1 class="hero-name">Liav Chanoch</h1>
+    <p class="hero-title">Project Manager & Operations Lead with 5+ years delivering complex web projects — and a parallel career in music production and sound design.</p>
+    <div class="hero-tags">
+      <span class="tag accent">Project Management</span>
+      <span class="tag accent">Customer Success</span>
+      <span class="tag teal">Operations & ERP</span>
+      <span class="tag teal">API Integrations</span>
+      <span class="tag">Zoho Suite</span>
+      <span class="tag">Cross-Functional Teams</span>
+      <span class="tag">Music Production</span>
+    </div>
+    <div class="hero-contact">
+      <a href="mailto:liavch1@gmail.com">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        liavch1@gmail.com
+      </a>
+      <a href="tel:0502197706">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.19 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.1 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 10.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
+        050-2197706
+      </a>
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Tel Aviv, Israel
+      </a>
+      <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
+        LinkedIn
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STRENGTHS -->
+<section id="strengths">
+  <div class="container">
+    <p class="section-label">What I bring</p>
+    <h2 class="section-title">Key strengths</h2>
+    <hr class="section-divider">
+    <div class="strengths-grid">
+      <div class="strength-card">
+        <div class="strength-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <div class="strength-name">Project management</div>
+        <div class="strength-desc">Budgeting, resource allocation, and team coordination using Monday.com, Zoho Suite, and Trello.</div>
+      </div>
+      <div class="strength-card">
+        <div class="strength-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="strength-name">Customer success</div>
+        <div class="strength-desc">Client satisfaction focus, upselling strategy, and success metric reporting direct to C-level.</div>
+      </div>
+      <div class="strength-card">
+        <div class="strength-icon teal">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="strength-name">Operations & ERP</div>
+        <div class="strength-desc">API integrations, billing automation, and building single-source-of-truth internal tools.</div>
+      </div>
+      <div class="strength-card">
+        <div class="strength-icon amber">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="strength-name">Music production</div>
+        <div class="strength-desc">15+ years of composition, sound design, and curation for events and diverse platforms.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="border-top: 1px solid var(--border);">
+  <div class="container">
+    <p class="section-label">Work history</p>
+    <h2 class="section-title">Experience</h2>
+    <hr class="section-divider">
+    <div class="exp-list">
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">Aug 2020 — Present</div>
+          <div class="exp-company">OTW SRL · Tel Aviv</div>
+        </div>
+        <div>
+          <div class="exp-role">Project Owner & CS Manager</div>
+          <div class="exp-desc">Led post-sale web development projects end-to-end, managing cross-functional teams while maintaining a direct reporting line to the CEO.</div>
+          <ul class="exp-bullets">
+            <li>Translated complex client goals into scoped, actionable delivery plans</li>
+            <li>Owned timelines, budgets, and customer satisfaction across all active accounts</li>
+            <li>Identified upsell opportunities and drove additional revenue through proactive account management</li>
+            <li>Unblocked workflows and resolved cross-team dependencies at every stage</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">Aug 2020 — Present</div>
+          <div class="exp-company">OTW SRL · Tel Aviv</div>
+        </div>
+        <div>
+          <div class="exp-role">Internal App Development Lead</div>
+          <div class="exp-desc">Led the design and development of internal business applications using Zoho Suite, streamlining sales, finance, and project management operations company-wide.</div>
+          <ul class="exp-bullets">
+            <li>Owned the full product lifecycle from requirements gathering to rollout</li>
+            <li>Collaborated with finance and ops teams to ensure seamless adoption</li>
+            <li>Built billing automation, affiliate dashboards, and cross-project resource tracking</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">2010 — Present</div>
+          <div class="exp-company">Self-Employed · Tel Aviv</div>
+        </div>
+        <div>
+          <div class="exp-role">Music Producer & DJ</div>
+          <div class="exp-desc">15+ years of independent work in music production, sound design, and live performance across a wide range of genres and platforms.</div>
+          <ul class="exp-bullets">
+            <li>Collaborated with artists and brands to deliver custom music and SFX</li>
+            <li>Curated tailored audio experiences for events and digital platforms</li>
+            <li>Expert in Ableton and Cubase; composition, mixing, and mastering</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section id="cases">
+  <div class="container">
+    <p class="section-label">Selected work</p>
+    <h2 class="section-title">Product operations case studies</h2>
+    <p class="section-sub">Three internal tools built at OTW SRL that demonstrate full-lifecycle product thinking.</p>
+    <div class="cases-grid">
+
+      <!-- Case 1 -->
+      <div class="case-card">
+        <div class="case-header">
+          <div>
+            <div class="case-number">Case study 01</div>
+            <div class="case-title">End-to-end billing automation & ERP integration</div>
+            <div class="case-context">OTW SRL — Zoho + Teamleader</div>
+          </div>
+        </div>
+        <div class="case-body">
+          <div>
+            <div class="case-section-title">The challenge</div>
+            <p class="case-text">Invoicing was a fragmented, manual process spanning three disconnected systems — causing significant time loss and high error rates in financial reporting.</p>
+          </div>
+          <div>
+            <div class="case-section-title">The solution</div>
+            <ul class="case-solution-items">
+              <li>Led a dedicated team to architect a custom Zoho module aggregating CRM and PM data</li>
+              <li>Built custom automations tailored to specific business logic using Zoho's native capabilities</li>
+              <li>Integrated with Teamleader (3rd-party ERP) via API for one-click invoice generation</li>
+            </ul>
+          </div>
+        </div>
+        <div class="case-outcome">
+          <div class="outcome-label">Outcome</div>
+          Eliminated manual data entry and established a single source of truth in the CRM — drastically reducing invoicing cycle time, error rates, and improving financial transparency.
+        </div>
+      </div>
+
+      <!-- Case 2 -->
+      <div class="case-card">
+        <div class="case-header">
+          <div>
+            <div class="case-number">Case study 02</div>
+            <div class="case-title">Affiliate ecosystem: transparency & financial ops scaling</div>
+            <div class="case-context">OTW SRL — Affiliate Management Platform</div>
+          </div>
+        </div>
+        <div class="case-body">
+          <div>
+            <div class="case-section-title">The challenge</div>
+            <p class="case-text">Managing a growing affiliate network relied on manual end-of-month audits — creating opacity, delayed payments, and eroding partner trust.</p>
+          </div>
+          <div>
+            <div class="case-section-title">The solution</div>
+            <ul class="case-solution-items">
+              <li>Designed a multi-sided affiliate platform automating the full tracking and payout lifecycle</li>
+              <li>Built a real-time partner portal for transparent earnings and invoice status visibility</li>
+              <li>Created a dedicated finance module for single-click payouts driven by validated data</li>
+            </ul>
+          </div>
+        </div>
+        <div class="case-outcome">
+          <div class="outcome-label">Outcome</div>
+          Transformed a reactive process into a scalable, proactive system. Partner trust increased, referral volume grew, and internal accounting workload was drastically reduced.
+        </div>
+      </div>
+
+      <!-- Case 3 -->
+      <div class="case-card">
+        <div class="case-header">
+          <div>
+            <div class="case-number">Case study 03</div>
+            <div class="case-title">Centralized project governance & hybrid resource dashboard</div>
+            <div class="case-context">OTW SRL — Cross-Project Command Center</div>
+          </div>
+        </div>
+        <div class="case-body">
+          <div>
+            <div class="case-section-title">The challenge</div>
+            <p class="case-text">Zoho Projects lacked native visibility across hybrid workstreams — milestone-based projects vs. ongoing maintenance — requiring manual, time-consuming reporting.</p>
+          </div>
+          <div>
+            <div class="case-section-title">The solution</div>
+            <ul class="case-solution-items">
+              <li>Characterized and managed the build of an external dashboard pulling real-time data from Zoho Projects via API</li>
+              <li>Unified KPIs: milestones, deadlines, and budget utilization in a single view</li>
+              <li>Implemented categorized filtering to separate project-based work from ongoing retainers</li>
+            </ul>
+          </div>
+        </div>
+        <div class="case-outcome">
+          <div class="outcome-label">Outcome</div>
+          Established a "Command Center" for all active projects — enabling data-driven resource allocation and precise tracking of budget burn rates and deadline risks across the entire portfolio.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="border-top: 1px solid var(--border);">
+  <div class="container">
+    <p class="section-label">Technical toolkit</p>
+    <h2 class="section-title">Skills</h2>
+    <hr class="section-divider">
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-title">Operations & PM</div>
+        <div class="skill-item"><span class="skill-name">Zoho Suite</span><span class="skill-level level-expert">Expert</span></div>
+        <div class="skill-item"><span class="skill-name">Jira</span><span class="skill-level level-skillful">Skillful</span></div>
+        <div class="skill-item"><span class="skill-name">Monday.com</span><span class="skill-level level-experienced">Experienced</span></div>
+        <div class="skill-item"><span class="skill-name">Trello</span><span class="skill-level level-experienced">Experienced</span></div>
+        <div class="skill-item"><span class="skill-name">Asana</span><span class="skill-level level-experienced">Experienced</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Technical</div>
+        <div class="skill-item"><span class="skill-name">API integrations</span><span class="skill-level level-skillful">Skillful</span></div>
+        <div class="skill-item"><span class="skill-name">ERP / CRM systems</span><span class="skill-level level-skillful">Skillful</span></div>
+        <div class="skill-item"><span class="skill-name">Data visualization</span><span class="skill-level level-skillful">Skillful</span></div>
+        <div class="skill-item"><span class="skill-name">Lifecycle management</span><span class="skill-level level-expert">Expert</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Creative</div>
+        <div class="skill-item"><span class="skill-name">Cubase</span><span class="skill-level level-expert">Expert</span></div>
+        <div class="skill-item"><span class="skill-name">Ableton Live</span><span class="skill-level level-skillful">Skillful</span></div>
+        <div class="skill-item"><span class="skill-name">Sound design</span><span class="skill-level level-expert">Expert</span></div>
+        <div class="skill-item"><span class="skill-name">Music curation</span><span class="skill-level level-expert">Expert</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Methodologies</div>
+        <div class="skill-item"><span class="skill-name">Agile / Scrum</span><span class="skill-level level-skillful">Skillful</span></div>
+        <div class="skill-item"><span class="skill-name">Stakeholder alignment</span><span class="skill-level level-expert">Expert</span></div>
+        <div class="skill-item"><span class="skill-name">Budget management</span><span class="skill-level level-expert">Expert</span></div>
+        <div class="skill-item"><span class="skill-name">Cross-team leadership</span><span class="skill-level level-expert">Expert</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="border-top: 1px solid var(--border);">
+  <div class="container">
+    <p class="section-label">Background</p>
+    <h2 class="section-title">Education</h2>
+    <hr class="section-divider">
+    <div class="edu-list">
+      <div class="edu-item">
+        <div class="edu-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div>
+          <div class="edu-degree">Music Production</div>
+          <div class="edu-school">BPM College, Tel Aviv</div>
+          <div class="edu-period">Dec 2018 — Jul 2020</div>
+        </div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <div>
+          <div class="edu-degree">Sound Technician</div>
+          <div class="edu-school">Yoav Gera School of Sound, Tel Aviv</div>
+          <div class="edu-period">Sep 2010 — Oct 2011</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-name">Liav Chanoch</div>
+    <div class="footer-sub">Project Manager · Operations Lead · Music Producer</div>
+    <div class="footer-contact">
+      <a href="mailto:liavch1@gmail.com">liavch1@gmail.com</a>
+      <a href="tel:0502197706">050-2197706</a>
+      <a href="#">Tel Aviv, Israel</a>
+      <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
