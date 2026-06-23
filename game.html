@@ -238,7 +238,7 @@
     .nav-name { display: none; }
   }
 
-  /* ── AI MODAL ── */
+  .nav-refresh { font-size: 17px; line-height: 1; padding: 0.2rem 0.5rem; }
   .modal-overlay {
     display: none; position: fixed; inset: 0; z-index: 200;
     background: rgba(26,24,20,0.45); backdrop-filter: blur(4px);
@@ -270,6 +270,7 @@
 <nav>
   <span class="nav-logo">XOV</span>
   <div class="nav-right" id="nav-right">
+    <button class="btn btn-ghost nav-refresh" onclick="location.reload()" title="Refresh">↺</button>
     <a href="index.html" class="nav-back">Portfolio</a>
   </div>
 </nav>
@@ -496,6 +497,7 @@
   function renderNav(user) {
     const navRight = document.getElementById('nav-right');
     navRight.innerHTML = `
+      <button class="btn btn-ghost nav-refresh" onclick="location.reload()" title="Refresh">↺</button>
       ${user.photoURL ? `<img src="${user.photoURL}" class="nav-avatar" />` : ''}
       <span class="nav-name">${user.displayName || 'Player'}</span>
       <button class="btn btn-ghost btn-sm" id="signout-btn">Sign out</button>
@@ -567,7 +569,7 @@
     isGuest = false;
     currentUser = null;
     leaveGame();
-    document.getElementById('nav-right').innerHTML = `<a href="index.html" class="nav-back">Portfolio</a>`;
+    document.getElementById('nav-right').innerHTML = `<button class="btn btn-ghost nav-refresh" onclick="location.reload()" title="Refresh">↺</button><a href="index.html" class="nav-back">Portfolio</a>`;
     showScreen('screen-login');
   };
 
