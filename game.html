@@ -237,6 +237,32 @@
     .game-title { font-size: 2.4rem; }
     .nav-name { display: none; }
   }
+
+  /* ── AI MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(26,24,20,0.45); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 1.5rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-card {
+    background: var(--bg); border: 1px solid var(--border2);
+    border-radius: 18px; padding: 2rem 1.75rem; max-width: 340px; width: 100%;
+    display: flex; flex-direction: column; gap: 1.25rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+  }
+  .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  .modal-sub { font-size: 13px; color: var(--muted); margin-top: -0.75rem; }
+  .difficulty-list { display: flex; flex-direction: column; gap: 8px; }
+  .difficulty-btn {
+    width: 100%; padding: 0.85rem 1.25rem; border-radius: 10px;
+    border: 1.5px solid var(--border2); background: var(--surface);
+    font-size: 13px; font-weight: 600; color: var(--text);
+    cursor: pointer; font-family: inherit; text-align: left; transition: all 0.15s;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .difficulty-btn:hover { background: var(--surface2); border-color: var(--accent-border); }
+  .difficulty-hint { font-size: 11px; font-weight: 400; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -307,6 +333,7 @@
 
     <div class="home-actions">
       <button class="btn btn-primary btn-large" onclick="createGame()">Create game</button>
+      <button class="btn btn-secondary btn-large" onclick="openAiModal()">Play vs AI</button>
       <div class="divider"><span>or join with a code</span></div>
       <div class="join-row">
         <input id="join-input" class="code-input" placeholder="ABCD" maxlength="4"
@@ -415,6 +442,11 @@
   let currentUser  = null;
   let scoreUpdated = false;
   let isGuest      = false;
+
+  let isAI         = false;
+  let aiDifficulty = 'medium';
+  let localGame    = null;
+  let aiTimer      = null;
 
   // ── AUTH ──────────────────────────────────────────────────────
 
@@ -549,6 +581,23 @@
   function goHome() { showScreen('screen-home'); }
   function gameRef() { return ref(db, `games/${roomCode}`); }
 
+  window.openAiModal  = function() { document.getElementById('ai-modal').classList.add('open'); };
+  window.closeAiModal = function() { document.getElementById('ai-modal').classList.remove('open'); };
+
+  window.startAiGame = function(difficulty) {
+    closeAiModal();
+    isAI        = true;
+    aiDifficulty = difficulty;
+    myPlayer    = 'p1';
+    scoreUpdated = false;
+    if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
+    localGame = { board: EMPTY_BOARD, turn: 0, status: 'playing', winner: '', winCells: '' };
+    document.getElementById('room-label').textContent = 'vs AI · ' + difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+    document.getElementById('result-banner').classList.remove('visible');
+    showScreen('screen-game');
+    render(localGame);
+  };
+
   function generateCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     return Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
@@ -557,6 +606,7 @@
   // ── GAME FLOW ─────────────────────────────────────────────────
 
   window.createGame = async function() {
+    isAI = false;
     roomCode = generateCode();
     myPlayer = 'p1';
     scoreUpdated = false;
@@ -574,7 +624,7 @@
     if (!snap.exists()) { showError('Room not found'); return; }
     const g = snap.val();
     if (g.status !== 'waiting') { showError('Game already in progress'); return; }
-    roomCode = code; myPlayer = 'p2'; scoreUpdated = false; save();
+    isAI = false; roomCode = code; myPlayer = 'p2'; scoreUpdated = false; save();
     await update(gameRef(), { status: 'playing' });
     enterGame();
     listen();
@@ -625,8 +675,8 @@
     dot.className = 'player-dot ' + curP;
     chip.className = 'sym-chip ' + SYM_CLS[symIdx];
     chip.textContent = SYMBOLS[symIdx];
-    lbl.textContent = myTurn ? 'Your turn' : "Opponent's turn";
-    sub.textContent = myTurn ? `Place ${SYMBOLS[symIdx]} on any open cell` : 'Waiting for their move…';
+    lbl.textContent = myTurn ? 'Your turn' : (isAI ? 'AI thinking…' : "Opponent's turn");
+    sub.textContent = myTurn ? `Place ${SYMBOLS[symIdx]} on any open cell` : (isAI ? '' : 'Waiting for their move…');
   }
 
   function renderBoard(g, myTurn, symIdx, done) {
@@ -654,6 +704,13 @@
   }
 
   async function makeMove(i) {
+    if (isAI) {
+      if (!localGame || localGame.status !== 'playing') return;
+      applyMove(localGame, i, 'p1');
+      render(localGame);
+      if (localGame.status === 'playing') scheduleAiMove();
+      return;
+    }
     const snap = await get(gameRef());
     const g = snap.val();
     if (!g || g.status !== 'playing') return;
@@ -671,6 +728,100 @@
       winner:  result ? myPlayer : full ? 'draw' : '',
       winCells: result ? result.cells.join(',') : ''
     });
+  }
+
+  function applyMove(g, i, mover) {
+    const board = parseBoard(g.board);
+    if (board[i] !== null || g.status !== 'playing') return;
+    const si = g.turn % 3;
+    board[i] = si;
+    const result = checkWin(board);
+    const full   = board.every(v => v !== null);
+    g.board    = boardToStr(board);
+    g.turn    += 1;
+    g.status   = (result || full) ? 'finished' : 'playing';
+    g.winner   = result ? mover : full ? 'draw' : '';
+    g.winCells = result ? result.cells.join(',') : '';
+  }
+
+  function getEmpty(board) {
+    return board.reduce((acc, v, i) => { if (v === null) acc.push(i); return acc; }, []);
+  }
+
+  function aiGetMove(board, turn) {
+    if (aiDifficulty === 'easy')   return aiRandom(board);
+    if (aiDifficulty === 'medium') return aiMedium(board, turn);
+    return aiHard(board, turn);
+  }
+
+  function aiRandom(board) {
+    const e = getEmpty(board);
+    return e[Math.floor(Math.random() * e.length)];
+  }
+
+  function aiMedium(board, turn) {
+    const e  = getEmpty(board);
+    const si = turn % 3;
+    for (const i of e) { const b = board.slice(); b[i] = si; if (checkWin(b)) return i; }
+    const ps = (turn + 1) % 3;
+    for (const i of e) { const b = board.slice(); b[i] = ps; if (checkWin(b)) return i; }
+    return aiRandom(board);
+  }
+
+  function aiHard(board, turn) {
+    const e = getEmpty(board);
+    let best = -Infinity, move = e[0];
+    for (const i of e) {
+      const b = board.slice(); b[i] = turn % 3;
+      const s = mmAI(b, turn + 1, false, -Infinity, Infinity, 4);
+      if (s > best) { best = s; move = i; }
+    }
+    return move;
+  }
+
+  function mmAI(board, turn, isHumanTurn, alpha, beta, depth) {
+    const win = checkWin(board);
+    if (win) {
+      const aiMoved = (turn - 1) % 2 === 1;
+      return aiMoved ? (5 + depth) : -(5 + depth);
+    }
+    if (board.every(v => v !== null) || depth === 0) return 0;
+    const e = getEmpty(board);
+    if (isHumanTurn) {
+      let best = Infinity;
+      for (const i of e) {
+        const b = board.slice(); b[i] = turn % 3;
+        best = Math.min(best, mmAI(b, turn + 1, false, alpha, beta, depth - 1));
+        beta = Math.min(beta, best);
+        if (beta <= alpha) break;
+      }
+      return best;
+    } else {
+      let best = -Infinity;
+      for (const i of e) {
+        const b = board.slice(); b[i] = turn % 3;
+        best = Math.max(best, mmAI(b, turn + 1, true, alpha, beta, depth - 1));
+        alpha = Math.max(alpha, best);
+        if (beta <= alpha) break;
+      }
+      return best;
+    }
+  }
+
+  const AI_DELAY = { easy: 350, medium: 550, hard: 850 };
+
+  function scheduleAiMove() {
+    if (aiTimer) clearTimeout(aiTimer);
+    aiTimer = setTimeout(() => {
+      aiTimer = null;
+      if (!localGame || localGame.status !== 'playing') return;
+      const board = parseBoard(localGame.board);
+      const move  = aiGetMove(board, localGame.turn);
+      if (move != null) {
+        applyMove(localGame, move, 'p2');
+        render(localGame);
+      }
+    }, AI_DELAY[aiDifficulty]);
   }
 
   function checkWin(board) {
@@ -709,7 +860,7 @@
       chip.textContent = SYMBOLS[si];
       const who = document.createElement('div');
       who.className = 'queue-who';
-      who.textContent = isMe ? 'You' : 'Them';
+      who.textContent = isMe ? 'You' : (isAI ? 'AI' : 'Them');
       item.appendChild(chip); item.appendChild(who); el.appendChild(item);
     }
   }
@@ -728,9 +879,9 @@
       document.getElementById('result-sub').textContent    = 'Board full. Play again?';
       if (!scoreUpdated) { await updateScore('draw'); scoreEl.textContent = 'Draw recorded'; scoreUpdated = true; }
     } else {
-      const iWon = g.winner === myPlayer;
+      const iWon = isAI ? (g.winner === 'p1') : (g.winner === myPlayer);
       document.getElementById('result-emoji').textContent  = iWon ? '🏆' : '😤';
-      document.getElementById('result-title').textContent  = iWon ? 'You win!' : 'You lose!';
+      document.getElementById('result-title').textContent  = iWon ? 'You win!' : (isAI ? 'AI wins!' : 'You lose!');
       const wc = parseWinCells(g.winCells);
       const s  = wc ? SYMBOLS[parseBoard(g.board)[wc[0]]] : '';
       document.getElementById('result-sub').textContent    = s ? `Three ${s}s in a row!` : '';
@@ -758,11 +909,25 @@
 
   window.playAgain = async function() {
     scoreUpdated = false;
+    if (isAI) {
+      if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
+      localGame = { board: EMPTY_BOARD, turn: 0, status: 'playing', winner: '', winCells: '' };
+      document.getElementById('result-banner').classList.remove('visible');
+      render(localGame);
+      return;
+    }
     await update(gameRef(), { board: EMPTY_BOARD, turn: 0, status: 'playing', winner: '', winCells: '' });
     document.getElementById('result-banner').classList.remove('visible');
   };
 
   window.leaveGame = function() {
+    if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
+    if (isAI) {
+      isAI = false; localGame = null; myPlayer = null; scoreUpdated = false;
+      document.getElementById('result-banner').classList.remove('visible');
+      goHome();
+      return;
+    }
     if (gameListener) { gameListener(); gameListener = null; }
     sessionStorage.removeItem('xov-room');
     sessionStorage.removeItem('xov-player');
@@ -796,5 +961,27 @@
     });
   }
 </script>
+
+<!-- ── AI DIFFICULTY MODAL ── -->
+<div class="modal-overlay" id="ai-modal" onclick="if(event.target===this)closeAiModal()">
+  <div class="modal-card">
+    <div>
+      <div class="modal-title">Play vs AI</div>
+      <p class="modal-sub">Choose a difficulty level</p>
+    </div>
+    <div class="difficulty-list">
+      <button class="difficulty-btn" onclick="startAiGame('easy')">
+        Easy <span class="difficulty-hint">Makes random moves</span>
+      </button>
+      <button class="difficulty-btn" onclick="startAiGame('medium')">
+        Medium <span class="difficulty-hint">Wins and blocks when it can</span>
+      </button>
+      <button class="difficulty-btn" onclick="startAiGame('hard')">
+        Hard <span class="difficulty-hint">Plans several moves ahead</span>
+      </button>
+    </div>
+    <button class="btn btn-ghost" onclick="closeAiModal()">Cancel</button>
+  </div>
+</div>
 </body>
 </html>
