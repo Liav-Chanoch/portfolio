@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TriShift — Symbol Strategy Game</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f4ee;
+    --surface: #edeae2;
+    --surface2: #e4e0d6;
+    --border: rgba(26,24,20,0.10);
+    --border2: rgba(26,24,20,0.18);
+    --text: #1a1814;
+    --muted: #7a7569;
+    --accent: #1a1814;
+    --accent2: #3d3830;
+    --accent-bg: rgba(26,24,20,0.06);
+    --accent-border: rgba(26,24,20,0.20);
+
+    --sym-x: #b83232;
+    --sym-x-bg: rgba(184,50,50,0.08);
+    --sym-x-border: rgba(184,50,50,0.25);
+
+    --sym-o: #2a6fa8;
+    --sym-o-bg: rgba(42,111,168,0.08);
+    --sym-o-border: rgba(42,111,168,0.25);
+
+    --sym-t: #4a6741;
+    --sym-t-bg: rgba(74,103,65,0.08);
+    --sym-t-border: rgba(74,103,65,0.25);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'Inter', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(247,244,238,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-back {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--text); }
+
+  .page-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .game-header {
+    margin-bottom: 2.5rem;
+  }
+  .game-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .game-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .game-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 500px;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .status-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .player-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text);
+    transition: background 0.3s;
+  }
+  .player-dot.p1 { background: #b83232; }
+  .player-dot.p2 { background: #2a6fa8; }
+  .status-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .status-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .next-symbol-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .next-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sym-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    border: 1.5px solid;
+    transition: all 0.25s;
+  }
+  .sym-chip.sym-x { color: var(--sym-x); background: var(--sym-x-bg); border-color: var(--sym-x-border); }
+  .sym-chip.sym-o { color: var(--sym-o); background: var(--sym-o-bg); border-color: var(--sym-o-border); }
+  .sym-chip.sym-t { color: var(--sym-t); background: var(--sym-t-bg); border-color: var(--sym-t-border); }
+
+  /* SCORE */
+  .score-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+  .score-card {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    transition: border-color 0.3s;
+  }
+  .score-card.active-player {
+    border-color: var(--border2);
+    background: var(--surface2);
+  }
+  .score-player {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .score-player.p1 { color: var(--sym-x); }
+  .score-player.p2 { color: var(--sym-o); }
+  .score-val {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* SYMBOL QUEUE */
+  .queue-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .queue-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .queue-items {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .queue-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .queue-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1.5px solid;
+    opacity: 0.5;
+    transition: all 0.25s;
+  }
+  .queue-chip.current {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+    border-radius: 8px;
+    opacity: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .queue-chip.sym-x { color: var(--sym-x); background: var(--sym-x-bg); border-color: var(--sym-x-border); }
+  .queue-chip.sym-o { color: var(--sym-o); background: var(--sym-o-bg); border-color: var(--sym-o-border); }
+  .queue-chip.sym-t { color: var(--sym-t); background: var(--sym-t-bg); border-color: var(--sym-t-border); }
+  .queue-who {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .queue-who.p1 { color: var(--sym-x); }
+  .queue-who.p2 { color: var(--sym-o); }
+  .queue-arrow {
+    color: var(--muted);
+    font-size: 14px;
+    opacity: 0.5;
+    margin: 0 2px;
+    padding-bottom: 14px;
+  }
+
+  /* BOARD */
+  .board-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .cell {
+    aspect-ratio: 1;
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .cell:hover:not(.filled):not(.game-over) {
+    background: var(--surface2);
+    border-color: var(--accent-border);
+    transform: scale(1.03);
+  }
+  .cell.filled { cursor: default; }
+  .cell.sym-x { color: var(--sym-x); background: var(--sym-x-bg); border-color: var(--sym-x-border); }
+  .cell.sym-o { color: var(--sym-o); background: var(--sym-o-bg); border-color: var(--sym-o-border); }
+  .cell.sym-t { color: var(--sym-t); background: var(--sym-t-bg); border-color: var(--sym-t-border); }
+  .cell.win-cell {
+    animation: win-pulse 0.5s ease-out forwards;
+    z-index: 1;
+  }
+  @keyframes win-pulse {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.12); }
+    100% { transform: scale(1.06); }
+  }
+  .cell.win-cell.sym-x { background: rgba(184,50,50,0.18); border-color: var(--sym-x); border-width: 2px; }
+  .cell.win-cell.sym-o { background: rgba(42,111,168,0.18); border-color: var(--sym-o); border-width: 2px; }
+  .cell.win-cell.sym-t { background: rgba(74,103,65,0.18); border-color: var(--sym-t); border-width: 2px; }
+
+  .cell-pop {
+    animation: cell-appear 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  @keyframes cell-appear {
+    0%   { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* RESULT BANNER */
+  .result-banner {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+    text-align: center;
+    animation: banner-in 0.3s ease-out;
+  }
+  .result-banner.visible { display: block; }
+  @keyframes banner-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .result-emoji { font-size: 2rem; margin-bottom: 0.25rem; }
+  .result-title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .result-sub { font-size: 13px; color: var(--muted); }
+
+  /* CONTROLS */
+  .controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid;
+    transition: all 0.15s;
+    text-decoration: none;
+    background: none;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border2);
+  }
+  .btn-secondary:hover { background: var(--surface2); border-color: var(--accent-border); }
+
+  /* RULES */
+  .rules-toggle {
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    font-family: inherit;
+    margin-bottom: 0.75rem;
+    transition: color 0.2s;
+  }
+  .rules-toggle:hover { color: var(--text); }
+  .rules-toggle svg { transition: transform 0.25s; }
+  .rules-toggle.open svg { transform: rotate(180deg); }
+  .rules-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s ease;
+  }
+  .rules-box.open { max-height: 500px; }
+  .rules-inner { padding: 1.25rem 1.5rem; }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .rule-item { display: flex; flex-direction: column; gap: 4px; }
+  .rule-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .rule-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+  /* HOVER PREVIEW */
+  .cell:not(.filled):not(.game-over):hover::after {
+    content: attr(data-preview);
+    position: absolute;
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    font-weight: 800;
+    opacity: 0.35;
+  }
+  .cell.preview-x:not(.filled):not(.game-over):hover::after { color: var(--sym-x); }
+  .cell.preview-o:not(.filled):not(.game-over):hover::after { color: var(--sym-o); }
+  .cell.preview-t:not(.filled):not(.game-over):hover::after { color: var(--sym-t); }
+
+  @media (max-width: 480px) {
+    .rules-grid { grid-template-columns: 1fr; }
+    .score-bar { gap: 8px; }
+    .page-wrap { padding: 2rem 1.25rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">TriShift</span>
+  <a href="index.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to portfolio
+  </a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="game-header">
+    <p class="game-eyebrow">Two players · Three symbols · One winner</p>
+    <h1 class="game-title">TriShift</h1>
+    <p class="game-desc">A strategy game on a 4×4 board. The symbol you place shifts every turn — so you must plan ahead, block your opponent, and sometimes use a symbol you didn't want. First to land 3 in a row wins.</p>
+  </div>
+
+  <!-- SCORE -->
+  <div class="score-bar" id="scoreBar">
+    <div class="score-card active-player" id="scoreP1">
+      <div class="score-player p1">Player 1</div>
+      <div class="score-val" id="scoreValP1">0</div>
+    </div>
+    <div class="score-card" id="scoreP2">
+      <div class="score-player p2">Player 2</div>
+      <div class="score-val" id="scoreValP2">0</div>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar" id="statusBar">
+    <div class="status-left">
+      <div class="player-dot" id="playerDot"></div>
+      <div>
+        <div class="status-label" id="statusLabel">Player 1's turn</div>
+        <div class="status-sub" id="statusSub">Place your symbol on any open cell</div>
+      </div>
+    </div>
+    <div class="next-symbol-wrap">
+      <span class="next-label">Playing</span>
+      <div class="sym-chip" id="currentSymChip"></div>
+    </div>
+  </div>
+
+  <!-- SYMBOL QUEUE -->
+  <div class="queue-wrap" id="queueWrap">
+    <span class="queue-label">Up next</span>
+    <div class="queue-items" id="queueItems"></div>
+  </div>
+
+  <!-- RESULT BANNER -->
+  <div class="result-banner" id="resultBanner">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-sub" id="resultSub"></div>
+  </div>
+
+  <!-- BOARD -->
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="btn btn-primary" onclick="resetGame()">New game</button>
+    <button class="btn btn-secondary" id="rulesToggleBtn" onclick="toggleRules()">
+      How to play
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+
+  <!-- RULES -->
+  <div class="rules-box" id="rulesBox">
+    <div class="rules-inner">
+      <div class="rules-grid">
+        <div class="rule-item">
+          <span class="rule-num">01 — The board</span>
+          <span class="rule-text">A 4×4 grid. Two players take turns clicking to place a symbol.</span>
+        </div>
+        <div class="rule-item">
+          <span class="rule-num">02 — The symbols</span>
+          <span class="rule-text">Three symbols cycle each turn: <strong style="color:var(--sym-x)">✕</strong>, <strong style="color:var(--sym-o)">○</strong>, <strong style="color:var(--sym-t)">△</strong>. You don't choose — you get whatever is next.</span>
+        </div>
+        <div class="rule-item">
+          <span class="rule-num">03 — How to win</span>
+          <span class="rule-text">Get 3 of the same symbol in a row — horizontally, vertically, or diagonally. The player who places the 3rd matching symbol wins.</span>
+        </div>
+        <div class="rule-item">
+          <span class="rule-num">04 — The twist</span>
+          <span class="rule-text">Since symbols cycle for both players, you might unknowingly set up your opponent — or block them by filling a key cell with an off-symbol.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SYMBOLS = ['✕', '○', '△'];
+  const SYM_CLASSES = ['sym-x', 'sym-o', 'sym-t'];
+  const SYM_NAMES = ['✕', '○', '△'];
+  const BOARD_SIZE = 4;
+  const WIN_LEN = 3;
+
+  let board = [];
+  let turn = 0;
+  let gameOver = false;
+  let scores = [0, 0];
+
+  function init() {
+    board = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(null));
+    turn = 0;
+    gameOver = false;
+    renderBoard();
+    updateUI();
+    document.getElementById('resultBanner').classList.remove('visible');
+  }
+
+  function currentSymbolIdx() { return turn % 3; }
+  function currentPlayer() { return turn % 2; } // 0 = P1, 1 = P2
+
+  function renderBoard() {
+    const boardEl = document.getElementById('board');
+    boardEl.innerHTML = '';
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.r = r;
+        cell.dataset.c = c;
+        if (board[r][c] !== null) {
+          const si = board[r][c];
+          cell.classList.add('filled', SYM_CLASSES[si]);
+          cell.textContent = SYMBOLS[si];
+        } else {
+          const si = currentSymbolIdx();
+          cell.dataset.preview = SYMBOLS[si];
+          cell.classList.add('preview-' + ['x','o','t'][si]);
+          cell.addEventListener('click', handleClick);
+        }
+        boardEl.appendChild(cell);
+      }
+    }
+  }
+
+  function handleClick(e) {
+    if (gameOver) return;
+    const r = +e.currentTarget.dataset.r;
+    const c = +e.currentTarget.dataset.c;
+    if (board[r][c] !== null) return;
+
+    const si = currentSymbolIdx();
+    board[r][c] = si;
+    turn++;
+
+    const result = checkWin();
+    renderBoard();
+
+    if (result) {
+      gameOver = true;
+      highlightWin(result.cells);
+      const winner = currentPlayer() === 0 ? 1 : 0; // who just played
+      scores[winner]++;
+      updateScores();
+      showResult(winner, result.symbol);
+      updateUI(true);
+    } else if (isFull()) {
+      gameOver = true;
+      showDraw();
+      updateUI(true);
+    } else {
+      updateUI();
+    }
+  }
+
+  function checkWin() {
+    const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        if (board[r][c] === null) continue;
+        const sym = board[r][c];
+        for (const [dr, dc] of dirs) {
+          const cells = [[r, c]];
+          let ok = true;
+          for (let i = 1; i < WIN_LEN; i++) {
+            const nr = r + dr * i, nc = c + dc * i;
+            if (nr < 0 || nr >= BOARD_SIZE || nc < 0 || nc >= BOARD_SIZE || board[nr][nc] !== sym) {
+              ok = false; break;
+            }
+            cells.push([nr, nc]);
+          }
+          if (ok) return { symbol: sym, cells };
+        }
+      }
+    }
+    return null;
+  }
+
+  function isFull() {
+    return board.every(row => row.every(v => v !== null));
+  }
+
+  function highlightWin(cells) {
+    const boardEl = document.getElementById('board');
+    const allCells = boardEl.querySelectorAll('.cell');
+    cells.forEach(([r, c]) => {
+      const idx = r * BOARD_SIZE + c;
+      allCells[idx].classList.add('win-cell');
+    });
+  }
+
+  function updateUI(ended = false) {
+    const p = currentPlayer();
+    const si = currentSymbolIdx();
+
+    const dot = document.getElementById('playerDot');
+    dot.className = 'player-dot ' + (p === 0 ? 'p1' : 'p2');
+
+    const label = document.getElementById('statusLabel');
+    const sub = document.getElementById('statusSub');
+    const chip = document.getElementById('currentSymChip');
+
+    if (!ended) {
+      label.textContent = `Player ${p + 1}'s turn`;
+      sub.textContent = 'Place your symbol on any open cell';
+      chip.className = 'sym-chip ' + SYM_CLASSES[si];
+      chip.textContent = SYMBOLS[si];
+    }
+
+    updateScoreHighlight();
+    renderQueue();
+  }
+
+  function updateScoreHighlight() {
+    const p = currentPlayer();
+    document.getElementById('scoreP1').classList.toggle('active-player', p === 0);
+    document.getElementById('scoreP2').classList.toggle('active-player', p === 1);
+  }
+
+  function updateScores() {
+    document.getElementById('scoreValP1').textContent = scores[0];
+    document.getElementById('scoreValP2').textContent = scores[1];
+  }
+
+  function renderQueue() {
+    const el = document.getElementById('queueItems');
+    el.innerHTML = '';
+    const previewCount = 5;
+    for (let i = 0; i < previewCount; i++) {
+      const t = turn + i;
+      const si = t % 3;
+      const pl = t % 2;
+
+      if (i > 0) {
+        const arrow = document.createElement('span');
+        arrow.className = 'queue-arrow';
+        arrow.textContent = '→';
+        el.appendChild(arrow);
+      }
+
+      const item = document.createElement('div');
+      item.className = 'queue-item';
+
+      const chip = document.createElement('div');
+      chip.className = 'queue-chip ' + SYM_CLASSES[si] + (i === 0 ? ' current' : '');
+      chip.textContent = SYMBOLS[si];
+
+      const who = document.createElement('div');
+      who.className = 'queue-who ' + (pl === 0 ? 'p1' : 'p2');
+      who.textContent = 'P' + (pl + 1);
+
+      item.appendChild(chip);
+      item.appendChild(who);
+      el.appendChild(item);
+    }
+  }
+
+  function showResult(winner, symIdx) {
+    const banner = document.getElementById('resultBanner');
+    banner.classList.add('visible');
+    document.getElementById('resultEmoji').textContent = '🎉';
+    document.getElementById('resultTitle').textContent = `Player ${winner + 1} wins!`;
+    document.getElementById('resultSub').textContent =
+      `Three ${SYMBOLS[symIdx]}s in a row. Play again?`;
+  }
+
+  function showDraw() {
+    const banner = document.getElementById('resultBanner');
+    banner.classList.add('visible');
+    document.getElementById('resultEmoji').textContent = '🤝';
+    document.getElementById('resultTitle').textContent = 'It\'s a draw!';
+    document.getElementById('resultSub').textContent = 'The board is full with no winner. Try again!';
+  }
+
+  function resetGame() {
+    init();
+  }
+
+  function toggleRules() {
+    const box = document.getElementById('rulesBox');
+    const btn = document.getElementById('rulesToggleBtn');
+    box.classList.toggle('open');
+    btn.classList.toggle('open');
+  }
+
+  init();
+</script>
+</body>
+</html>
