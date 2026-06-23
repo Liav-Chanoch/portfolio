@@ -99,6 +99,20 @@
   .btn-google svg { flex-shrink: 0; }
   .login-divider { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
 
+  /* ── EMAIL FORM ── */
+  .email-form { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .text-input {
+    width: 100%; padding: 0.75rem 1rem; border-radius: 10px;
+    border: 1.5px solid var(--border2); background: var(--surface);
+    font-size: 14px; color: var(--text); font-family: inherit;
+    transition: border-color 0.2s; outline: none;
+  }
+  .text-input:focus { border-color: var(--text); }
+  .text-input::placeholder { color: var(--muted); }
+  .auth-error { font-size: 12px; color: var(--sym-x); min-height: 16px; text-align: center; }
+  .auth-toggle { font-size: 12px; color: var(--muted); text-align: center; }
+  .toggle-link { background: none; border: none; color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0; }
+
   /* ── HOME SCREEN ── */
   .game-header { margin-bottom: 1.5rem; }
   .game-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
@@ -248,6 +262,18 @@
           Continue with Google
         </button>
         <div class="login-divider">or</div>
+        <div class="email-form">
+          <input id="email-input" type="email" class="text-input" placeholder="Email address" autocomplete="email" />
+          <input id="password-input" type="password" class="text-input" placeholder="Password" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter') handleEmailAuth()" />
+          <p id="auth-error" class="auth-error"></p>
+          <button class="btn btn-primary btn-large" id="email-action-btn" onclick="handleEmailAuth()">Sign in</button>
+          <p class="auth-toggle">
+            <span id="auth-toggle-text">No account? </span>
+            <button class="toggle-link" id="auth-toggle-link" onclick="toggleAuthMode()">Create one</button>
+          </p>
+        </div>
+        <div class="login-divider">or</div>
         <button class="btn btn-secondary btn-large" onclick="playAsGuest()">Play as guest</button>
       </div>
       <p style="font-size:11px;color:var(--muted);text-align:center;max-width:260px;">Guests can play but scores won't be saved</p>
@@ -357,7 +383,7 @@
 <script type="module">
   import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
   import { getDatabase, ref, set, onValue, update, get } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
   import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
   const app  = initializeApp({
@@ -452,6 +478,50 @@
       console.error(e);
     }
   };
+
+  let authMode = 'signin';
+
+  window.toggleAuthMode = function() {
+    authMode = authMode === 'signin' ? 'signup' : 'signin';
+    const isSignIn = authMode === 'signin';
+    document.getElementById('email-action-btn').textContent  = isSignIn ? 'Sign in' : 'Create account';
+    document.getElementById('auth-toggle-text').textContent  = isSignIn ? 'No account? ' : 'Have an account? ';
+    document.getElementById('auth-toggle-link').textContent  = isSignIn ? 'Create one' : 'Sign in';
+    document.getElementById('auth-error').textContent = '';
+    document.getElementById('password-input').autocomplete = isSignIn ? 'current-password' : 'new-password';
+  };
+
+  window.handleEmailAuth = async function() {
+    const email    = document.getElementById('email-input').value.trim();
+    const password = document.getElementById('password-input').value;
+    const errEl    = document.getElementById('auth-error');
+    errEl.textContent = '';
+    if (!email)    { errEl.textContent = 'Enter your email'; return; }
+    if (!password) { errEl.textContent = 'Enter your password'; return; }
+    try {
+      if (authMode === 'signin') {
+        await signInWithEmailAndPassword(auth, email, password);
+      } else {
+        const { user } = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(user, { displayName: email.split('@')[0] });
+      }
+    } catch(e) {
+      errEl.textContent = friendlyAuthError(e.code);
+    }
+  };
+
+  function friendlyAuthError(code) {
+    const map = {
+      'auth/invalid-credential':     'Incorrect email or password',
+      'auth/user-not-found':         'No account with that email',
+      'auth/wrong-password':         'Incorrect password',
+      'auth/email-already-in-use':   'Email already registered — sign in instead',
+      'auth/weak-password':          'Password must be at least 6 characters',
+      'auth/invalid-email':          'Invalid email address',
+      'auth/too-many-requests':      'Too many attempts. Try again later',
+    };
+    return map[code] || 'Something went wrong, try again';
+  }
 
   window.playAsGuest = function() {
     isGuest = true;
