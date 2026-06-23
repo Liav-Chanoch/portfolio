@@ -39,39 +39,33 @@
     min-height: 100vh;
   }
 
+  /* NAV */
   nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(247,244,238,0.92);
-    backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(247,244,238,0.92); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding: 0 1.25rem; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .nav-logo { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: var(--text); text-decoration: none; }
-  .nav-back {
-    font-size: 13px; color: var(--muted); text-decoration: none;
-    display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+  .nav-logo { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: var(--text); }
+  .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+  .nav-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1.5px solid var(--border2); object-fit: cover;
   }
+  .nav-name { font-size: 12px; font-weight: 600; color: var(--text); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav-back { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
   .nav-back:hover { color: var(--text); }
 
   /* SCREENS */
   .screen { display: none; }
   .screen.active { display: block; }
 
-  .page-wrap {
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem 5rem;
-  }
+  .page-wrap { max-width: 520px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
 
   /* BUTTONS */
   .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 13px; font-weight: 600;
     cursor: pointer; border: 1.5px solid; transition: all 0.15s;
     text-decoration: none; background: none; font-family: inherit;
@@ -83,79 +77,72 @@
   .btn-ghost { background: none; border-color: transparent; color: var(--muted); }
   .btn-ghost:hover { color: var(--text); }
   .btn-large { padding: 0.85rem 2rem; font-size: 14px; width: 100%; }
-  .btn-sm { padding: 0.4rem 0.9rem; font-size: 12px; }
+  .btn-sm { padding: 0.35rem 0.75rem; font-size: 11px; }
+
+  /* ── LOGIN SCREEN ── */
+  .login-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 2rem; gap: 1.5rem; }
+  .login-logo { font-size: 4rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text); line-height: 1; }
+  .login-logo span:nth-child(1) { color: var(--sym-x); }
+  .login-logo span:nth-child(2) { color: var(--sym-o); }
+  .login-logo span:nth-child(3) { color: var(--sym-v); }
+  .login-tagline { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 300px; }
+  .login-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
+  .btn-google {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 0.85rem; border-radius: 10px;
+    background: #fff; border: 1.5px solid var(--border2);
+    font-size: 14px; font-weight: 600; color: var(--text);
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .btn-google:hover { background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .btn-google svg { flex-shrink: 0; }
+  .login-divider { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
 
   /* ── HOME SCREEN ── */
-  .game-header { margin-bottom: 2.5rem; }
-  .game-eyebrow {
-    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
-  }
-  .game-title {
-    font-size: 3rem; font-weight: 800; letter-spacing: -0.03em;
-    color: var(--text); margin-bottom: 0.5rem; line-height: 1;
-  }
+  .game-header { margin-bottom: 1.5rem; }
+  .game-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .game-title { font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text); margin-bottom: 0.5rem; line-height: 1; }
   .game-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
 
-  .home-actions { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
-  .divider {
-    display: flex; align-items: center; gap: 1rem;
-    font-size: 12px; color: var(--muted);
+  /* STATS CARD */
+  .stats-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0; display: none;
   }
-  .divider::before, .divider::after {
-    content: ''; flex: 1; border-top: 1px solid var(--border2);
-  }
+  .stats-card.visible { display: flex; }
+  .stat-item { flex: 1; text-align: center; }
+  .stat-item + .stat-item { border-left: 1px solid var(--border); }
+  .stat-val { display: block; font-size: 1.6rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .stat-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .stat-item.wins .stat-val { color: var(--sym-v); }
+  .stat-item.losses .stat-val { color: var(--sym-x); }
+  .stat-item.draws .stat-val { color: var(--sym-o); }
+
+  .home-actions { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
+  .divider { display: flex; align-items: center; gap: 1rem; font-size: 12px; color: var(--muted); }
+  .divider::before, .divider::after { content: ''; flex: 1; border-top: 1px solid var(--border2); }
   .join-row { display: flex; gap: 8px; }
   .code-input {
     flex: 1; padding: 0.6rem 1rem; border-radius: 8px;
     border: 1.5px solid var(--border2); background: var(--surface);
     font-size: 16px; font-weight: 700; letter-spacing: 0.2em;
     text-transform: uppercase; color: var(--text); font-family: inherit;
-    text-align: center; transition: border-color 0.2s;
-    outline: none;
+    text-align: center; transition: border-color 0.2s; outline: none;
   }
   .code-input:focus { border-color: var(--text); }
   .error-msg { font-size: 12px; color: var(--sym-x); min-height: 18px; }
 
-  .sym-preview {
-    display: flex; gap: 12px; margin-top: 0.5rem;
-  }
-  .sym-pill {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
-    gap: 4px; padding: 0.75rem; border-radius: 10px;
-    border: 1.5px solid; font-weight: 800; font-size: 1.5rem;
-  }
-  .sym-pill span { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-  .sym-pill.sym-x { color: var(--sym-x); background: var(--sym-x-bg); border-color: var(--sym-x-border); }
-  .sym-pill.sym-o { color: var(--sym-o); background: var(--sym-o-bg); border-color: var(--sym-o-border); }
-  .sym-pill.sym-v { color: var(--sym-v); background: var(--sym-v-bg); border-color: var(--sym-v-border); }
-
   /* ── WAITING SCREEN ── */
-  .waiting-wrap {
-    display: flex; flex-direction: column; align-items: center;
-    text-align: center; gap: 1.25rem; padding-top: 2rem;
-  }
+  .waiting-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.25rem; padding-top: 2rem; }
   .spinner-wrap { margin-bottom: 0.5rem; }
-  .spinner {
-    width: 40px; height: 40px; border-radius: 50%;
-    border: 3px solid var(--border2);
-    border-top-color: var(--text);
-    animation: spin 0.8s linear infinite;
-  }
+  .spinner { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border2); border-top-color: var(--text); animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .waiting-title { font-size: 1.3rem; font-weight: 700; color: var(--text); }
   .waiting-sub { font-size: 13px; color: var(--muted); max-width: 280px; }
-  .code-display {
-    background: var(--surface);
-    border: 2px solid var(--border2);
-    border-radius: 14px;
-    padding: 1rem 2rem;
-    margin: 0.25rem 0;
-  }
-  .room-code {
-    font-size: 2.5rem; font-weight: 800; letter-spacing: 0.25em;
-    color: var(--text); font-variant-numeric: tabular-nums;
-  }
+  .code-display { background: var(--surface); border: 2px solid var(--border2); border-radius: 14px; padding: 1rem 2rem; }
+  .room-code { font-size: 2.5rem; font-weight: 800; letter-spacing: 0.25em; color: var(--text); }
 
   /* ── GAME SCREEN ── */
   .status-bar {
@@ -171,11 +158,7 @@
   .status-sub { font-size: 12px; color: var(--muted); }
   .status-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
   .next-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .sym-chip {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 36px; height: 36px; border-radius: 8px;
-    font-size: 16px; font-weight: 800; border: 1.5px solid;
-  }
+  .sym-chip { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; font-weight: 800; border: 1.5px solid; }
   .sym-chip.sym-x { color: var(--sym-x); background: var(--sym-x-bg); border-color: var(--sym-x-border); }
   .sym-chip.sym-o { color: var(--sym-o); background: var(--sym-o-bg); border-color: var(--sym-o-border); }
   .sym-chip.sym-v { color: var(--sym-v); background: var(--sym-v-bg); border-color: var(--sym-v-border); }
@@ -185,11 +168,7 @@
   .queue-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
   .queue-items { display: flex; gap: 4px; align-items: center; }
   .queue-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .queue-chip {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 26px; height: 26px; border-radius: 6px;
-    font-size: 12px; font-weight: 800; border: 1.5px solid; opacity: 0.45;
-  }
+  .queue-chip { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 6px; font-size: 12px; font-weight: 800; border: 1.5px solid; opacity: 0.45; }
   .queue-chip.current { width: 34px; height: 34px; font-size: 15px; border-radius: 8px; opacity: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
   .queue-chip.sym-x { color: var(--sym-x); background: var(--sym-x-bg); border-color: var(--sym-x-border); }
   .queue-chip.sym-o { color: var(--sym-o); background: var(--sym-o-bg); border-color: var(--sym-o-border); }
@@ -198,24 +177,18 @@
   .queue-arrow { color: var(--muted); font-size: 12px; opacity: 0.4; padding-bottom: 12px; }
 
   /* RESULT BANNER */
-  .result-banner {
-    display: none; background: var(--surface); border: 1px solid var(--border2);
-    border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
-    text-align: center; animation: banner-in 0.3s ease-out;
-  }
+  .result-banner { display: none; background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; text-align: center; animation: banner-in 0.3s ease-out; }
   .result-banner.visible { display: block; }
   @keyframes banner-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
   .result-emoji { font-size: 2rem; margin-bottom: 0.25rem; }
   .result-title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
   .result-sub { font-size: 13px; color: var(--muted); margin-bottom: 1rem; }
+  .result-score-update { font-size: 12px; font-weight: 600; color: var(--sym-v); margin-bottom: 1rem; }
   .result-actions { display: flex; gap: 8px; justify-content: center; }
 
   /* BOARD */
   .board-wrap { display: flex; justify-content: center; margin-bottom: 1.25rem; }
-  .board {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 7px; width: 100%; max-width: 380px;
-  }
+  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; width: 100%; max-width: 380px; }
   .cell {
     aspect-ratio: 1; background: var(--surface); border: 1.5px solid var(--border2);
     border-radius: 11px; display: flex; align-items: center; justify-content: center;
@@ -226,7 +199,6 @@
   .cell.clickable { cursor: pointer; }
   .cell.clickable:hover { background: var(--surface2); border-color: var(--accent-border); transform: scale(1.04); }
   .cell.waiting-cell { opacity: 0.6; }
-  .cell.filled { cursor: default; }
   .cell.sym-x { color: var(--sym-x); background: var(--sym-x-bg); border-color: var(--sym-x-border); }
   .cell.sym-o { color: var(--sym-o); background: var(--sym-o-bg); border-color: var(--sym-o-border); }
   .cell.sym-v { color: var(--sym-v); background: var(--sym-v-bg); border-color: var(--sym-v-border); }
@@ -235,8 +207,6 @@
   .cell.win-cell.sym-x { background: rgba(184,50,50,0.18); border-color: var(--sym-x); border-width: 2px; }
   .cell.win-cell.sym-o { background: rgba(42,111,168,0.18); border-color: var(--sym-o); border-width: 2px; }
   .cell.win-cell.sym-v { background: rgba(74,103,65,0.18); border-color: var(--sym-v); border-width: 2px; }
-
-  /* hover ghost */
   .cell.clickable::after { content: attr(data-preview); position: absolute; font-weight: 800; font-size: clamp(1.2rem,4.5vw,1.7rem); opacity: 0; transition: opacity 0.15s; }
   .cell.clickable:hover::after { opacity: 0.3; }
   .cell.preview-x::after { color: var(--sym-x); }
@@ -244,16 +214,14 @@
   .cell.preview-v::after { color: var(--sym-v); }
 
   /* GAME CONTROLS */
-  .game-controls {
-    display: flex; align-items: center; justify-content: space-between;
-    padding-top: 0.25rem;
-  }
+  .game-controls { display: flex; align-items: center; justify-content: space-between; padding-top: 0.25rem; }
   .room-info { font-size: 12px; color: var(--muted); }
   .room-info strong { color: var(--text); letter-spacing: 0.1em; }
 
   @media (max-width: 480px) {
     .page-wrap { padding: 2rem 1rem 4rem; }
     .game-title { font-size: 2.4rem; }
+    .nav-name { display: none; }
   }
 </style>
 </head>
@@ -261,25 +229,54 @@
 
 <nav>
   <span class="nav-logo">XOV</span>
-  <a href="index.html" class="nav-back">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-    Portfolio
-  </a>
+  <div class="nav-right" id="nav-right">
+    <a href="index.html" class="nav-back">Portfolio</a>
+  </div>
 </nav>
 
+<!-- ── LOGIN ── -->
+<div id="screen-login" class="screen active">
+  <div class="page-wrap">
+    <div class="login-wrap">
+      <div class="login-logo">
+        <span>X</span><span>O</span><span>V</span>
+      </div>
+      <p class="login-tagline">A live multiplayer symbol game. Sign in to track your wins and play against others.</p>
+      <div class="login-actions">
+        <button class="btn-google" onclick="signInGoogle()">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/></svg>
+          Continue with Google
+        </button>
+        <div class="login-divider">or</div>
+        <button class="btn btn-secondary btn-large" onclick="playAsGuest()">Play as guest</button>
+      </div>
+      <p style="font-size:11px;color:var(--muted);text-align:center;max-width:260px;">Guests can play but scores won't be saved</p>
+    </div>
+  </div>
+</div>
+
 <!-- ── HOME ── -->
-<div id="screen-home" class="screen active">
+<div id="screen-home" class="screen">
   <div class="page-wrap">
     <div class="game-header">
       <p class="game-eyebrow">Live multiplayer · Two players · Three symbols</p>
       <h1 class="game-title">XOV</h1>
-      <p class="game-desc">X, O, and V rotate every turn — you don't pick your symbol, you just play it. Get three in a row to win. Works across any two devices in real time.</p>
+      <p class="game-desc">X, O, and V rotate every turn. Get three in a row to win.</p>
     </div>
 
-    <div class="sym-preview">
-      <div class="sym-pill sym-x">X<span>Player</span></div>
-      <div class="sym-pill sym-o">O<span>Player</span></div>
-      <div class="sym-pill sym-v">V<span>Shared</span></div>
+    <div class="stats-card" id="stats-card">
+      <div class="stat-item wins">
+        <span class="stat-val" id="stat-wins">0</span>
+        <span class="stat-lbl">Wins</span>
+      </div>
+      <div class="stat-item losses">
+        <span class="stat-val" id="stat-losses">0</span>
+        <span class="stat-lbl">Losses</span>
+      </div>
+      <div class="stat-item draws">
+        <span class="stat-val" id="stat-draws">0</span>
+        <span class="stat-lbl">Draws</span>
+      </div>
     </div>
 
     <div class="home-actions">
@@ -338,6 +335,7 @@
       <div class="result-emoji" id="result-emoji"></div>
       <div class="result-title" id="result-title"></div>
       <div class="result-sub" id="result-sub"></div>
+      <div class="result-score-update" id="result-score-update"></div>
       <div class="result-actions">
         <button class="btn btn-primary" onclick="playAgain()">Play again</button>
         <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
@@ -357,10 +355,12 @@
 </div>
 
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+  import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
   import { getDatabase, ref, set, onValue, update, get } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
-  const app = initializeApp({
+  const app  = initializeApp({
     apiKey: "AIzaSyC7uzdC7SdiZTqA53KVbez4sFqimBChn84",
     authDomain: "xov---game.firebaseapp.com",
     databaseURL: "https://xov---game-default-rtdb.europe-west1.firebasedatabase.app",
@@ -369,26 +369,114 @@
     messagingSenderId: "164736541640",
     appId: "1:164736541640:web:da2e405198518f3a8e96fd"
   });
-  const db = getDatabase(app);
 
-  const SYMBOLS = ['X', 'O', 'V'];
+  const db        = getDatabase(app);
+  const auth      = getAuth(app);
+  const firestore = getFirestore(app);
+
+  const SYMBOLS  = ['X', 'O', 'V'];
   const SYM_CLS  = ['sym-x', 'sym-o', 'sym-v'];
   const SYM_KEY  = ['x', 'o', 'v'];
-
-  // Board is stored as a 16-char string: '.' = empty, '0'/'1'/'2' = symbol index
-  // Firebase strips null values from arrays, so we use a string instead
   const EMPTY_BOARD = '................';
-  function parseBoard(s) { return (s || EMPTY_BOARD).split('').map(c => c === '.' ? null : +c); }
+
+  function parseBoard(s)   { return (s || EMPTY_BOARD).split('').map(c => c === '.' ? null : +c); }
   function boardToStr(arr) { return arr.map(v => v === null ? '.' : String(v)).join(''); }
   function parseWinCells(wc) { return wc ? String(wc).split(',').map(Number) : null; }
 
-  let roomCode = null, myPlayer = null, gameListener = null;
+  let roomCode    = null;
+  let myPlayer    = null;
+  let gameListener = null;
+  let currentUser  = null;
+  let scoreUpdated = false;
+  let isGuest      = false;
+
+  // ── AUTH ──────────────────────────────────────────────────────
+
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      currentUser = user;
+      isGuest = false;
+      await ensureUserProfile(user);
+      await loadStats(user.uid);
+      renderNav(user);
+      goHome();
+    } else if (!isGuest) {
+      showScreen('screen-login');
+    }
+  });
+
+  async function ensureUserProfile(user) {
+    const ref = doc(firestore, 'users', user.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+      await setDoc(ref, {
+        displayName: user.displayName || 'Player',
+        photoURL: user.photoURL || '',
+        wins: 0, losses: 0, draws: 0,
+        createdAt: new Date().toISOString()
+      });
+    }
+  }
+
+  async function loadStats(uid) {
+    const snap = await getDoc(doc(firestore, 'users', uid));
+    if (!snap.exists()) return;
+    const d = snap.data();
+    document.getElementById('stat-wins').textContent    = d.wins   || 0;
+    document.getElementById('stat-losses').textContent  = d.losses || 0;
+    document.getElementById('stat-draws').textContent   = d.draws  || 0;
+    document.getElementById('stats-card').classList.add('visible');
+  }
+
+  async function updateScore(result) {
+    if (!currentUser || isGuest) return;
+    const field = result === 'win' ? 'wins' : result === 'loss' ? 'losses' : 'draws';
+    await updateDoc(doc(firestore, 'users', currentUser.uid), { [field]: increment(1) });
+    await loadStats(currentUser.uid);
+  }
+
+  function renderNav(user) {
+    const navRight = document.getElementById('nav-right');
+    navRight.innerHTML = `
+      ${user.photoURL ? `<img src="${user.photoURL}" class="nav-avatar" />` : ''}
+      <span class="nav-name">${user.displayName || 'Player'}</span>
+      <button class="btn btn-ghost btn-sm" id="signout-btn">Sign out</button>
+    `;
+    document.getElementById('signout-btn').onclick = signOutUser;
+  }
+
+  window.signInGoogle = async function() {
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider());
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
+  window.playAsGuest = function() {
+    isGuest = true;
+    currentUser = null;
+    document.getElementById('stats-card').classList.remove('visible');
+    goHome();
+  };
+
+  window.signOutUser = async function() {
+    await signOut(auth);
+    isGuest = false;
+    currentUser = null;
+    leaveGame();
+    document.getElementById('nav-right').innerHTML = `<a href="index.html" class="nav-back">Portfolio</a>`;
+    showScreen('screen-login');
+  };
+
+  // ── SCREENS ───────────────────────────────────────────────────
 
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
 
+  function goHome() { showScreen('screen-home'); }
   function gameRef() { return ref(db, `games/${roomCode}`); }
 
   function generateCode() {
@@ -396,9 +484,12 @@
     return Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
   }
 
+  // ── GAME FLOW ─────────────────────────────────────────────────
+
   window.createGame = async function() {
     roomCode = generateCode();
     myPlayer = 'p1';
+    scoreUpdated = false;
     save();
     await set(gameRef(), { board: EMPTY_BOARD, turn: 0, status: 'waiting', winner: '', winCells: '' });
     document.getElementById('room-code-display').textContent = roomCode;
@@ -413,7 +504,7 @@
     if (!snap.exists()) { showError('Room not found'); return; }
     const g = snap.val();
     if (g.status !== 'waiting') { showError('Game already in progress'); return; }
-    roomCode = code; myPlayer = 'p2'; save();
+    roomCode = code; myPlayer = 'p2'; scoreUpdated = false; save();
     await update(gameRef(), { status: 'playing' });
     enterGame();
     listen();
@@ -444,7 +535,6 @@
     const symIdx = g.turn % 3;
     const myTurn = curP === myPlayer && g.status === 'playing';
     const done   = g.status === 'finished';
-
     renderStatus(g, myTurn, symIdx, curP);
     renderBoard(g, myTurn, symIdx, done);
     renderQueue(g.turn, done);
@@ -457,7 +547,6 @@
     const sub  = document.getElementById('status-sub');
     const chip = document.getElementById('current-sym-chip');
     const dot  = document.getElementById('player-dot');
-
     if (g.status === 'finished') {
       lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === myPlayer) ? 'You win! 🎉' : 'You lose';
       sub.textContent = '';
@@ -473,7 +562,7 @@
   function renderBoard(g, myTurn, symIdx, done) {
     const el = document.getElementById('board');
     el.innerHTML = '';
-    const board = parseBoard(g.board);
+    const board    = parseBoard(g.board);
     const winCells = parseWinCells(g.winCells);
     for (let i = 0; i < 16; i++) {
       const cell = document.createElement('div');
@@ -501,19 +590,17 @@
     const board = parseBoard(g.board);
     if (board[i] !== null) return;
     if ((g.turn % 2 === 0 ? 'p1' : 'p2') !== myPlayer) return;
-
     const si = g.turn % 3;
     board[i] = si;
     const result = checkWin(board);
-    const full = board.every(v => v !== null);
-    const upd = {
-      board: boardToStr(board),
-      turn: g.turn + 1,
-      status: (result || full) ? 'finished' : 'playing',
-      winner: result ? myPlayer : full ? 'draw' : '',
+    const full   = board.every(v => v !== null);
+    await update(gameRef(), {
+      board:   boardToStr(board),
+      turn:    g.turn + 1,
+      status:  (result || full) ? 'finished' : 'playing',
+      winner:  result ? myPlayer : full ? 'draw' : '',
       winCells: result ? result.cells.join(',') : ''
-    };
-    await update(gameRef(), upd);
+    });
   }
 
   function checkWin(board) {
@@ -557,21 +644,31 @@
     }
   }
 
-  function showResult(g) {
+  async function showResult(g) {
     const b = document.getElementById('result-banner');
-    if (b.classList.contains('visible')) return;
+    if (b.classList.contains('visible') && scoreUpdated) return;
     b.classList.add('visible');
+
+    const scoreEl = document.getElementById('result-score-update');
+    scoreEl.textContent = '';
+
     if (g.winner === 'draw') {
       document.getElementById('result-emoji').textContent  = '🤝';
       document.getElementById('result-title').textContent  = "It's a draw!";
       document.getElementById('result-sub').textContent    = 'Board full. Play again?';
+      if (!scoreUpdated) { await updateScore('draw'); scoreEl.textContent = 'Draw recorded'; scoreUpdated = true; }
     } else {
       const iWon = g.winner === myPlayer;
       document.getElementById('result-emoji').textContent  = iWon ? '🏆' : '😤';
       document.getElementById('result-title').textContent  = iWon ? 'You win!' : 'You lose!';
       const wc = parseWinCells(g.winCells);
-      const s = wc ? SYMBOLS[parseBoard(g.board)[wc[0]]] : '';
+      const s  = wc ? SYMBOLS[parseBoard(g.board)[wc[0]]] : '';
       document.getElementById('result-sub').textContent    = s ? `Three ${s}s in a row!` : '';
+      if (!scoreUpdated) {
+        await updateScore(iWon ? 'win' : 'loss');
+        scoreEl.textContent = iWon ? '+1 Win saved ✓' : 'Loss recorded';
+        scoreUpdated = true;
+      }
     }
   }
 
@@ -590,6 +687,7 @@
   };
 
   window.playAgain = async function() {
+    scoreUpdated = false;
     await update(gameRef(), { board: EMPTY_BOARD, turn: 0, status: 'playing', winner: '', winCells: '' });
     document.getElementById('result-banner').classList.remove('visible');
   };
@@ -598,10 +696,10 @@
     if (gameListener) { gameListener(); gameListener = null; }
     sessionStorage.removeItem('xov-room');
     sessionStorage.removeItem('xov-player');
-    roomCode = null; myPlayer = null;
+    roomCode = null; myPlayer = null; scoreUpdated = false;
     document.getElementById('join-input').value = '';
     document.getElementById('result-banner').classList.remove('visible');
-    showScreen('screen-home');
+    goHome();
   };
 
   function save() {
@@ -609,12 +707,12 @@
     sessionStorage.setItem('xov-player', myPlayer);
   }
 
-  // Restore session after page refresh
+  // Restore session on page refresh
   const sr = sessionStorage.getItem('xov-room');
   const sp = sessionStorage.getItem('xov-player');
   if (sr && sp) {
     roomCode = sr; myPlayer = sp;
-    get(gameRef()).then(snap => {
+    get(ref(db, `games/${roomCode}`)).then(snap => {
       if (!snap.exists()) { sessionStorage.clear(); return; }
       const g = snap.val();
       if (g.status === 'finished') { sessionStorage.clear(); return; }
