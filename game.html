@@ -375,6 +375,13 @@
   const SYM_CLS  = ['sym-x', 'sym-o', 'sym-v'];
   const SYM_KEY  = ['x', 'o', 'v'];
 
+  // Board is stored as a 16-char string: '.' = empty, '0'/'1'/'2' = symbol index
+  // Firebase strips null values from arrays, so we use a string instead
+  const EMPTY_BOARD = '................';
+  function parseBoard(s) { return (s || EMPTY_BOARD).split('').map(c => c === '.' ? null : +c); }
+  function boardToStr(arr) { return arr.map(v => v === null ? '.' : String(v)).join(''); }
+  function parseWinCells(wc) { return wc ? String(wc).split(',').map(Number) : null; }
+
   let roomCode = null, myPlayer = null, gameListener = null;
 
   function showScreen(id) {
@@ -393,7 +400,7 @@
     roomCode = generateCode();
     myPlayer = 'p1';
     save();
-    await set(gameRef(), { board: Array(16).fill(null), turn: 0, status: 'waiting', winner: null, winCells: null });
+    await set(gameRef(), { board: EMPTY_BOARD, turn: 0, status: 'waiting', winner: '', winCells: '' });
     document.getElementById('room-code-display').textContent = roomCode;
     showScreen('screen-waiting');
     listen();
@@ -452,7 +459,7 @@
     const dot  = document.getElementById('player-dot');
 
     if (g.status === 'finished') {
-      lbl.textContent = g.winner === 'draw' ? "It's a draw!" : g.winner === myPlayer ? 'You win! 🎉' : 'You lose';
+      lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === myPlayer) ? 'You win! 🎉' : 'You lose';
       sub.textContent = '';
       return;
     }
@@ -466,14 +473,16 @@
   function renderBoard(g, myTurn, symIdx, done) {
     const el = document.getElementById('board');
     el.innerHTML = '';
+    const board = parseBoard(g.board);
+    const winCells = parseWinCells(g.winCells);
     for (let i = 0; i < 16; i++) {
       const cell = document.createElement('div');
       cell.className = 'cell';
-      if (g.board[i] !== null) {
-        const si = g.board[i];
+      if (board[i] !== null) {
+        const si = board[i];
         cell.classList.add('filled', SYM_CLS[si]);
         cell.textContent = SYMBOLS[si];
-        if (g.winCells && g.winCells.includes(i)) cell.classList.add('win-cell');
+        if (winCells && winCells.includes(i)) cell.classList.add('win-cell');
       } else if (!done && myTurn) {
         cell.classList.add('clickable', 'preview-' + SYM_KEY[symIdx]);
         cell.dataset.preview = SYMBOLS[symIdx];
@@ -488,16 +497,22 @@
   async function makeMove(i) {
     const snap = await get(gameRef());
     const g = snap.val();
-    if (!g || g.status !== 'playing' || g.board[i] !== null) return;
+    if (!g || g.status !== 'playing') return;
+    const board = parseBoard(g.board);
+    if (board[i] !== null) return;
     if ((g.turn % 2 === 0 ? 'p1' : 'p2') !== myPlayer) return;
 
     const si = g.turn % 3;
-    const newBoard = [...g.board];
-    newBoard[i] = si;
-    const result = checkWin(newBoard);
-    const upd = { board: newBoard, turn: g.turn + 1 };
-    if (result) { upd.status = 'finished'; upd.winner = myPlayer; upd.winCells = result.cells; }
-    else if (newBoard.every(v => v !== null)) { upd.status = 'finished'; upd.winner = 'draw'; }
+    board[i] = si;
+    const result = checkWin(board);
+    const full = board.every(v => v !== null);
+    const upd = {
+      board: boardToStr(board),
+      turn: g.turn + 1,
+      status: (result || full) ? 'finished' : 'playing',
+      winner: result ? myPlayer : full ? 'draw' : '',
+      winCells: result ? result.cells.join(',') : ''
+    };
     await update(gameRef(), upd);
   }
 
@@ -554,7 +569,8 @@
       const iWon = g.winner === myPlayer;
       document.getElementById('result-emoji').textContent  = iWon ? '🏆' : '😤';
       document.getElementById('result-title').textContent  = iWon ? 'You win!' : 'You lose!';
-      const s = g.winCells ? SYMBOLS[g.board[g.winCells[0]]] : '';
+      const wc = parseWinCells(g.winCells);
+      const s = wc ? SYMBOLS[parseBoard(g.board)[wc[0]]] : '';
       document.getElementById('result-sub').textContent    = s ? `Three ${s}s in a row!` : '';
     }
   }
@@ -574,7 +590,7 @@
   };
 
   window.playAgain = async function() {
-    await update(gameRef(), { board: Array(16).fill(null), turn: 0, status: 'playing', winner: null, winCells: null });
+    await update(gameRef(), { board: EMPTY_BOARD, turn: 0, status: 'playing', winner: '', winCells: '' });
     document.getElementById('result-banner').classList.remove('visible');
   };
 
