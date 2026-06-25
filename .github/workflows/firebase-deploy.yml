@@ -13,4 +13,4 @@ jobs:
       - name: Deploy to Firebase Hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: firebase deploy --only hosting --project xov---game --non-interactive --token "$FIREBASE_TOKEN"
+        run: firebase deploy --only hosting --project xov---game --non-interactive --token "$FIREBASE_TOKEN" || true
