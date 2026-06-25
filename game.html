@@ -212,20 +212,57 @@
   .queue-arrow { color: var(--muted); font-size: 14px; opacity: 0.4; padding-bottom: 18px; }
 
   /* RESULT BANNER */
-  .result-banner { display: none; background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; text-align: center; animation: banner-in 0.3s ease-out; }
+  .result-banner { display: none; margin-bottom: 1.25rem; }
   .result-banner.visible { display: block; }
-  @keyframes banner-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-  .result-emoji { font-size: 2rem; margin-bottom: 0.25rem; }
-  .result-title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-  .result-sub { font-size: 13px; color: var(--muted); margin-bottom: 1rem; }
-  .result-score-update { font-size: 12px; font-weight: 600; color: var(--sym-v); margin-bottom: 0.5rem; }
-  .result-match-badge {
-    font-size: 12px; font-weight: 700; color: var(--text);
-    background: var(--surface2); border: 1px solid var(--border2);
-    border-radius: 20px; padding: 0.3rem 0.9rem; margin-bottom: 0.75rem; display: none;
+  @keyframes result-name-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes result-bubble-in { 0% { transform: scale(0.8); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
+  @keyframes win-cell-appear { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+
+  .result-game-lbl {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem;
   }
-  .result-match-badge.visible { display: inline-block; }
-  .result-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .result-winner-heading {
+    font-size: 2rem; font-weight: 900; color: var(--text);
+    line-height: 1.1; margin-bottom: 0.3rem;
+    opacity: 0; animation: result-name-in 0.3s ease-out 0.1s forwards;
+  }
+  .result-winner-heading.draw-heading { font-size: 1.5rem; }
+  .result-sub-lbl { font-size: 13px; color: var(--muted); margin-bottom: 1.25rem; }
+  .result-score-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.75rem; margin-bottom: 1.5rem;
+  }
+  .rscore-bubble {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 800;
+  }
+  .rscore-bubble.bubble-losing { background: var(--surface2); color: var(--muted); opacity: 0.55; }
+  .rscore-bubble.bubble-winning {
+    background: transparent; border: 3px solid #22a85a; color: var(--text);
+    animation: result-bubble-in 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.35s both;
+  }
+  .rscore-dash { color: var(--muted); font-size: 1rem; }
+  .rscore-dots { display: flex; gap: 6px; align-items: center; }
+  .rscore-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--surface2); }
+  .rscore-dot.dot-filled { background: var(--text); }
+  .result-cta {
+    display: block; width: 100%; padding: 0.875rem 1.5rem;
+    background: var(--text); color: var(--bg);
+    border: none; border-radius: 100px;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    transition: opacity 0.15s; margin-bottom: 0.75rem;
+  }
+  .result-cta:hover { opacity: 0.85; }
+  .result-leave {
+    display: block; width: 100%; text-align: center;
+    font-size: 13px; color: var(--muted);
+    background: none; border: none;
+    cursor: pointer; font-family: inherit; padding: 0.25rem;
+  }
+  .result-leave:hover { color: var(--text); }
 
   /* BOARD */
   .board-wrap { display: flex; justify-content: center; margin-bottom: 1.25rem; }
@@ -273,11 +310,10 @@
   .cell.sym-x { color: var(--sym-x); background: var(--bg); }
   .cell.sym-o { color: var(--sym-o); background: var(--bg); }
   .cell.sym-v { color: var(--sym-v); background: var(--bg); }
-  .cell.win-cell { animation: win-pulse 0.45s ease-out forwards; }
-  @keyframes win-pulse { 0% { transform: scale(1); } 45% { transform: scale(1.08); } 100% { transform: scale(1.04); } }
-  .cell.win-cell.sym-x { background: var(--sym-x-bg); }
-  .cell.win-cell.sym-o { background: var(--sym-o-bg); }
-  .cell.win-cell.sym-v { background: var(--sym-v-bg); }
+  .cell.win-cell { animation: win-cell-appear 0.2s ease-out both; }
+  .cell.win-cell.sym-x { background: #7a1a1a; color: #fff; }
+  .cell.win-cell.sym-o { background: #1a3d80; color: #fff; }
+  .cell.win-cell.sym-v { background: #1a5c38; color: #fff; }
   .cell.clickable::after { content: attr(data-preview); position: absolute; font-weight: 900; font-size: clamp(1.6rem,6vw,2.4rem); opacity: 0; transition: opacity 0.12s; }
   .cell.cell-sm.clickable::after { font-size: clamp(1.1rem,4vw,1.8rem); }
   .cell.clickable:hover::after { opacity: 0.35; }
@@ -500,14 +536,7 @@
       <div class="queue-items" id="queue-items"></div>
     </div>
 
-    <div class="result-banner" id="result-banner">
-      <div class="result-emoji" id="result-emoji"></div>
-      <div class="result-title" id="result-title"></div>
-      <div class="result-sub" id="result-sub"></div>
-      <div class="result-match-badge" id="result-match-badge"></div>
-      <div class="result-score-update" id="result-score-update"></div>
-      <div class="result-actions" id="result-actions"></div>
-    </div>
+    <div class="result-banner" id="result-banner"></div>
 
     <div class="board-wrap">
       <div class="board" id="board"></div>
@@ -908,8 +937,6 @@
         if (g.status === 'playing' && document.getElementById('result-banner').classList.contains('visible')) {
           scoreUpdated = false;
           document.getElementById('result-banner').classList.remove('visible');
-          document.getElementById('result-match-badge').textContent = '';
-          document.getElementById('result-match-badge').classList.remove('visible');
         }
         render(g);
       }
@@ -1026,7 +1053,10 @@
         const si = board[i];
         cell.classList.add('filled', SYM_CLS[si]);
         cell.textContent = SYMBOLS[si];
-        if (winCells && winCells.includes(i)) cell.classList.add('win-cell');
+        if (winCells && winCells.includes(i)) {
+          cell.classList.add('win-cell');
+          cell.style.animationDelay = `${winCells.indexOf(i) * 80}ms`;
+        }
       } else if (!done && myTurn) {
         cell.classList.add('clickable', 'preview-' + SYM_KEY[symIdx]);
         cell.dataset.preview = SYMBOLS[symIdx];
@@ -1256,133 +1286,133 @@
 
   // ── RESULT ────────────────────────────────────────────────────
 
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function dotsHTML(gameNum) {
+    let h = '';
+    for (let i = 0; i < 3; i++) h += `<div class="rscore-dot${i < gameNum ? ' dot-filled' : ''}"></div>`;
+    return h;
+  }
+
+  function buildResultContent(g, iWon, isDraw) {
+    // Game number & match state
+    let gameNum, winnerScore, loserScore, matchOver;
+    if (isAI || isLocal) {
+      gameNum = matchGame;
+      if (!isDraw) {
+        const winP  = isLocal ? g.winner : (iWon ? 'p1' : 'p2');
+        const loseP = winP === 'p1' ? 'p2' : 'p1';
+        winnerScore = matchScore[winP];
+        loserScore  = matchScore[loseP];
+      }
+      matchOver = matchScore.p1 >= 2 || matchScore.p2 >= 2 || matchGame >= 3;
+    } else {
+      gameNum = g.matchGame || 1;
+      const mP1 = g.matchP1Score || 0;
+      const mP2 = g.matchP2Score || 0;
+      if (!isDraw) {
+        winnerScore = g.winner === 'p1' ? mP1 : mP2;
+        loserScore  = g.winner === 'p1' ? mP2 : mP1;
+      }
+      matchOver = mP1 >= 2 || mP2 >= 2 || gameNum >= 3;
+    }
+
+    // Winner display name
+    let winnerName = '';
+    if (!isDraw) {
+      if (isLocal) {
+        winnerName = g.winner === 'p1' ? 'Player 1' : 'Player 2';
+      } else if (isAI) {
+        winnerName = iWon ? (shortName(currentUser?.displayName) || 'You') : 'AI';
+      } else {
+        const wKey = g.winner === 'p1' ? 'p1Name' : 'p2Name';
+        winnerName = shortName(g[wKey]) || (g.winner === myPlayer ? 'You' : 'Opponent');
+      }
+    }
+
+    // Subtitle
+    let subtitleText = 'Board is full';
+    if (!isDraw) {
+      const wc  = parseWinCells(g.winCells);
+      const sym = wc ? SYMBOLS[parseBoard(g.board)[wc[0]]] : '';
+      const cnt = winLen === 4 ? 'Four' : 'Three';
+      subtitleText = sym ? `${cnt} ${sym}'s in a row` : '';
+    }
+
+    // Heading
+    const headingHTML = isDraw
+      ? `<div class="result-winner-heading draw-heading">It's a draw.</div>`
+      : `<div class="result-winner-heading">${esc(winnerName)}<br>wins.</div>`;
+
+    // Score row
+    let scoreRowHTML;
+    if (isDraw) {
+      const s1 = isAI || isLocal ? matchScore.p1 : (g.matchP1Score || 0);
+      const s2 = isAI || isLocal ? matchScore.p2 : (g.matchP2Score || 0);
+      scoreRowHTML = `
+        <div class="rscore-bubble bubble-losing">${s1}</div>
+        <div class="rscore-dash">—</div>
+        <div class="rscore-dots">${dotsHTML(gameNum)}</div>
+        <div class="rscore-dash">—</div>
+        <div class="rscore-bubble bubble-losing">${s2}</div>`;
+    } else {
+      scoreRowHTML = `
+        <div class="rscore-bubble bubble-losing">${loserScore}</div>
+        <div class="rscore-dash">—</div>
+        <div class="rscore-dots">${dotsHTML(gameNum)}</div>
+        <div class="rscore-dash">—</div>
+        <div class="rscore-bubble bubble-winning">${winnerScore}</div>`;
+    }
+
+    // CTA
+    let ctaLabel, ctaOnclick;
+    if (matchOver) {
+      ctaLabel   = 'Play again';
+      ctaOnclick = (isAI || isLocal) ? 'startNewMatch()' : 'startNewOnlineMatch()';
+    } else {
+      ctaLabel   = `Play game ${gameNum + 1}`;
+      ctaOnclick = (isAI || isLocal) ? 'nextMatchGame()' : 'nextOnlineGame()';
+    }
+
+    return `
+      <div class="result-game-lbl">GAME ${gameNum}</div>
+      ${headingHTML}
+      <div class="result-sub-lbl">${esc(subtitleText)}</div>
+      <div class="result-score-row">${scoreRowHTML}</div>
+      <button class="result-cta" onclick="${ctaOnclick}">${esc(ctaLabel)}</button>
+      <button class="result-leave" onclick="leaveGame()">Leave match</button>
+    `;
+  }
+
   async function showResult(g) {
     const b = document.getElementById('result-banner');
     if (b.classList.contains('visible') && scoreUpdated) return;
     b.classList.add('visible');
 
-    const scoreEl    = document.getElementById('result-score-update');
-    const matchBadge = document.getElementById('result-match-badge');
-    scoreEl.textContent = '';
-    matchBadge.textContent = '';
-    matchBadge.classList.remove('visible');
-
     let iWon, isDraw;
     if (g.winner === 'draw') {
       isDraw = true; iWon = false;
-      document.getElementById('result-emoji').textContent = '🤝';
-      document.getElementById('result-title').textContent = "It's a draw!";
-      document.getElementById('result-sub').textContent   = 'Board full.';
-      if (!scoreUpdated && !isLocal) { await updateScore('draw'); scoreEl.textContent = 'Draw recorded'; }
+      if (!scoreUpdated && !isLocal) await updateScore('draw');
     } else {
       isDraw = false;
       if (isLocal) {
         iWon = false;
-        const winnerName = g.winner === 'p1' ? 'Player 1' : 'Player 2';
-        document.getElementById('result-emoji').textContent = '🏆';
-        document.getElementById('result-title').textContent = `${winnerName} wins!`;
       } else {
         iWon = isAI ? (g.winner === 'p1') : (g.winner === myPlayer);
-        document.getElementById('result-emoji').textContent = iWon ? '🏆' : '😤';
-        document.getElementById('result-title').textContent = iWon ? 'You win!' : (isAI ? 'AI wins!' : 'You lose!');
-        if (!scoreUpdated) { await updateScore(iWon ? 'win' : 'loss'); scoreEl.textContent = iWon ? '+1 Win saved ✓' : 'Loss recorded'; }
+        if (!scoreUpdated) await updateScore(iWon ? 'win' : 'loss');
       }
-      const wc = parseWinCells(g.winCells);
-      const s  = wc ? SYMBOLS[parseBoard(g.board)[wc[0]]] : '';
-      const inRow = winLen === 4 ? 'Four' : 'Three';
-      document.getElementById('result-sub').textContent = s ? `${inRow} ${s}s in a row!` : '';
+    }
+
+    // Update local match score once on first show
+    if (!scoreUpdated && inMatch && (isAI || isLocal) && !isDraw) {
+      const winner = isLocal ? g.winner : (iWon ? 'p1' : 'p2');
+      matchScore[winner]++;
     }
 
     scoreUpdated = true;
-
-    // Update match score / render result actions
-    if (inMatch && (isAI || isLocal)) {
-      if (!isDraw) {
-        const winner = isLocal ? g.winner : (iWon ? 'p1' : 'p2');
-        matchScore[winner]++;
-      }
-      renderMatchActions(isDraw, iWon, g);
-    } else if (!isAI && !isLocal) {
-      // Online match — scores come from Firebase
-      const mP1   = g.matchP1Score || 0;
-      const mP2   = g.matchP2Score || 0;
-      const mGame = g.matchGame || 1;
-      const mOver = mP1 >= 2 || mP2 >= 2 || mGame >= 3;
-      if (mP1 > 0 || mP2 > 0 || mGame > 1 || mOver) {
-        const myScore    = myPlayer === 'p1' ? mP1 : mP2;
-        const theirScore = myPlayer === 'p1' ? mP2 : mP1;
-        matchBadge.classList.add('visible');
-        if (mOver && g.matchWinner) {
-          const tied = g.matchWinner === 'tied';
-          const iWinMatch = g.matchWinner === myPlayer;
-          matchBadge.textContent = tied
-            ? `Match tied ${mP1}–${mP2}`
-            : iWinMatch ? `Match won! ${myScore}–${theirScore} 🎉`
-            : `Match lost. ${myScore}–${theirScore}`;
-        } else {
-          matchBadge.textContent = `Match: ${myScore}–${theirScore} · Game ${mGame} of 3`;
-        }
-      }
-      renderOnlineMatchActions(g);
-    } else {
-      renderOnlineActions();
-    }
-  }
-
-  function renderMatchActions(isDraw, iWon, g) {
-    const actionsEl = document.getElementById('result-actions');
-    const matchOver = matchScore.p1 >= 2 || matchScore.p2 >= 2 || matchGame >= 3;
-
-    if (matchOver) {
-      let summaryText;
-      if (matchScore.p1 === matchScore.p2) {
-        summaryText = 'Match tied!';
-      } else if (isLocal) {
-        summaryText = matchScore.p1 > matchScore.p2 ? 'Player 1 wins the match!' : 'Player 2 wins the match!';
-      } else {
-        summaryText = matchScore.p1 > matchScore.p2 ? 'You win the match! 🎉' : (isAI ? 'AI wins the match!' : 'They win the match!');
-      }
-      document.getElementById('result-sub').textContent = summaryText;
-      actionsEl.innerHTML = `
-        <button class="btn btn-primary" onclick="startNewMatch()">New match</button>
-        <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
-      `;
-    } else {
-      const nextGame = matchGame + 1;
-      const score = `${matchScore.p1}–${matchScore.p2}`;
-      actionsEl.innerHTML = `
-        <button class="btn btn-primary" onclick="nextMatchGame()">Game ${nextGame} · ${score}</button>
-        <button class="btn btn-ghost" onclick="leaveGame()">Leave match</button>
-      `;
-    }
-  }
-
-  function renderOnlineActions() {
-    document.getElementById('result-actions').innerHTML = `
-      <button class="btn btn-primary" onclick="playAgain()">Play again</button>
-      <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
-    `;
-  }
-
-  function renderOnlineMatchActions(g) {
-    const mP1   = g.matchP1Score || 0;
-    const mP2   = g.matchP2Score || 0;
-    const mGame = g.matchGame || 1;
-    const mOver = mP1 >= 2 || mP2 >= 2 || mGame >= 3;
-    const actionsEl = document.getElementById('result-actions');
-    if (mOver) {
-      actionsEl.innerHTML = `
-        <button class="btn btn-primary" onclick="startNewOnlineMatch()">New match</button>
-        <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
-      `;
-    } else {
-      const nextNum = mGame + 1;
-      const score = myPlayer === 'p1' ? `${mP1}–${mP2}` : `${mP2}–${mP1}`;
-      actionsEl.innerHTML = `
-        <button class="btn btn-primary" onclick="nextOnlineGame()">Game ${nextNum} · ${score}</button>
-        <button class="btn btn-ghost" onclick="leaveGame()">Leave match</button>
-      `;
-    }
+    b.innerHTML = buildResultContent(g, iWon, isDraw);
   }
 
   window.nextOnlineGame = async function() {
@@ -1394,8 +1424,6 @@
       winner: '', winCells: '', matchGame: (g.matchGame || 1) + 1,
     });
     document.getElementById('result-banner').classList.remove('visible');
-    document.getElementById('result-match-badge').textContent = '';
-    document.getElementById('result-match-badge').classList.remove('visible');
   };
 
   window.startNewOnlineMatch = async function() {
@@ -1406,8 +1434,6 @@
       matchP1Score: 0, matchP2Score: 0, matchGame: 1, matchWinner: '',
     });
     document.getElementById('result-banner').classList.remove('visible');
-    document.getElementById('result-match-badge').textContent = '';
-    document.getElementById('result-match-badge').classList.remove('visible');
   };
 
   window.nextMatchGame = function() {
