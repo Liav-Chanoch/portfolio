@@ -280,6 +280,95 @@
   }
   .result-leave:hover { color: var(--text); }
 
+  /* MATCH END OVERLAY */
+  #match-end-overlay {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    flex-direction: column; align-items: center; justify-content: flex-start;
+    overflow-y: auto; padding: 2.5rem 1.5rem 3rem;
+  }
+  #match-end-overlay.visible { display: flex; }
+  .meo-bg {
+    position: fixed; inset: 0; z-index: 0;
+    opacity: 0; animation: meo-bg-in 0.4s ease-out forwards;
+  }
+  @keyframes meo-bg-in { to { opacity: 1; } }
+  .meo-content {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 380px;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding-top: max(3rem, env(safe-area-inset-top));
+  }
+  .meo-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 1rem;
+  }
+  .meo-winner-name {
+    font-size: 52px; font-weight: 900; color: #fff; line-height: 1.05;
+    letter-spacing: -0.03em;
+    opacity: 0; transform: translateY(20px);
+    animation: meo-name-in 0.35s ease-out 0.2s forwards;
+  }
+  .meo-wins-text {
+    font-size: 36px; font-weight: 900; color: rgba(255,255,255,0.55); line-height: 1.2;
+    letter-spacing: -0.02em; margin-bottom: 2rem;
+    opacity: 0; transform: translateY(20px);
+    animation: meo-name-in 0.35s ease-out 0.25s forwards;
+  }
+  @keyframes meo-name-in { to { opacity: 1; transform: translateY(0); } }
+  .meo-score-rows {
+    width: 100%; margin-bottom: 1.75rem; display: flex; flex-direction: column; gap: 0.35rem;
+  }
+  .meo-score-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.35rem 0.5rem; opacity: 0;
+  }
+  .meo-score-row.row-winner { animation: meo-fade 0.3s ease-out 0.35s forwards; }
+  .meo-score-row.row-loser  { animation: meo-fade 0.3s ease-out 0.43s forwards; }
+  @keyframes meo-fade { to { opacity: 1; } }
+  .meo-score-row.row-winner .meo-row-name,
+  .meo-score-row.row-winner .meo-row-score { color: #fff; font-weight: 700; font-size: 15px; }
+  .meo-score-row.row-loser  .meo-row-name,
+  .meo-score-row.row-loser  .meo-row-score { color: rgba(255,255,255,0.25); font-weight: 600; font-size: 15px; }
+  .meo-board-wrap {
+    width: 100%; max-width: 260px; margin: 0 auto 2rem;
+    opacity: 0; animation: meo-fade 0.3s ease-out 0.5s forwards;
+  }
+  .meo-board {
+    display: grid; gap: 2px; width: 100%;
+    background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;
+  }
+  .meo-cell {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: clamp(1rem, 7vw, 1.8rem); font-weight: 600;
+    background: rgba(0,0,0,0.3); opacity: 0.35;
+  }
+  .meo-sym-x { color: var(--sym-x); }
+  .meo-sym-o { color: var(--sym-o); }
+  .meo-sym-v { color: var(--sym-v); }
+  .meo-cell.meo-win { opacity: 1; }
+  .meo-win.meo-sym-x { background: #7a1a1a; color: #fff; }
+  .meo-win.meo-sym-o { background: #1a3d80; color: #fff; }
+  .meo-win.meo-sym-v { background: #1a5c38; color: #fff; }
+  .meo-buttons {
+    width: 100%; display: flex; flex-direction: column; gap: 0.75rem;
+    opacity: 0; transform: translateY(16px);
+    animation: meo-btn-in 0.3s ease-out 0.6s forwards;
+  }
+  @keyframes meo-btn-in { to { opacity: 1; transform: translateY(0); } }
+  .meo-btn-primary {
+    display: block; width: 100%; padding: 0.9rem 1.5rem;
+    background: #fff; color: #111; border: none; border-radius: 100px;
+    font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .meo-btn-primary:hover { opacity: 0.85; }
+  .meo-btn-ghost {
+    display: block; width: 100%; text-align: center; font-size: 13px;
+    color: rgba(255,255,255,0.55); background: none; border: none;
+    cursor: pointer; font-family: inherit; padding: 0.3rem; transition: color 0.15s;
+  }
+  .meo-btn-ghost:hover { color: #fff; }
+
   /* BOARD */
   .board-wrap { display: flex; justify-content: center; margin-bottom: 1.25rem; }
   .board {
@@ -591,6 +680,12 @@
     </div>
 
   </div>
+</div>
+
+<!-- ── MATCH END OVERLAY ── -->
+<div id="match-end-overlay">
+  <div class="meo-bg" id="meo-bg"></div>
+  <div class="meo-content" id="meo-content"></div>
 </div>
 
 <!-- ── PASS PHONE OVERLAY ── -->
@@ -1475,7 +1570,112 @@
 
     scoreUpdated = true;
     b.innerHTML = buildResultContent(g, iWon, isDraw);
+
+    if (matchEndShown) return;
+
+    // Determine if the full match is decided
+    let mOver, mWinner;
+    if (isAI || isLocal) {
+      mOver   = matchScore.p1 >= 2 || matchScore.p2 >= 2 || matchGame >= 3;
+      mWinner = matchScore.p1 > matchScore.p2 ? 'p1' : matchScore.p2 > matchScore.p1 ? 'p2' : '';
+    } else {
+      const mP1 = g.matchP1Score || 0;
+      const mP2 = g.matchP2Score || 0;
+      mOver     = mP1 >= 2 || mP2 >= 2 || (g.matchGame || 1) >= 3;
+      mWinner   = g.matchWinner && g.matchWinner !== 'tied' ? g.matchWinner : '';
+    }
+    if (!mOver || !mWinner) return;
+
+    matchEndShown = true;
+
+    let mWinnerName, mLoserName, mWinnerScore, mLoserScore, mIWon;
+    if (isLocal) {
+      mWinnerName  = mWinner === 'p1' ? 'Player 1' : 'Player 2';
+      mLoserName   = mWinner === 'p1' ? 'Player 2' : 'Player 1';
+      mWinnerScore = matchScore[mWinner];
+      mLoserScore  = matchScore[mWinner === 'p1' ? 'p2' : 'p1'];
+      mIWon        = false;
+    } else if (isAI) {
+      mIWon        = mWinner === 'p1';
+      mWinnerName  = mIWon ? (shortName(currentUser?.displayName) || 'You') : 'AI';
+      mLoserName   = mIWon ? 'AI' : (shortName(currentUser?.displayName) || 'You');
+      mWinnerScore = matchScore[mWinner];
+      mLoserScore  = matchScore[mWinner === 'p1' ? 'p2' : 'p1'];
+    } else {
+      mIWon        = mWinner === myPlayer;
+      mWinnerName  = shortName(g[mWinner === 'p1' ? 'p1Name' : 'p2Name']) || (mIWon ? 'You' : 'Opponent');
+      mLoserName   = shortName(g[mWinner === 'p1' ? 'p2Name' : 'p1Name']) || (mIWon ? 'Opponent' : 'You');
+      mWinnerScore = mWinner === 'p1' ? (g.matchP1Score || 0) : (g.matchP2Score || 0);
+      mLoserScore  = mWinner === 'p1' ? (g.matchP2Score || 0) : (g.matchP1Score || 0);
+    }
+
+    setTimeout(() => {
+      window.showMatchEndScreen(mWinnerName, mLoserName, mWinnerScore, mLoserScore, g.board, g.winCells, mIWon);
+    }, 800);
   }
+
+  let matchEndShown = false;
+
+  window.showMatchEndScreen = function(winnerName, loserName, winnerScore, loserScore, finalBoardState, winCells, iWon) {
+    const overlay = document.getElementById('match-end-overlay');
+    const bg      = document.getElementById('meo-bg');
+    const content = document.getElementById('meo-content');
+    bg.style.background = iWon ? '#1a5c38' : '#111111';
+
+    const board  = parseBoard(finalBoardState);
+    const wCells = parseWinCells(winCells);
+    const SYM_NAMES = ['x', 'o', 'v'];
+    let boardHTML = '';
+    for (let i = 0; i < board.length; i++) {
+      const v = board[i];
+      if (v !== null) {
+        const isWin = wCells && wCells.includes(i);
+        boardHTML += `<div class="meo-cell meo-sym-${SYM_NAMES[v]}${isWin ? ' meo-win' : ''}">${SYMBOLS[v]}</div>`;
+      } else {
+        boardHTML += '<div class="meo-cell"></div>';
+      }
+    }
+
+    content.innerHTML = `
+      <div class="meo-label">Match Over</div>
+      <div class="meo-winner-name">${esc(winnerName)}</div>
+      <div class="meo-wins-text">wins the match.</div>
+      <div class="meo-score-rows">
+        <div class="meo-score-row row-winner">
+          <span class="meo-row-name">${esc(winnerName)}</span>
+          <span class="meo-row-score">${winnerScore}</span>
+        </div>
+        <div class="meo-score-row row-loser">
+          <span class="meo-row-name">${esc(loserName)}</span>
+          <span class="meo-row-score">${loserScore}</span>
+        </div>
+      </div>
+      <div class="meo-board-wrap">
+        <div class="meo-board" style="grid-template-columns:repeat(${gridCols},1fr)">${boardHTML}</div>
+      </div>
+      <div class="meo-buttons">
+        <button class="meo-btn-primary" onclick="matchEndPlayAgain()">Play again</button>
+        <button class="meo-btn-ghost" onclick="matchEndGoHome()">Back to home</button>
+      </div>
+    `;
+    overlay.classList.add('visible');
+  };
+
+  window.matchEndPlayAgain = function() {
+    document.getElementById('match-end-overlay').classList.remove('visible');
+    matchEndShown = false;
+    if (isAI || isLocal) {
+      window.startNewMatch();
+    } else {
+      window.startNewOnlineMatch();
+    }
+  };
+
+  window.matchEndGoHome = function() {
+    document.getElementById('match-end-overlay').classList.remove('visible');
+    matchEndShown = false;
+    window.leaveGame();
+  };
 
   window.nextOnlineGame = async function() {
     scoreUpdated = false;
@@ -1490,6 +1690,7 @@
   };
 
   window.startNewOnlineMatch = async function() {
+    matchEndShown = false;
     scoreUpdated = false;
     await update(gameRef(), {
       board: emptyBoard(), turn: 0, status: 'playing',
@@ -1512,6 +1713,7 @@
 
   window.startNewMatch = function() {
     resetMatch();
+    matchEndShown = false;
     scoreUpdated = false;
     passBlocked = false;
     if (isAI) {
@@ -1582,6 +1784,8 @@
 
   window.leaveGame = function() {
     setTheme(null);
+    matchEndShown = false;
+    document.getElementById('match-end-overlay').classList.remove('visible');
     if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
     document.getElementById('pass-overlay').classList.remove('open');
     document.getElementById('online-room-header').classList.remove('visible');
