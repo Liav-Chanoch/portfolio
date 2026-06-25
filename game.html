@@ -123,7 +123,7 @@
   .stats-card {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
-    display: flex; align-items: center; gap: 0; display: none;
+    display: none;
   }
   .stats-card.visible { display: flex; }
   .stat-item { flex: 1; text-align: center; }
@@ -158,8 +158,16 @@
   .waiting-sub { font-size: 13px; color: var(--muted); max-width: 280px; }
   .code-display { background: var(--surface); border: 2px solid var(--border2); border-radius: 14px; padding: 1rem 2rem; }
   .room-code { font-size: 2.5rem; font-weight: 800; letter-spacing: 0.25em; color: var(--text); }
+  .waiting-actions { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; max-width: 260px; }
 
   /* ── GAME SCREEN ── */
+  .match-bar {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); text-align: center; padding: 0.3rem 0; margin-bottom: 0.75rem;
+    display: none;
+  }
+  .match-bar.visible { display: block; }
+
   .status-bar {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1rem;
@@ -199,11 +207,11 @@
   .result-title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
   .result-sub { font-size: 13px; color: var(--muted); margin-bottom: 1rem; }
   .result-score-update { font-size: 12px; font-weight: 600; color: var(--sym-v); margin-bottom: 1rem; }
-  .result-actions { display: flex; gap: 8px; justify-content: center; }
+  .result-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 
   /* BOARD */
   .board-wrap { display: flex; justify-content: center; margin-bottom: 1.25rem; }
-  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; width: 100%; max-width: 380px; }
+  .board { display: grid; gap: 7px; width: 100%; max-width: 380px; }
   .cell {
     aspect-ratio: 1; background: var(--surface); border: 1.5px solid var(--border2);
     border-radius: 11px; display: flex; align-items: center; justify-content: center;
@@ -211,6 +219,7 @@
     cursor: default; user-select: none; position: relative; overflow: hidden;
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
   }
+  .cell.cell-sm { font-size: clamp(0.9rem, 3vw, 1.2rem); border-radius: 8px; }
   .cell.clickable { cursor: pointer; }
   .cell.clickable:hover { background: var(--surface2); border-color: var(--accent-border); transform: scale(1.04); }
   .cell.waiting-cell { opacity: 0.6; }
@@ -223,10 +232,30 @@
   .cell.win-cell.sym-o { background: rgba(42,111,168,0.18); border-color: var(--sym-o); border-width: 2px; }
   .cell.win-cell.sym-v { background: rgba(74,103,65,0.18); border-color: var(--sym-v); border-width: 2px; }
   .cell.clickable::after { content: attr(data-preview); position: absolute; font-weight: 800; font-size: clamp(1.2rem,4.5vw,1.7rem); opacity: 0; transition: opacity 0.15s; }
+  .cell.cell-sm.clickable::after { font-size: clamp(0.9rem,3vw,1.2rem); }
   .cell.clickable:hover::after { opacity: 0.3; }
   .cell.preview-x::after { color: var(--sym-x); }
   .cell.preview-o::after { color: var(--sym-o); }
   .cell.preview-v::after { color: var(--sym-v); }
+
+  /* PASS PROMPT */
+  .pass-overlay {
+    display: none; position: fixed; inset: 0; z-index: 150;
+    background: rgba(26,24,20,0.6); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; padding: 1.5rem;
+  }
+  .pass-overlay.open { display: flex; }
+  .pass-card {
+    background: var(--bg); border: 1px solid var(--border2);
+    border-radius: 18px; padding: 2rem 1.75rem; max-width: 300px; width: 100%;
+    display: flex; flex-direction: column; gap: 1.25rem; text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  .pass-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  .pass-sub { font-size: 13px; color: var(--muted); margin-top: -0.75rem; }
+  .pass-player { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
+  .pass-player.p1 { color: var(--sym-x); }
+  .pass-player.p2 { color: var(--sym-o); }
 
   /* GAME CONTROLS */
   .game-controls { display: flex; align-items: center; justify-content: space-between; padding-top: 0.25rem; }
@@ -263,7 +292,6 @@
     display: flex; justify-content: space-between; align-items: center;
   }
   .difficulty-btn:hover { background: var(--surface2); border-color: var(--accent-border); }
-  .difficulty-hint { font-size: 11px; font-weight: 400; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -320,9 +348,9 @@
 <div id="screen-home" class="screen">
   <div class="page-wrap">
     <div class="game-header">
-      <p class="game-eyebrow">Live multiplayer · Two players · Three symbols</p>
+      <p class="game-eyebrow">Multiplayer · Three symbols · Best of 3</p>
       <h1 class="game-title">XOV</h1>
-      <p class="game-desc">X, O, and V rotate every turn. Get three in a row to win.</p>
+      <p class="game-desc">X, O, and V rotate every turn. Get three (or four) in a row to win.</p>
     </div>
 
     <div class="stats-card" id="stats-card">
@@ -341,8 +369,9 @@
     </div>
 
     <div class="home-actions">
-      <button class="btn btn-primary btn-large" onclick="createGame()">Create game</button>
-      <button class="btn btn-secondary btn-large" onclick="openAiModal()">Play vs AI</button>
+      <button class="btn btn-primary btn-large" onclick="openTypeModal('online')">Create online game</button>
+      <button class="btn btn-secondary btn-large" onclick="openTypeModal('ai')">Play vs AI</button>
+      <button class="btn btn-secondary btn-large" onclick="openTypeModal('local')">Local · 2 Players</button>
       <div class="divider"><span>or join with a code</span></div>
       <div class="join-row">
         <input id="join-input" class="code-input" placeholder="ABCD" maxlength="4"
@@ -360,12 +389,15 @@
     <div class="waiting-wrap">
       <div class="spinner-wrap"><div class="spinner"></div></div>
       <h2 class="waiting-title">Waiting for opponent…</h2>
-      <p class="waiting-sub">Share this code with the person you want to play with</p>
+      <p class="waiting-sub">Share this code or link with the person you want to play with</p>
       <div class="code-display">
         <span id="room-code-display" class="room-code"></span>
       </div>
-      <button class="btn btn-secondary" id="copy-btn" onclick="copyCode()">Copy code</button>
-      <button class="btn btn-ghost" onclick="leaveGame()">Cancel</button>
+      <div class="waiting-actions">
+        <button class="btn btn-primary" style="width:100%" id="invite-btn" onclick="invitePlayer()">Send invite link</button>
+        <button class="btn btn-secondary" style="width:100%" id="copy-btn" onclick="copyCode()">Copy code</button>
+        <button class="btn btn-ghost" onclick="leaveGame()">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
@@ -373,6 +405,8 @@
 <!-- ── GAME ── -->
 <div id="screen-game" class="screen">
   <div class="page-wrap">
+
+    <div class="match-bar" id="match-bar"></div>
 
     <div class="status-bar">
       <div class="status-left">
@@ -398,10 +432,7 @@
       <div class="result-title" id="result-title"></div>
       <div class="result-sub" id="result-sub"></div>
       <div class="result-score-update" id="result-score-update"></div>
-      <div class="result-actions">
-        <button class="btn btn-primary" onclick="playAgain()">Play again</button>
-        <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
-      </div>
+      <div class="result-actions" id="result-actions"></div>
     </div>
 
     <div class="board-wrap">
@@ -413,6 +444,16 @@
       <button class="btn btn-ghost btn-sm" onclick="leaveGame()">Leave game</button>
     </div>
 
+  </div>
+</div>
+
+<!-- ── PASS PHONE OVERLAY ── -->
+<div class="pass-overlay" id="pass-overlay">
+  <div class="pass-card">
+    <div class="pass-title">Pass to next player</div>
+    <p class="pass-sub" id="pass-sub">Hand the phone to your opponent</p>
+    <div class="pass-player" id="pass-player"></div>
+    <button class="btn btn-primary btn-large" onclick="dismissPass()">Ready</button>
   </div>
 </div>
 
@@ -436,17 +477,38 @@
   const auth      = getAuth(app);
   const firestore = getFirestore(app);
 
-  const SYMBOLS  = ['X', 'O', 'V'];
-  const SYM_CLS  = ['sym-x', 'sym-o', 'sym-v'];
-  const SYM_KEY  = ['x', 'o', 'v'];
-  const EMPTY_BOARD = '................';
+  const SYMBOLS = ['X', 'O', 'V'];
+  const SYM_CLS = ['sym-x', 'sym-o', 'sym-v'];
+  const SYM_KEY = ['x', 'o', 'v'];
 
-  function parseBoard(s)   { return (s || EMPTY_BOARD).split('').map(c => c === '.' ? null : +c); }
+  // ── GAME TYPE STATE ───────────────────────────────────────────
+  let gameType  = '4x4'; // '4x4' | '5x5'
+  let boardSize = 16;
+  let gridCols  = 4;
+  let winLen    = 3;
+
+  function setGameType(t) {
+    gameType  = t;
+    boardSize = t === '5x5' ? 25 : 16;
+    gridCols  = t === '5x5' ? 5  : 4;
+    winLen    = t === '5x5' ? 4  : 3;
+  }
+
+  function emptyBoard() { return '.'.repeat(boardSize); }
+  function parseBoard(s) { return (s || emptyBoard()).split('').map(c => c === '.' ? null : +c); }
   function boardToStr(arr) { return arr.map(v => v === null ? '.' : String(v)).join(''); }
   function parseWinCells(wc) { return wc ? String(wc).split(',').map(Number) : null; }
 
-  let roomCode    = null;
-  let myPlayer    = null;
+  // ── MATCH STATE ───────────────────────────────────────────────
+  let matchScore = { p1: 0, p2: 0 };
+  let matchGame  = 0;
+  let inMatch    = false;
+
+  function resetMatch() { matchScore = { p1: 0, p2: 0 }; matchGame = 0; inMatch = false; }
+
+  // ── PLAYER STATE ──────────────────────────────────────────────
+  let roomCode     = null;
+  let myPlayer     = null;
   let gameListener = null;
   let currentUser  = null;
   let scoreUpdated = false;
@@ -456,6 +518,11 @@
   let aiDifficulty = 'medium';
   let localGame    = null;
   let aiTimer      = null;
+
+  let isLocal      = false;  // local 2-player pass-and-play
+  let localTurnPlayer = 'p1'; // whose physical turn it is (for pass prompt)
+  let pendingMode  = null;   // 'online' | 'ai' | 'local'
+  let passBlocked  = false;  // waiting for pass screen dismissal
 
   // ── AUTH ──────────────────────────────────────────────────────
 
@@ -473,10 +540,10 @@
   });
 
   async function ensureUserProfile(user) {
-    const ref = doc(firestore, 'users', user.uid);
-    const snap = await getDoc(ref);
+    const r = doc(firestore, 'users', user.uid);
+    const snap = await getDoc(r);
     if (!snap.exists()) {
-      await setDoc(ref, {
+      await setDoc(r, {
         displayName: user.displayName || 'Player',
         photoURL: user.photoURL || '',
         wins: 0, losses: 0, draws: 0,
@@ -489,9 +556,9 @@
     const snap = await getDoc(doc(firestore, 'users', uid));
     if (!snap.exists()) return;
     const d = snap.data();
-    document.getElementById('stat-wins').textContent    = d.wins   || 0;
-    document.getElementById('stat-losses').textContent  = d.losses || 0;
-    document.getElementById('stat-draws').textContent   = d.draws  || 0;
+    document.getElementById('stat-wins').textContent   = d.wins   || 0;
+    document.getElementById('stat-losses').textContent = d.losses || 0;
+    document.getElementById('stat-draws').textContent  = d.draws  || 0;
     document.getElementById('stats-card').classList.add('visible');
   }
 
@@ -514,11 +581,7 @@
   }
 
   window.signInGoogle = async function() {
-    try {
-      await signInWithPopup(auth, new GoogleAuthProvider());
-    } catch(e) {
-      console.error(e);
-    }
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(e) { console.error(e); }
   };
 
   let authMode = 'signin';
@@ -526,9 +589,9 @@
   window.toggleAuthMode = function() {
     authMode = authMode === 'signin' ? 'signup' : 'signin';
     const isSignIn = authMode === 'signin';
-    document.getElementById('email-action-btn').textContent  = isSignIn ? 'Sign in' : 'Create account';
-    document.getElementById('auth-toggle-text').textContent  = isSignIn ? 'No account? ' : 'Have an account? ';
-    document.getElementById('auth-toggle-link').textContent  = isSignIn ? 'Create one' : 'Sign in';
+    document.getElementById('email-action-btn').textContent = isSignIn ? 'Sign in' : 'Create account';
+    document.getElementById('auth-toggle-text').textContent = isSignIn ? 'No account? ' : 'Have an account? ';
+    document.getElementById('auth-toggle-link').textContent = isSignIn ? 'Create one' : 'Sign in';
     document.getElementById('auth-error').textContent = '';
     document.getElementById('password-input').autocomplete = isSignIn ? 'current-password' : 'new-password';
   };
@@ -554,28 +617,26 @@
 
   function friendlyAuthError(code) {
     const map = {
-      'auth/invalid-credential':     'Incorrect email or password',
-      'auth/user-not-found':         'No account with that email',
-      'auth/wrong-password':         'Incorrect password',
-      'auth/email-already-in-use':   'Email already registered — sign in instead',
-      'auth/weak-password':          'Password must be at least 6 characters',
-      'auth/invalid-email':          'Invalid email address',
-      'auth/too-many-requests':      'Too many attempts. Try again later',
+      'auth/invalid-credential':   'Incorrect email or password',
+      'auth/user-not-found':       'No account with that email',
+      'auth/wrong-password':       'Incorrect password',
+      'auth/email-already-in-use': 'Email already registered — sign in instead',
+      'auth/weak-password':        'Password must be at least 6 characters',
+      'auth/invalid-email':        'Invalid email address',
+      'auth/too-many-requests':    'Too many attempts. Try again later',
     };
     return map[code] || 'Something went wrong, try again';
   }
 
   window.playAsGuest = function() {
-    isGuest = true;
-    currentUser = null;
+    isGuest = true; currentUser = null;
     document.getElementById('stats-card').classList.remove('visible');
     goHome();
   };
 
   window.signOutUser = async function() {
     await signOut(auth);
-    isGuest = false;
-    currentUser = null;
+    isGuest = false; currentUser = null;
     leaveGame();
     document.getElementById('nav-right').innerHTML = `<button class="btn btn-ghost nav-refresh" onclick="location.reload()" title="Refresh">↺</button><a href="index.html" class="nav-back">Portfolio</a>`;
     showScreen('screen-login');
@@ -591,37 +652,96 @@
   function goHome() { showScreen('screen-home'); }
   function gameRef() { return ref(db, `games/${roomCode}`); }
 
-  window.openAiModal  = function() { document.getElementById('ai-modal').classList.add('open'); };
+  // ── GAME TYPE MODAL ───────────────────────────────────────────
+
+  window.openTypeModal = function(mode) {
+    pendingMode = mode;
+    document.getElementById('type-modal').classList.add('open');
+  };
+  window.closeTypeModal = function() {
+    document.getElementById('type-modal').classList.remove('open');
+  };
+
+  window.selectGameType = function(t) {
+    setGameType(t);
+    closeTypeModal();
+    if (pendingMode === 'online') {
+      createGame();
+    } else if (pendingMode === 'ai') {
+      document.getElementById('ai-modal').classList.add('open');
+    } else if (pendingMode === 'local') {
+      startLocalGame();
+    }
+  };
+
+  // ── AI MODAL ─────────────────────────────────────────────────
+
   window.closeAiModal = function() { document.getElementById('ai-modal').classList.remove('open'); };
 
   window.startAiGame = function(difficulty) {
     closeAiModal();
-    isAI        = true;
+    isAI = true; isLocal = false;
     aiDifficulty = difficulty;
-    myPlayer    = 'p1';
+    myPlayer     = 'p1';
     scoreUpdated = false;
+    inMatch      = true;
+    matchGame    = 1;
+    matchScore   = { p1: 0, p2: 0 };
     if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
-    localGame = { board: EMPTY_BOARD, turn: 0, status: 'playing', winner: '', winCells: '' };
+    localGame = { board: emptyBoard(), turn: 0, status: 'playing', winner: '', winCells: '' };
     document.getElementById('room-label').textContent = 'vs AI · ' + difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
     document.getElementById('result-banner').classList.remove('visible');
     showScreen('screen-game');
     render(localGame);
   };
 
+  // ── LOCAL 2-PLAYER ────────────────────────────────────────────
+
+  function startLocalGame() {
+    isLocal  = true; isAI = false;
+    myPlayer = null;
+    scoreUpdated = false;
+    inMatch  = true;
+    matchGame = 1;
+    matchScore = { p1: 0, p2: 0 };
+    localTurnPlayer = 'p1';
+    passBlocked = false;
+    if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
+    localGame = { board: emptyBoard(), turn: 0, status: 'playing', winner: '', winCells: '' };
+    document.getElementById('room-label').textContent = 'Local · 2 Players';
+    document.getElementById('result-banner').classList.remove('visible');
+    showScreen('screen-game');
+    render(localGame);
+  }
+
+  // ── PASS-AND-PLAY OVERLAY ─────────────────────────────────────
+
+  function showPassOverlay(nextPlayer) {
+    passBlocked = true;
+    const playerLabel = nextPlayer === 'p1' ? 'Player 1' : 'Player 2';
+    document.getElementById('pass-player').textContent = playerLabel;
+    document.getElementById('pass-player').className = 'pass-player ' + nextPlayer;
+    document.getElementById('pass-sub').textContent = `Hand the phone to ${playerLabel}`;
+    document.getElementById('pass-overlay').classList.add('open');
+  }
+
+  window.dismissPass = function() {
+    document.getElementById('pass-overlay').classList.remove('open');
+    passBlocked = false;
+    render(localGame);
+  };
+
+  // ── GAME FLOW ─────────────────────────────────────────────────
+
   function generateCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     return Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
   }
 
-  // ── GAME FLOW ─────────────────────────────────────────────────
-
   window.createGame = async function() {
-    isAI = false;
-    roomCode = generateCode();
-    myPlayer = 'p1';
-    scoreUpdated = false;
-    save();
-    await set(gameRef(), { board: EMPTY_BOARD, turn: 0, status: 'waiting', winner: '', winCells: '' });
+    isAI = false; isLocal = false;
+    roomCode = generateCode(); myPlayer = 'p1'; scoreUpdated = false; save();
+    await set(gameRef(), { board: emptyBoard(), turn: 0, status: 'waiting', winner: '', winCells: '', gameType });
     document.getElementById('room-code-display').textContent = roomCode;
     showScreen('screen-waiting');
     listen();
@@ -634,7 +754,8 @@
     if (!snap.exists()) { showError('Room not found'); return; }
     const g = snap.val();
     if (g.status !== 'waiting') { showError('Game already in progress'); return; }
-    isAI = false; roomCode = code; myPlayer = 'p2'; scoreUpdated = false; save();
+    setGameType(g.gameType || '4x4');
+    isAI = false; isLocal = false; roomCode = code; myPlayer = 'p2'; scoreUpdated = false; save();
     await update(gameRef(), { status: 'playing' });
     enterGame();
     listen();
@@ -660,16 +781,31 @@
     });
   }
 
+  // ── RENDER ────────────────────────────────────────────────────
+
   function render(g) {
     const curP   = g.turn % 2 === 0 ? 'p1' : 'p2';
     const symIdx = g.turn % 3;
-    const myTurn = curP === myPlayer && g.status === 'playing';
-    const done   = g.status === 'finished';
+    let myTurn;
+    if (isLocal) {
+      myTurn = !passBlocked && g.status === 'playing';
+    } else {
+      myTurn = curP === myPlayer && g.status === 'playing';
+    }
+    const done = g.status === 'finished';
+    renderMatchBar();
     renderStatus(g, myTurn, symIdx, curP);
-    renderBoard(g, myTurn, symIdx, done);
+    renderBoard(g, myTurn, symIdx, done, curP);
     renderQueue(g.turn, done);
     if (done) showResult(g);
     else document.getElementById('result-banner').classList.remove('visible');
+  }
+
+  function renderMatchBar() {
+    const el = document.getElementById('match-bar');
+    if (!inMatch || (!isAI && !isLocal)) { el.classList.remove('visible'); return; }
+    el.classList.add('visible');
+    el.textContent = `Game ${matchGame} of 3  ·  ${matchScore.p1}–${matchScore.p2}`;
   }
 
   function renderStatus(g, myTurn, symIdx, curP) {
@@ -678,25 +814,37 @@
     const chip = document.getElementById('current-sym-chip');
     const dot  = document.getElementById('player-dot');
     if (g.status === 'finished') {
-      lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === myPlayer) ? 'You win! 🎉' : 'You lose';
+      if (isLocal) {
+        lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === 'p1' ? 'Player 1 wins!' : 'Player 2 wins!');
+      } else {
+        lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === myPlayer) ? 'You win! 🎉' : 'You lose';
+      }
       sub.textContent = '';
       return;
     }
     dot.className = 'player-dot ' + curP;
     chip.className = 'sym-chip ' + SYM_CLS[symIdx];
     chip.textContent = SYMBOLS[symIdx];
-    lbl.textContent = myTurn ? 'Your turn' : (isAI ? 'AI thinking…' : "Opponent's turn");
-    sub.textContent = myTurn ? `Place ${SYMBOLS[symIdx]} on any open cell` : (isAI ? '' : 'Waiting for their move…');
+    if (isLocal) {
+      const pName = curP === 'p1' ? 'Player 1' : 'Player 2';
+      lbl.textContent = `${pName}'s turn`;
+      sub.textContent = `Place ${SYMBOLS[symIdx]} on any open cell`;
+    } else {
+      lbl.textContent = myTurn ? 'Your turn' : (isAI ? 'AI thinking…' : "Opponent's turn");
+      sub.textContent = myTurn ? `Place ${SYMBOLS[symIdx]} on any open cell` : (isAI ? '' : 'Waiting for their move…');
+    }
   }
 
-  function renderBoard(g, myTurn, symIdx, done) {
+  function renderBoard(g, myTurn, symIdx, done, curP) {
     const el = document.getElementById('board');
     el.innerHTML = '';
+    el.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
     const board    = parseBoard(g.board);
     const winCells = parseWinCells(g.winCells);
-    for (let i = 0; i < 16; i++) {
+    const isSmall  = gridCols === 5;
+    for (let i = 0; i < boardSize; i++) {
       const cell = document.createElement('div');
-      cell.className = 'cell';
+      cell.className = 'cell' + (isSmall ? ' cell-sm' : '');
       if (board[i] !== null) {
         const si = board[i];
         cell.classList.add('filled', SYM_CLS[si]);
@@ -714,6 +862,17 @@
   }
 
   async function makeMove(i) {
+    if (isLocal) {
+      if (!localGame || localGame.status !== 'playing' || passBlocked) return;
+      const curP = localGame.turn % 2 === 0 ? 'p1' : 'p2';
+      applyMove(localGame, i, curP);
+      render(localGame);
+      if (localGame.status === 'playing') {
+        const nextP = localGame.turn % 2 === 0 ? 'p1' : 'p2';
+        if (nextP !== curP) showPassOverlay(nextP);
+      }
+      return;
+    }
     if (isAI) {
       if (!localGame || localGame.status !== 'playing') return;
       applyMove(localGame, i, 'p1');
@@ -732,10 +891,10 @@
     const result = checkWin(board);
     const full   = board.every(v => v !== null);
     await update(gameRef(), {
-      board:   boardToStr(board),
-      turn:    g.turn + 1,
-      status:  (result || full) ? 'finished' : 'playing',
-      winner:  result ? myPlayer : full ? 'draw' : '',
+      board:    boardToStr(board),
+      turn:     g.turn + 1,
+      status:   (result || full) ? 'finished' : 'playing',
+      winner:   result ? myPlayer : full ? 'draw' : '',
       winCells: result ? result.cells.join(',') : ''
     });
   }
@@ -758,6 +917,32 @@
     return board.reduce((acc, v, i) => { if (v === null) acc.push(i); return acc; }, []);
   }
 
+  // ── WIN CHECK (parameterized) ─────────────────────────────────
+
+  function checkWin(board) {
+    const cols = gridCols;
+    const rows = boardSize / cols;
+    const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (board[r*cols+c] === null) continue;
+        const sym = board[r*cols+c];
+        for (const [dr,dc] of dirs) {
+          const cells = [r*cols+c]; let ok = true;
+          for (let k = 1; k < winLen; k++) {
+            const nr = r+dr*k, nc = c+dc*k;
+            if (nr<0||nr>=rows||nc<0||nc>=cols||board[nr*cols+nc]!==sym) { ok=false; break; }
+            cells.push(nr*cols+nc);
+          }
+          if (ok) return { cells };
+        }
+      }
+    }
+    return null;
+  }
+
+  // ── AI ────────────────────────────────────────────────────────
+
   function aiGetMove(board, turn) {
     if (aiDifficulty === 'easy')   return aiRandom(board);
     if (aiDifficulty === 'medium') return aiMedium(board, turn);
@@ -765,8 +950,7 @@
   }
 
   function aiRandom(board) {
-    const e = getEmpty(board);
-    return e[Math.floor(Math.random() * e.length)];
+    const e = getEmpty(board); return e[Math.floor(Math.random() * e.length)];
   }
 
   function aiMedium(board, turn) {
@@ -781,9 +965,10 @@
   function aiHard(board, turn) {
     const e = getEmpty(board);
     let best = -Infinity, move = e[0];
+    const depth = gameType === '5x5' ? 3 : 4;
     for (const i of e) {
       const b = board.slice(); b[i] = turn % 3;
-      const s = mmAI(b, turn + 1, false, -Infinity, Infinity, 4);
+      const s = mmAI(b, turn + 1, false, -Infinity, Infinity, depth);
       if (s > best) { best = s; move = i; }
     }
     return move;
@@ -827,32 +1012,11 @@
       if (!localGame || localGame.status !== 'playing') return;
       const board = parseBoard(localGame.board);
       const move  = aiGetMove(board, localGame.turn);
-      if (move != null) {
-        applyMove(localGame, move, 'p2');
-        render(localGame);
-      }
+      if (move != null) { applyMove(localGame, move, 'p2'); render(localGame); }
     }, AI_DELAY[aiDifficulty]);
   }
 
-  function checkWin(board) {
-    const dirs = [[0,1],[1,0],[1,1],[1,-1]];
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        if (board[r*4+c] === null) continue;
-        const sym = board[r*4+c];
-        for (const [dr,dc] of dirs) {
-          const cells = [r*4+c]; let ok = true;
-          for (let k = 1; k < 3; k++) {
-            const nr = r+dr*k, nc = c+dc*k;
-            if (nr<0||nr>=4||nc<0||nc>=4||board[nr*4+nc]!==sym) { ok=false; break; }
-            cells.push(nr*4+nc);
-          }
-          if (ok) return { cells };
-        }
-      }
-    }
-    return null;
-  }
+  // ── QUEUE ─────────────────────────────────────────────────────
 
   function renderQueue(turn, done) {
     if (done) return;
@@ -861,7 +1025,13 @@
     for (let i = 0; i < 5; i++) {
       const t  = turn + i;
       const si = t % 3;
-      const isMe = (t % 2 === 0 ? 'p1' : 'p2') === myPlayer;
+      let whoLabel;
+      if (isLocal) {
+        whoLabel = t % 2 === 0 ? 'P1' : 'P2';
+      } else {
+        const isMe = (t % 2 === 0 ? 'p1' : 'p2') === myPlayer;
+        whoLabel = isMe ? 'You' : (isAI ? 'AI' : 'Them');
+      }
       if (i > 0) { const a = document.createElement('span'); a.className = 'queue-arrow'; a.textContent = '→'; el.appendChild(a); }
       const item = document.createElement('div');
       item.className = 'queue-item';
@@ -870,10 +1040,12 @@
       chip.textContent = SYMBOLS[si];
       const who = document.createElement('div');
       who.className = 'queue-who';
-      who.textContent = isMe ? 'You' : (isAI ? 'AI' : 'Them');
+      who.textContent = whoLabel;
       item.appendChild(chip); item.appendChild(who); el.appendChild(item);
     }
   }
+
+  // ── RESULT ────────────────────────────────────────────────────
 
   async function showResult(g) {
     const b = document.getElementById('result-banner');
@@ -883,31 +1055,124 @@
     const scoreEl = document.getElementById('result-score-update');
     scoreEl.textContent = '';
 
+    let iWon, isDraw;
     if (g.winner === 'draw') {
-      document.getElementById('result-emoji').textContent  = '🤝';
-      document.getElementById('result-title').textContent  = "It's a draw!";
-      document.getElementById('result-sub').textContent    = 'Board full. Play again?';
-      if (!scoreUpdated) { await updateScore('draw'); scoreEl.textContent = 'Draw recorded'; scoreUpdated = true; }
+      isDraw = true; iWon = false;
+      document.getElementById('result-emoji').textContent = '🤝';
+      document.getElementById('result-title').textContent = "It's a draw!";
+      document.getElementById('result-sub').textContent   = 'Board full.';
+      if (!scoreUpdated && !isLocal) { await updateScore('draw'); scoreEl.textContent = 'Draw recorded'; }
     } else {
-      const iWon = isAI ? (g.winner === 'p1') : (g.winner === myPlayer);
-      document.getElementById('result-emoji').textContent  = iWon ? '🏆' : '😤';
-      document.getElementById('result-title').textContent  = iWon ? 'You win!' : (isAI ? 'AI wins!' : 'You lose!');
+      isDraw = false;
+      if (isLocal) {
+        iWon = false;
+        const winnerName = g.winner === 'p1' ? 'Player 1' : 'Player 2';
+        document.getElementById('result-emoji').textContent = '🏆';
+        document.getElementById('result-title').textContent = `${winnerName} wins!`;
+      } else {
+        iWon = isAI ? (g.winner === 'p1') : (g.winner === myPlayer);
+        document.getElementById('result-emoji').textContent = iWon ? '🏆' : '😤';
+        document.getElementById('result-title').textContent = iWon ? 'You win!' : (isAI ? 'AI wins!' : 'You lose!');
+        if (!scoreUpdated) { await updateScore(iWon ? 'win' : 'loss'); scoreEl.textContent = iWon ? '+1 Win saved ✓' : 'Loss recorded'; }
+      }
       const wc = parseWinCells(g.winCells);
       const s  = wc ? SYMBOLS[parseBoard(g.board)[wc[0]]] : '';
-      document.getElementById('result-sub').textContent    = s ? `Three ${s}s in a row!` : '';
-      if (!scoreUpdated) {
-        await updateScore(iWon ? 'win' : 'loss');
-        scoreEl.textContent = iWon ? '+1 Win saved ✓' : 'Loss recorded';
-        scoreUpdated = true;
+      const inRow = winLen === 4 ? 'Four' : 'Three';
+      document.getElementById('result-sub').textContent = s ? `${inRow} ${s}s in a row!` : '';
+    }
+
+    scoreUpdated = true;
+
+    // Update match score
+    if (inMatch && (isAI || isLocal)) {
+      if (!isDraw) {
+        const winner = isLocal ? g.winner : (iWon ? 'p1' : 'p2');
+        matchScore[winner]++;
       }
+      renderMatchActions(isDraw, iWon, g);
+    } else {
+      renderOnlineActions();
     }
   }
+
+  function renderMatchActions(isDraw, iWon, g) {
+    const actionsEl = document.getElementById('result-actions');
+    const matchOver = matchScore.p1 >= 2 || matchScore.p2 >= 2 || matchGame >= 3;
+
+    if (matchOver) {
+      let summaryText;
+      if (matchScore.p1 === matchScore.p2) {
+        summaryText = 'Match tied!';
+      } else if (isLocal) {
+        summaryText = matchScore.p1 > matchScore.p2 ? 'Player 1 wins the match!' : 'Player 2 wins the match!';
+      } else {
+        summaryText = matchScore.p1 > matchScore.p2 ? 'You win the match! 🎉' : (isAI ? 'AI wins the match!' : 'They win the match!');
+      }
+      document.getElementById('result-sub').textContent = summaryText;
+      actionsEl.innerHTML = `
+        <button class="btn btn-primary" onclick="startNewMatch()">New match</button>
+        <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
+      `;
+    } else {
+      const nextGame = matchGame + 1;
+      const score = `${matchScore.p1}–${matchScore.p2}`;
+      actionsEl.innerHTML = `
+        <button class="btn btn-primary" onclick="nextMatchGame()">Game ${nextGame} · ${score}</button>
+        <button class="btn btn-ghost" onclick="leaveGame()">Leave match</button>
+      `;
+    }
+  }
+
+  function renderOnlineActions() {
+    document.getElementById('result-actions').innerHTML = `
+      <button class="btn btn-primary" onclick="playAgain()">Play again</button>
+      <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
+    `;
+  }
+
+  window.nextMatchGame = function() {
+    matchGame++;
+    scoreUpdated = false;
+    passBlocked = false;
+    if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
+    localGame = { board: emptyBoard(), turn: 0, status: 'playing', winner: '', winCells: '' };
+    if (isLocal) localTurnPlayer = 'p1';
+    document.getElementById('result-banner').classList.remove('visible');
+    render(localGame);
+  };
+
+  window.startNewMatch = function() {
+    resetMatch();
+    scoreUpdated = false;
+    passBlocked = false;
+    if (isAI) {
+      window.startAiGame(aiDifficulty);
+    } else if (isLocal) {
+      startLocalGame();
+    }
+  };
 
   function showError(msg) {
     const el = document.getElementById('join-error');
     el.textContent = msg;
     setTimeout(() => { el.textContent = ''; }, 3000);
   }
+
+  // ── INVITE / COPY ─────────────────────────────────────────────
+
+  window.invitePlayer = function() {
+    const url  = `${location.origin}${location.pathname}?join=${roomCode}`;
+    const data = { title: 'Play XOV with me!', text: `Join my XOV game — code: ${roomCode}`, url };
+    if (navigator.share) {
+      navigator.share(data).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        const b = document.getElementById('invite-btn');
+        b.textContent = 'Link copied!';
+        setTimeout(() => b.textContent = 'Send invite link', 1500);
+      });
+    }
+  };
 
   window.copyCode = function() {
     navigator.clipboard.writeText(roomCode).then(() => {
@@ -917,31 +1182,49 @@
     });
   };
 
+  // ── AUTO-JOIN FROM URL PARAM ──────────────────────────────────
+
+  (function checkInviteParam() {
+    const params = new URLSearchParams(location.search);
+    const code   = params.get('join');
+    if (code) {
+      history.replaceState({}, '', location.pathname);
+      const joinInput = document.getElementById('join-input');
+      if (joinInput) joinInput.value = code.toUpperCase();
+      // Auto-trigger join after auth resolves (handled by goHome)
+      window._autoJoinCode = code.toUpperCase();
+    }
+  })();
+
+  // ── PLAY AGAIN (online) ───────────────────────────────────────
+
   window.playAgain = async function() {
     scoreUpdated = false;
-    if (isAI) {
+    if (isAI || isLocal) {
       if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
-      localGame = { board: EMPTY_BOARD, turn: 0, status: 'playing', winner: '', winCells: '' };
+      localGame = { board: emptyBoard(), turn: 0, status: 'playing', winner: '', winCells: '' };
       document.getElementById('result-banner').classList.remove('visible');
       render(localGame);
       return;
     }
-    await update(gameRef(), { board: EMPTY_BOARD, turn: 0, status: 'playing', winner: '', winCells: '' });
+    await update(gameRef(), { board: emptyBoard(), turn: 0, status: 'playing', winner: '', winCells: '' });
     document.getElementById('result-banner').classList.remove('visible');
   };
 
   window.leaveGame = function() {
     if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
-    if (isAI) {
-      isAI = false; localGame = null; myPlayer = null; scoreUpdated = false;
+    document.getElementById('pass-overlay').classList.remove('open');
+    passBlocked = false;
+    if (isAI || isLocal) {
+      isAI = false; isLocal = false; localGame = null; myPlayer = null;
+      scoreUpdated = false; resetMatch();
       document.getElementById('result-banner').classList.remove('visible');
-      goHome();
-      return;
+      goHome(); return;
     }
     if (gameListener) { gameListener(); gameListener = null; }
     sessionStorage.removeItem('xov-room');
     sessionStorage.removeItem('xov-player');
-    roomCode = null; myPlayer = null; scoreUpdated = false;
+    roomCode = null; myPlayer = null; scoreUpdated = false; resetMatch();
     document.getElementById('join-input').value = '';
     document.getElementById('result-banner').classList.remove('visible');
     goHome();
@@ -960,6 +1243,7 @@
     get(ref(db, `games/${roomCode}`)).then(snap => {
       if (!snap.exists()) { sessionStorage.clear(); return; }
       const g = snap.val();
+      setGameType(g.gameType || '4x4');
       if (g.status === 'finished') { sessionStorage.clear(); return; }
       if (g.status === 'waiting' && myPlayer === 'p1') {
         document.getElementById('room-code-display').textContent = roomCode;
@@ -970,7 +1254,33 @@
       listen();
     });
   }
+
+  // Auto-join: fill join input after home screen shows
+  const _origGoHome = goHome;
+  function goHome() {
+    showScreen('screen-home');
+    if (window._autoJoinCode) {
+      const el = document.getElementById('join-input');
+      if (el) el.value = window._autoJoinCode;
+      window._autoJoinCode = null;
+    }
+  }
 </script>
+
+<!-- ── GAME TYPE MODAL ── -->
+<div class="modal-overlay" id="type-modal" onclick="if(event.target===this)closeTypeModal()">
+  <div class="modal-card">
+    <div>
+      <div class="modal-title">Choose game type</div>
+      <p class="modal-sub">Pick your board size</p>
+    </div>
+    <div class="difficulty-list">
+      <button class="difficulty-btn" onclick="selectGameType('4x4')">4×4 · Three in a row</button>
+      <button class="difficulty-btn" onclick="selectGameType('5x5')">5×5 · Four in a row</button>
+    </div>
+    <button class="btn btn-ghost" onclick="closeTypeModal()">Cancel</button>
+  </div>
+</div>
 
 <!-- ── AI DIFFICULTY MODAL ── -->
 <div class="modal-overlay" id="ai-modal" onclick="if(event.target===this)closeAiModal()">
@@ -987,5 +1297,6 @@
     <button class="btn btn-ghost" onclick="closeAiModal()">Cancel</button>
   </div>
 </div>
+
 </body>
 </html>
