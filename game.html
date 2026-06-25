@@ -968,14 +968,14 @@
     const rhEl  = document.getElementById('online-room-header');
     if (isAI || isLocal) {
       rhEl.classList.remove('visible');
-      if (!inMatch) { barEl.classList.remove('visible'); return; }
+      if (!inMatch || g.status === 'finished') { barEl.classList.remove('visible'); return; }
       barEl.classList.add('visible');
       barEl.textContent = `Game ${matchGame} of 3  ·  ${matchScore.p1}–${matchScore.p2}`;
       return;
     }
     // Online: room header card
     barEl.classList.remove('visible');
-    if (!g || !g.p2Name) { rhEl.classList.remove('visible'); return; }
+    if (!g || !g.p2Name || g.status === 'finished') { rhEl.classList.remove('visible'); return; }
     rhEl.classList.add('visible');
     const p1Score = g.matchP1Score || 0;
     const p2Score = g.matchP2Score || 0;
@@ -1244,7 +1244,9 @@
 
   function renderQueue(g) {
     const turn = g.turn;
-    if (g.status === 'finished') return;
+    const queueWrap = document.getElementById('queue-items').parentElement;
+    if (g.status === 'finished') { queueWrap.style.display = 'none'; return; }
+    queueWrap.style.display = '';
     const el = document.getElementById('queue-items');
     el.innerHTML = '';
 
