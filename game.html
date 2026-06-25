@@ -299,6 +299,9 @@
   /* Outer band — visibility + active color strip */
   .rh-band { display: none; margin-bottom: 1rem; }
   .rh-band.visible { display: block; }
+  body.active-x .rh-band.visible { background: var(--sym-x); }
+  body.active-o .rh-band.visible { background: var(--sym-o); }
+  body.active-v .rh-band.visible { background: var(--sym-v); }
   body.active-x .rh-band.visible,
   body.active-o .rh-band.visible,
   body.active-v .rh-band.visible {
