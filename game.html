@@ -1006,18 +1006,10 @@
     const lbl  = document.getElementById('status-label');
     const sub  = document.getElementById('status-sub');
 
-    bar.className = 'status-bar'; // reset color class
+    if (g.status === 'finished') { bar.style.display = 'none'; return; }
 
-    if (g.status === 'finished') {
-      icon.textContent = g.winner === 'draw' ? '🤝' : '🏆';
-      if (isLocal) {
-        lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === 'p1' ? 'Player 1 wins!' : 'Player 2 wins!');
-      } else {
-        lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === myPlayer ? 'You win!' : 'You lose');
-      }
-      sub.textContent = '';
-      return;
-    }
+    bar.style.display = '';
+    bar.className = 'status-bar'; // reset color class
 
     bar.classList.add('active-' + SYM_KEY[symIdx]);
     icon.textContent = SYMBOLS[symIdx];
