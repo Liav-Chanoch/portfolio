@@ -186,26 +186,26 @@
   .match-bar.visible { display: block; }
 
   .status-bar {
-    border-radius: 0; padding: 1.1rem 2.75rem; margin-bottom: 1.25rem;
+    border-radius: 0; padding: 1.6rem 2.75rem; margin-bottom: 1.25rem;
     margin-left: -1.5rem; margin-right: -1.5rem;
-    display: flex; align-items: center; gap: 1rem;
+    display: flex; align-items: center; gap: 1.25rem;
     background: var(--surface); transition: background 0.2s;
   }
   .status-bar.active-x { background: var(--sym-x); }
   .status-bar.active-o { background: var(--sym-o); }
   .status-bar.active-v { background: var(--sym-v); }
   .status-sym-icon {
-    width: 56px; height: 56px; border-radius: 12px; flex-shrink: 0;
+    width: 76px; height: 76px; border-radius: 18px; flex-shrink: 0;
     background: rgba(255,255,255,0.18);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.9rem; font-weight: 900; color: #fff;
+    font-size: 2.6rem; font-weight: 700; color: #fff;
     transition: background 0.2s;
   }
   .status-bar:not(.active-x):not(.active-o):not(.active-v) .status-sym-icon {
     background: var(--surface2); color: var(--text);
   }
-  .status-label { font-size: 1rem; font-weight: 700; color: var(--text); }
-  .status-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .status-label { font-size: 1.2rem; font-weight: 800; color: var(--text); }
+  .status-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
   .status-bar.active-x .status-label,
   .status-bar.active-o .status-label,
   .status-bar.active-v .status-label { color: #fff; }
@@ -289,7 +289,7 @@
   .cell {
     aspect-ratio: 1; background: var(--bg); border: none; border-radius: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: clamp(3rem, 15vw, 5rem); font-weight: 900;
+    font-size: clamp(3rem, 15vw, 5rem); font-weight: 600;
     cursor: default; user-select: none; position: relative; overflow: hidden;
     transition: background 0.12s;
   }
@@ -330,7 +330,7 @@
   .cell.win-cell.sym-x { background: #7a1a1a; color: #fff; }
   .cell.win-cell.sym-o { background: #1a3d80; color: #fff; }
   .cell.win-cell.sym-v { background: #1a5c38; color: #fff; }
-  .cell.clickable::after { content: attr(data-preview); position: absolute; font-weight: 900; font-size: clamp(3rem,15vw,5rem); opacity: 0; transition: opacity 0.12s; }
+  .cell.clickable::after { content: attr(data-preview); position: absolute; font-weight: 600; font-size: clamp(3rem,15vw,5rem); opacity: 0; transition: opacity 0.12s; }
   .cell.cell-sm.clickable::after { font-size: clamp(2rem,10vw,3.2rem); }
   .cell.clickable:hover::after { opacity: 0.35; }
   .cell.preview-x::after { color: var(--sym-x); }
