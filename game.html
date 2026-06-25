@@ -649,7 +649,14 @@
     document.getElementById(id).classList.add('active');
   }
 
-  function goHome() { showScreen('screen-home'); }
+  function goHome() {
+    showScreen('screen-home');
+    if (window._autoJoinCode) {
+      const el = document.getElementById('join-input');
+      if (el) el.value = window._autoJoinCode;
+      window._autoJoinCode = null;
+    }
+  }
   function gameRef() { return ref(db, `games/${roomCode}`); }
 
   // ── GAME TYPE MODAL ───────────────────────────────────────────
@@ -1255,16 +1262,6 @@
     });
   }
 
-  // Auto-join: fill join input after home screen shows
-  const _origGoHome = goHome;
-  function goHome() {
-    showScreen('screen-home');
-    if (window._autoJoinCode) {
-      const el = document.getElementById('join-input');
-      if (el) el.value = window._autoJoinCode;
-      window._autoJoinCode = null;
-    }
-  }
 </script>
 
 <!-- ── GAME TYPE MODAL ── -->
