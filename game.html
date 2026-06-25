@@ -233,6 +233,18 @@
   @keyframes result-name-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes result-bubble-in { 0% { transform: scale(0.8); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
   @keyframes win-cell-appear { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+  @keyframes win-cell-appear-flat { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes cell-place { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes cell-dim-anim { to { opacity: 0.3; } }
+  @keyframes bubble-shake { 0% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } 100% { transform: translateX(0); } }
+  @keyframes status-turn-in { from { opacity: 0.15; } to { opacity: 1; } }
+  @keyframes status-win-flash { 0% { background: #22a85a; } 70% { background: #22a85a; opacity: 1; } 100% { background: #22a85a; opacity: 0; } }
+  .cell-place { animation: cell-place 0.18s ease-out both; }
+  .cell-dim { animation: cell-dim-anim 0.3s ease-out forwards; }
+  .cell.win-cell.win-cell-loss { animation: win-cell-appear-flat 0.25s ease-out both; }
+  .rscore-bubble.bubble-shake { animation: bubble-shake 0.3s ease-out 0.4s both; }
+  .status-bar.status-turn-in { animation: status-turn-in 0.2s ease-out; }
+  .status-bar.status-win-flash { animation: status-win-flash 0.35s ease-out forwards; color: #fff; }
 
   .result-game-lbl {
     font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
@@ -1083,6 +1095,10 @@
 
   // ── RENDER ────────────────────────────────────────────────────
 
+  let prevRenderTurn = -1;
+  let lastPlacedIdx  = -1;
+  let prevBoardStr   = null;
+
   function render(g) {
     const curP   = g.turn % 2 === 0 ? 'p1' : 'p2';
     const symIdx = g.turn % 3;
@@ -1093,10 +1109,30 @@
       myTurn = curP === myPlayer && g.status === 'playing';
     }
     const done = g.status === 'finished';
+
+    // Detect which cell was just placed for placement animation
+    if (prevBoardStr !== null && g.board !== prevBoardStr) {
+      const prev = parseBoard(prevBoardStr);
+      const curr = parseBoard(g.board);
+      for (let i = 0; i < curr.length; i++) {
+        if (prev[i] === null && curr[i] !== null) { lastPlacedIdx = i; break; }
+      }
+    }
+    prevBoardStr = g.board;
+
+    // Determine winner perspective for animations
+    let iWon = false;
+    if (done && g.winner !== 'draw' && g.winner) {
+      if (isAI)       iWon = g.winner === 'p1';
+      else if (isLocal) iWon = true;
+      else              iWon = g.winner === myPlayer;
+    }
+
     renderMatchBar(g, symIdx, curP);
-    renderStatus(g, myTurn, symIdx, curP);
-    renderBoard(g, myTurn, symIdx, done, curP);
+    renderStatus(g, myTurn, symIdx, curP, iWon);
+    renderBoard(g, myTurn, symIdx, done, curP, iWon);
     renderQueue(g);
+    lastPlacedIdx = -1;
     if (done) showResult(g);
     else document.getElementById('result-banner').classList.remove('visible');
   }
@@ -1164,18 +1200,31 @@
     }
   }
 
-  function renderStatus(g, myTurn, symIdx, curP) {
+  function renderStatus(g, myTurn, symIdx, curP, iWon) {
     const bar  = document.getElementById('status-bar');
     const icon = document.getElementById('status-sym-icon');
     const lbl  = document.getElementById('status-label');
     const sub  = document.getElementById('status-sub');
 
-    if (g.status === 'finished') { bar.style.display = 'none'; setTheme(null); return; }
+    if (g.status === 'finished') {
+      if (iWon) {
+        bar.style.display = '';
+        bar.className = 'status-bar status-win-flash';
+        setTimeout(() => { bar.style.display = 'none'; setTheme(null); }, 380);
+      } else {
+        bar.style.display = 'none';
+        setTheme(null);
+      }
+      return;
+    }
+
+    const turnChanged = g.turn !== prevRenderTurn && prevRenderTurn !== -1;
+    prevRenderTurn = g.turn;
 
     bar.style.display = '';
-    bar.className = 'status-bar'; // reset color class
-
+    bar.className = 'status-bar';
     bar.classList.add('active-' + SYM_KEY[symIdx]);
+    if (turnChanged) bar.classList.add('status-turn-in');
     setTheme(SYM_KEY[symIdx]);
     icon.textContent = SYMBOLS[symIdx];
 
@@ -1196,13 +1245,14 @@
     }
   }
 
-  function renderBoard(g, myTurn, symIdx, done, curP) {
+  function renderBoard(g, myTurn, symIdx, done, curP, iWon) {
     const el = document.getElementById('board');
     el.innerHTML = '';
     el.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
     const board    = parseBoard(g.board);
     const winCells = parseWinCells(g.winCells);
     const isSmall  = gridCols === 5;
+    const hasDimming = done && g.winner && g.winner !== 'draw';
     for (let i = 0; i < boardSize; i++) {
       const cell = document.createElement('div');
       cell.className = 'cell' + (isSmall ? ' cell-sm' : '');
@@ -1212,7 +1262,12 @@
         cell.textContent = SYMBOLS[si];
         if (winCells && winCells.includes(i)) {
           cell.classList.add('win-cell');
+          if (!iWon) cell.classList.add('win-cell-loss');
           cell.style.animationDelay = `${winCells.indexOf(i) * 80}ms`;
+        } else if (hasDimming) {
+          cell.classList.add('cell-dim');
+        } else if (i === lastPlacedIdx) {
+          cell.classList.add('cell-place');
         }
       } else if (!done && myTurn) {
         cell.classList.add('clickable', 'preview-' + SYM_KEY[symIdx]);
@@ -1516,7 +1571,7 @@
         <div class="rscore-bubble bubble-losing">${s2}</div>`;
     } else {
       scoreRowHTML = `
-        <div class="rscore-bubble bubble-losing">${loserScore}</div>
+        <div class="rscore-bubble bubble-losing bubble-shake">${loserScore}</div>
         <div class="rscore-dash">—</div>
         <div class="rscore-dots">${dotsHTML(gameNum)}</div>
         <div class="rscore-dash">—</div>
