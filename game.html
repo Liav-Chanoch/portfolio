@@ -289,11 +289,11 @@
   .cell {
     aspect-ratio: 1; background: var(--bg); border: none; border-radius: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: clamp(2.4rem, 10vw, 3.8rem); font-weight: 900;
+    font-size: clamp(3rem, 15vw, 5rem); font-weight: 900;
     cursor: default; user-select: none; position: relative; overflow: hidden;
     transition: background 0.12s;
   }
-  .cell.cell-sm { font-size: clamp(1.6rem, 6.5vw, 2.6rem); }
+  .cell.cell-sm { font-size: clamp(2rem, 10vw, 3.2rem); }
 
   /* ONLINE ROOM HEADER */
   .room-header-card {
@@ -330,8 +330,8 @@
   .cell.win-cell.sym-x { background: #7a1a1a; color: #fff; }
   .cell.win-cell.sym-o { background: #1a3d80; color: #fff; }
   .cell.win-cell.sym-v { background: #1a5c38; color: #fff; }
-  .cell.clickable::after { content: attr(data-preview); position: absolute; font-weight: 900; font-size: clamp(2.4rem,10vw,3.8rem); opacity: 0; transition: opacity 0.12s; }
-  .cell.cell-sm.clickable::after { font-size: clamp(1.6rem,6.5vw,2.6rem); }
+  .cell.clickable::after { content: attr(data-preview); position: absolute; font-weight: 900; font-size: clamp(3rem,15vw,5rem); opacity: 0; transition: opacity 0.12s; }
+  .cell.cell-sm.clickable::after { font-size: clamp(2rem,10vw,3.2rem); }
   .cell.clickable:hover::after { opacity: 0.35; }
   .cell.preview-x::after { color: var(--sym-x); }
   .cell.preview-o::after { color: var(--sym-o); }
