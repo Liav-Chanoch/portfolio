@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" id="theme-color-meta" content="#ebe6da">
 <title>XOV — Live Multiplayer</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,7 +47,15 @@
     border-bottom: 1px solid var(--border);
     padding: 0 1.25rem; height: 56px;
     display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.2s, border-color 0.2s;
   }
+  body.active-x nav { background: var(--sym-x); backdrop-filter: none; border-bottom-color: rgba(255,255,255,0.15); }
+  body.active-o nav { background: var(--sym-o); backdrop-filter: none; border-bottom-color: rgba(255,255,255,0.15); }
+  body.active-v nav { background: var(--sym-v); backdrop-filter: none; border-bottom-color: rgba(255,255,255,0.15); }
+  body.active-x nav *, body.active-o nav *, body.active-v nav * { color: rgba(255,255,255,0.92) !important; }
+  body.active-x .match-bar { background: var(--sym-x); color: rgba(255,255,255,0.8); }
+  body.active-o .match-bar { background: var(--sym-o); color: rgba(255,255,255,0.8); }
+  body.active-v .match-bar { background: var(--sym-v); color: rgba(255,255,255,0.8); }
   .nav-logo { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: var(--text); }
   .nav-right { display: flex; align-items: center; gap: 0.75rem; }
   .nav-avatar {
@@ -1000,18 +1009,32 @@
     }
   }
 
+  const SYM_COLOR = ['#b83232', '#2a6fa8', '#4a6741'];
+
+  function setTheme(color) {
+    document.body.classList.remove('active-x', 'active-o', 'active-v');
+    const meta = document.getElementById('theme-color-meta');
+    if (color) {
+      document.body.classList.add('active-' + color);
+      if (meta) meta.content = SYM_COLOR[SYM_KEY.indexOf(color)];
+    } else {
+      if (meta) meta.content = '#ebe6da';
+    }
+  }
+
   function renderStatus(g, myTurn, symIdx, curP) {
     const bar  = document.getElementById('status-bar');
     const icon = document.getElementById('status-sym-icon');
     const lbl  = document.getElementById('status-label');
     const sub  = document.getElementById('status-sub');
 
-    if (g.status === 'finished') { bar.style.display = 'none'; return; }
+    if (g.status === 'finished') { bar.style.display = 'none'; setTheme(null); return; }
 
     bar.style.display = '';
     bar.className = 'status-bar'; // reset color class
 
     bar.classList.add('active-' + SYM_KEY[symIdx]);
+    setTheme(SYM_KEY[symIdx]);
     icon.textContent = SYMBOLS[symIdx];
 
     if (isLocal) {
@@ -1510,6 +1533,7 @@
   };
 
   window.leaveGame = function() {
+    setTheme(null);
     if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
     document.getElementById('pass-overlay').classList.remove('open');
     document.getElementById('online-room-header').classList.remove('visible');
