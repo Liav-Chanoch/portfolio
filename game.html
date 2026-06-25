@@ -299,8 +299,30 @@
   .room-header-card {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 14px; padding: 0.9rem 1.25rem; margin-bottom: 1rem; display: none;
+    transition: background 0.2s, margin 0.2s, border-radius 0.2s;
   }
   .room-header-card.visible { display: block; }
+  body.active-x .room-header-card.visible,
+  body.active-o .room-header-card.visible,
+  body.active-v .room-header-card.visible {
+    margin-top: -1.25rem;
+    margin-left: -1.5rem; margin-right: -1.5rem;
+    margin-bottom: 0;
+    border-radius: 0; border: none;
+    padding-left: 2.75rem; padding-right: 2.75rem;
+    background: rgba(0,0,0,0.1);
+  }
+  body.active-x .room-header-card.visible *,
+  body.active-o .room-header-card.visible *,
+  body.active-v .room-header-card.visible * { color: rgba(255,255,255,0.9) !important; }
+  @media (max-width: 480px) {
+    body.active-x .room-header-card.visible,
+    body.active-o .room-header-card.visible,
+    body.active-v .room-header-card.visible {
+      margin-left: -1rem; margin-right: -1rem;
+      padding-left: 2.25rem; padding-right: 2.25rem;
+    }
+  }
   .room-header-players {
     display: flex; align-items: center; gap: 0.5rem;
   }
@@ -974,7 +996,7 @@
       myTurn = curP === myPlayer && g.status === 'playing';
     }
     const done = g.status === 'finished';
-    renderMatchBar(g);
+    renderMatchBar(g, symIdx, curP);
     renderStatus(g, myTurn, symIdx, curP);
     renderBoard(g, myTurn, symIdx, done, curP);
     renderQueue(g);
@@ -982,7 +1004,7 @@
     else document.getElementById('result-banner').classList.remove('visible');
   }
 
-  function renderMatchBar(g) {
+  function renderMatchBar(g, symIdx, curP) {
     const barEl = document.getElementById('match-bar');
     const rhEl  = document.getElementById('online-room-header');
     if (isAI || isLocal) {
@@ -1008,6 +1030,16 @@
     document.getElementById('rhp-score-left').textContent  = p1Score;
     document.getElementById('rhp-score-right').textContent = p2Score;
     document.getElementById('rhp-game-label').textContent  = `Game ${mGame} of 3`;
+    // Highlight active player's avatar with current symbol color
+    const leftPic  = document.getElementById('rhp-left-pic');
+    const rightPic = document.getElementById('rhp-right-pic');
+    const color = SYM_COLOR[symIdx];
+    leftPic.style.background  = curP === 'p1' ? color : '';
+    leftPic.style.color       = curP === 'p1' ? '#fff' : '';
+    leftPic.style.borderColor = curP === 'p1' ? color : '';
+    rightPic.style.background  = curP === 'p2' ? color : '';
+    rightPic.style.color       = curP === 'p2' ? '#fff' : '';
+    rightPic.style.borderColor = curP === 'p2' ? color : '';
   }
 
   function renderPic(elId, photoURL, name) {
