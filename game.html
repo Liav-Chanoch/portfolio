@@ -375,6 +375,9 @@
         <div class="login-divider">or</div>
         <div class="email-form">
           <input id="email-input" type="email" class="text-input" placeholder="Email address" autocomplete="email" />
+          <input id="nickname-input" type="text" class="text-input" placeholder="Nickname (shown to other players)"
+            autocomplete="nickname" maxlength="20" style="display:none"
+            onkeydown="if(event.key==='Enter') handleEmailAuth()" />
           <input id="password-input" type="password" class="text-input" placeholder="Password" autocomplete="current-password"
             onkeydown="if(event.key==='Enter') handleEmailAuth()" />
           <p id="auth-error" class="auth-error"></p>
@@ -664,6 +667,7 @@
     document.getElementById('auth-toggle-link').textContent = isSignIn ? 'Create one' : 'Sign in';
     document.getElementById('auth-error').textContent = '';
     document.getElementById('password-input').autocomplete = isSignIn ? 'current-password' : 'new-password';
+    document.getElementById('nickname-input').style.display = isSignIn ? 'none' : 'block';
   };
 
   window.handleEmailAuth = async function() {
@@ -671,14 +675,16 @@
     const password = document.getElementById('password-input').value;
     const errEl    = document.getElementById('auth-error');
     errEl.textContent = '';
+    const nickname = document.getElementById('nickname-input').value.trim();
     if (!email)    { errEl.textContent = 'Enter your email'; return; }
+    if (authMode === 'signup' && !nickname) { errEl.textContent = 'Choose a nickname'; return; }
     if (!password) { errEl.textContent = 'Enter your password'; return; }
     try {
       if (authMode === 'signin') {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
         const { user } = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(user, { displayName: email.split('@')[0] });
+        await updateProfile(user, { displayName: nickname });
       }
     } catch(e) {
       errEl.textContent = friendlyAuthError(e.code);
@@ -888,7 +894,7 @@
     renderMatchBar(g);
     renderStatus(g, myTurn, symIdx, curP);
     renderBoard(g, myTurn, symIdx, done, curP);
-    renderQueue(g.turn, done);
+    renderQueue(g);
     if (done) showResult(g);
     else document.getElementById('result-banner').classList.remove('visible');
   }
@@ -956,11 +962,16 @@
       const pName = curP === 'p1' ? 'Player 1' : 'Player 2';
       lbl.textContent = `${pName}'s turn — Play ${SYMBOLS[symIdx]}`;
       sub.textContent = 'Place on any open cell';
+    } else if (isAI) {
+      const myN = shortName(currentUser?.displayName) || 'You';
+      lbl.textContent = myTurn ? `${myN}'s turn — Play ${SYMBOLS[symIdx]}` : 'AI is thinking…';
+      sub.textContent = myTurn ? 'Place on any open cell' : '';
     } else {
+      const oppN = myPlayer === 'p1' ? shortName(g.p2Name) : shortName(g.p1Name);
       lbl.textContent = myTurn
         ? `Your turn — Play ${SYMBOLS[symIdx]}`
-        : (isAI ? 'AI is thinking…' : "Opponent's turn");
-      sub.textContent = myTurn ? 'Place on any open cell' : (isAI ? '' : 'Waiting for their move…');
+        : `${oppN || 'Opponent'}'s turn`;
+      sub.textContent = myTurn ? 'Place on any open cell' : 'Waiting for their move…';
     }
   }
 
@@ -1159,19 +1170,39 @@
 
   // ── QUEUE ─────────────────────────────────────────────────────
 
-  function renderQueue(turn, done) {
-    if (done) return;
+  function shortName(full) {
+    if (!full) return '';
+    return full.split(' ')[0].substring(0, 10);
+  }
+
+  function renderQueue(g) {
+    const turn = g.turn;
+    if (g.status === 'finished') return;
     const el = document.getElementById('queue-items');
     el.innerHTML = '';
+
+    let myName, oppName;
+    if (isLocal) {
+      myName = 'P1'; oppName = 'P2';
+    } else if (isAI) {
+      myName  = shortName(currentUser?.displayName) || 'You';
+      oppName = 'AI';
+    } else {
+      const p1 = shortName(g.p1Name) || 'P1';
+      const p2 = shortName(g.p2Name) || 'P2';
+      myName  = myPlayer === 'p1' ? p1 : p2;
+      oppName = myPlayer === 'p1' ? p2 : p1;
+    }
+
     for (let i = 0; i < 5; i++) {
       const t  = turn + i;
       const si = t % 3;
       let whoLabel;
       if (isLocal) {
-        whoLabel = t % 2 === 0 ? 'P1' : 'P2';
+        whoLabel = t % 2 === 0 ? myName : oppName;
       } else {
         const isMe = (t % 2 === 0 ? 'p1' : 'p2') === myPlayer;
-        whoLabel = isMe ? 'You' : (isAI ? 'AI' : 'Them');
+        whoLabel = isMe ? myName : oppName;
       }
       if (i > 0) { const a = document.createElement('span'); a.className = 'queue-arrow'; a.textContent = '→'; el.appendChild(a); }
       const item = document.createElement('div');
