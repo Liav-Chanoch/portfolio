@@ -8,9 +8,9 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #f7f4ee;
-    --surface: #edeae2;
-    --surface2: #e4e0d6;
+    --bg: #ebe6da;
+    --surface: #e2ddd1;
+    --surface2: #d8d3c6;
     --border: rgba(26,24,20,0.10);
     --border2: rgba(26,24,20,0.18);
     --text: #1a1814;
@@ -169,22 +169,31 @@
   .match-bar.visible { display: block; }
 
   .status-bar {
-    background: var(--surface); border: 1px solid var(--border);
     border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1rem;
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    display: flex; align-items: center; gap: 1rem;
+    background: var(--surface); transition: background 0.2s;
   }
-  .status-left { display: flex; align-items: center; gap: 0.75rem; }
-  .player-dot { width: 10px; height: 10px; border-radius: 50%; transition: background 0.3s; background: var(--muted); }
-  .player-dot.p1 { background: var(--sym-x); }
-  .player-dot.p2 { background: var(--sym-o); }
-  .status-label { font-size: 13px; font-weight: 600; color: var(--text); }
-  .status-sub { font-size: 12px; color: var(--muted); }
-  .status-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
-  .next-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .sym-chip { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; font-weight: 800; border: 1.5px solid; }
-  .sym-chip.sym-x { color: var(--sym-x); background: var(--sym-x-bg); border-color: var(--sym-x-border); }
-  .sym-chip.sym-o { color: var(--sym-o); background: var(--sym-o-bg); border-color: var(--sym-o-border); }
-  .sym-chip.sym-v { color: var(--sym-v); background: var(--sym-v-bg); border-color: var(--sym-v-border); }
+  .status-bar.active-x { background: var(--sym-x); }
+  .status-bar.active-o { background: var(--sym-o); }
+  .status-bar.active-v { background: var(--sym-v); }
+  .status-sym-icon {
+    width: 56px; height: 56px; border-radius: 12px; flex-shrink: 0;
+    background: rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.9rem; font-weight: 900; color: #fff;
+    transition: background 0.2s;
+  }
+  .status-bar:not(.active-x):not(.active-o):not(.active-v) .status-sym-icon {
+    background: var(--surface2); color: var(--text);
+  }
+  .status-label { font-size: 1rem; font-weight: 700; color: var(--text); }
+  .status-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .status-bar.active-x .status-label,
+  .status-bar.active-o .status-label,
+  .status-bar.active-v .status-label { color: #fff; }
+  .status-bar.active-x .status-sub,
+  .status-bar.active-o .status-sub,
+  .status-bar.active-v .status-sub { color: rgba(255,255,255,0.75); }
 
   /* QUEUE */
   .queue-wrap { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
@@ -470,17 +479,11 @@
 
     <div class="match-bar" id="match-bar"></div>
 
-    <div class="status-bar">
-      <div class="status-left">
-        <div class="player-dot" id="player-dot"></div>
-        <div>
-          <div class="status-label" id="status-label">Connecting…</div>
-          <div class="status-sub" id="status-sub"></div>
-        </div>
-      </div>
-      <div class="status-right">
-        <span class="next-label">Playing</span>
-        <div class="sym-chip" id="current-sym-chip"></div>
+    <div class="status-bar" id="status-bar">
+      <div class="status-sym-icon" id="status-sym-icon"></div>
+      <div>
+        <div class="status-label" id="status-label">Connecting…</div>
+        <div class="status-sub" id="status-sub"></div>
       </div>
     </div>
 
@@ -924,29 +927,36 @@
   }
 
   function renderStatus(g, myTurn, symIdx, curP) {
+    const bar  = document.getElementById('status-bar');
+    const icon = document.getElementById('status-sym-icon');
     const lbl  = document.getElementById('status-label');
     const sub  = document.getElementById('status-sub');
-    const chip = document.getElementById('current-sym-chip');
-    const dot  = document.getElementById('player-dot');
+
+    bar.className = 'status-bar'; // reset color class
+
     if (g.status === 'finished') {
+      icon.textContent = g.winner === 'draw' ? '🤝' : '🏆';
       if (isLocal) {
         lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === 'p1' ? 'Player 1 wins!' : 'Player 2 wins!');
       } else {
-        lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === myPlayer) ? 'You win! 🎉' : 'You lose';
+        lbl.textContent = g.winner === 'draw' ? "It's a draw!" : (g.winner === myPlayer ? 'You win!' : 'You lose');
       }
       sub.textContent = '';
       return;
     }
-    dot.className = 'player-dot ' + curP;
-    chip.className = 'sym-chip ' + SYM_CLS[symIdx];
-    chip.textContent = SYMBOLS[symIdx];
+
+    bar.classList.add('active-' + SYM_KEY[symIdx]);
+    icon.textContent = SYMBOLS[symIdx];
+
     if (isLocal) {
       const pName = curP === 'p1' ? 'Player 1' : 'Player 2';
-      lbl.textContent = `${pName}'s turn`;
-      sub.textContent = `Place ${SYMBOLS[symIdx]} on any open cell`;
+      lbl.textContent = `${pName}'s turn — Play ${SYMBOLS[symIdx]}`;
+      sub.textContent = 'Place on any open cell';
     } else {
-      lbl.textContent = myTurn ? 'Your turn' : (isAI ? 'AI thinking…' : "Opponent's turn");
-      sub.textContent = myTurn ? `Place ${SYMBOLS[symIdx]} on any open cell` : (isAI ? '' : 'Waiting for their move…');
+      lbl.textContent = myTurn
+        ? `Your turn — Play ${SYMBOLS[symIdx]}`
+        : (isAI ? 'AI is thinking…' : "Opponent's turn");
+      sub.textContent = myTurn ? 'Place on any open cell' : (isAI ? '' : 'Waiting for their move…');
     }
   }
 
