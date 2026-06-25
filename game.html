@@ -296,32 +296,29 @@
   .cell.cell-sm { font-size: clamp(2rem, 10vw, 3.2rem); }
 
   /* ONLINE ROOM HEADER */
-  .room-header-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 0.9rem 1.25rem; margin-bottom: 1rem; display: none;
-    transition: background 0.2s, margin 0.2s, border-radius 0.2s;
-  }
-  .room-header-card.visible { display: block; }
-  body.active-x .room-header-card.visible,
-  body.active-o .room-header-card.visible,
-  body.active-v .room-header-card.visible {
+  /* Outer band — visibility + active color strip */
+  .rh-band { display: none; margin-bottom: 1rem; }
+  .rh-band.visible { display: block; }
+  body.active-x .rh-band.visible,
+  body.active-o .rh-band.visible,
+  body.active-v .rh-band.visible {
     margin-top: -1.25rem;
     margin-left: -1.5rem; margin-right: -1.5rem;
     margin-bottom: 0;
-    border-radius: 0; border: none;
-    padding-left: 2.75rem; padding-right: 2.75rem;
-    background: rgba(0,0,0,0.1);
+    padding: 0.6rem 1.5rem 0.6rem;
   }
-  body.active-x .room-header-card.visible *,
-  body.active-o .room-header-card.visible *,
-  body.active-v .room-header-card.visible * { color: rgba(255,255,255,0.9) !important; }
   @media (max-width: 480px) {
-    body.active-x .room-header-card.visible,
-    body.active-o .room-header-card.visible,
-    body.active-v .room-header-card.visible {
+    body.active-x .rh-band.visible,
+    body.active-o .rh-band.visible,
+    body.active-v .rh-band.visible {
       margin-left: -1rem; margin-right: -1rem;
-      padding-left: 2.25rem; padding-right: 2.25rem;
+      padding-left: 1rem; padding-right: 1rem;
     }
+  }
+  /* Inner card — always looks like a card */
+  .room-header-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 0.9rem 1.25rem;
   }
   .room-header-players {
     display: flex; align-items: center; gap: 0.5rem;
@@ -535,28 +532,30 @@
 <div id="screen-game" class="screen">
   <div class="page-wrap">
 
-    <div class="room-header-card" id="online-room-header">
-      <div class="room-header-players">
-        <div class="room-header-player" id="rhp-left">
-          <div class="rhp-pic" id="rhp-left-pic"></div>
-          <div class="rhp-player-info">
-            <div class="rhp-name" id="rhp-left-name">Player 1</div>
-            <div class="rhp-you" id="rhp-left-you"></div>
+    <div class="rh-band" id="online-room-header">
+      <div class="room-header-card">
+        <div class="room-header-players">
+          <div class="room-header-player" id="rhp-left">
+            <div class="rhp-pic" id="rhp-left-pic"></div>
+            <div class="rhp-player-info">
+              <div class="rhp-name" id="rhp-left-name">Player 1</div>
+              <div class="rhp-you" id="rhp-left-you"></div>
+            </div>
           </div>
-        </div>
-        <div class="rhp-score-center">
-          <div>
-            <span class="rhp-score" id="rhp-score-left">0</span>
-            <span class="rhp-score-sep">–</span>
-            <span class="rhp-score" id="rhp-score-right">0</span>
+          <div class="rhp-score-center">
+            <div>
+              <span class="rhp-score" id="rhp-score-left">0</span>
+              <span class="rhp-score-sep">–</span>
+              <span class="rhp-score" id="rhp-score-right">0</span>
+            </div>
+            <div class="rhp-game-label" id="rhp-game-label">Game 1 of 3</div>
           </div>
-          <div class="rhp-game-label" id="rhp-game-label">Game 1 of 3</div>
-        </div>
-        <div class="room-header-player rhp-right" id="rhp-right">
-          <div class="rhp-pic" id="rhp-right-pic"></div>
-          <div class="rhp-player-info">
-            <div class="rhp-name" id="rhp-right-name">Player 2</div>
-            <div class="rhp-you" id="rhp-right-you"></div>
+          <div class="room-header-player rhp-right" id="rhp-right">
+            <div class="rhp-pic" id="rhp-right-pic"></div>
+            <div class="rhp-player-info">
+              <div class="rhp-name" id="rhp-right-name">Player 2</div>
+              <div class="rhp-you" id="rhp-right-you"></div>
+            </div>
           </div>
         </div>
       </div>
