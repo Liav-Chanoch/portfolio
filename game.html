@@ -53,6 +53,13 @@
   body.active-o nav { background: var(--sym-o); backdrop-filter: none; border-bottom-color: rgba(255,255,255,0.15); }
   body.active-v nav { background: var(--sym-v); backdrop-filter: none; border-bottom-color: rgba(255,255,255,0.15); }
   body.active-x nav *, body.active-o nav *, body.active-v nav * { color: rgba(255,255,255,0.92) !important; }
+  body.active-x .match-bar,
+  body.active-o .match-bar,
+  body.active-v .match-bar {
+    margin-top: -1.25rem;
+    margin-left: -1.5rem; margin-right: -1.5rem;
+    padding: 0.45rem 2.75rem; margin-bottom: 0;
+  }
   body.active-x .match-bar { background: var(--sym-x); color: rgba(255,255,255,0.8); }
   body.active-o .match-bar { background: var(--sym-o); color: rgba(255,255,255,0.8); }
   body.active-v .match-bar { background: var(--sym-v); color: rgba(255,255,255,0.8); }
@@ -359,6 +366,9 @@
     .game-title { font-size: 2.4rem; }
     .nav-name { display: none; }
     .status-bar { margin-left: -1rem; margin-right: -1rem; padding-left: 2.25rem; padding-right: 2.25rem; }
+    body.active-x .match-bar,
+    body.active-o .match-bar,
+    body.active-v .match-bar { margin-left: -1rem; margin-right: -1rem; padding-left: 2.25rem; padding-right: 2.25rem; }
   }
   #screen-game .page-wrap { padding-top: 1.25rem; }
 
