@@ -206,7 +206,13 @@
   .result-emoji { font-size: 2rem; margin-bottom: 0.25rem; }
   .result-title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
   .result-sub { font-size: 13px; color: var(--muted); margin-bottom: 1rem; }
-  .result-score-update { font-size: 12px; font-weight: 600; color: var(--sym-v); margin-bottom: 1rem; }
+  .result-score-update { font-size: 12px; font-weight: 600; color: var(--sym-v); margin-bottom: 0.5rem; }
+  .result-match-badge {
+    font-size: 12px; font-weight: 700; color: var(--text);
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 20px; padding: 0.3rem 0.9rem; margin-bottom: 0.75rem; display: none;
+  }
+  .result-match-badge.visible { display: inline-block; }
   .result-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 
   /* BOARD */
@@ -220,6 +226,32 @@
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
   }
   .cell.cell-sm { font-size: clamp(0.9rem, 3vw, 1.2rem); border-radius: 8px; }
+
+  /* ONLINE ROOM HEADER */
+  .room-header-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 0.9rem 1.25rem; margin-bottom: 1rem; display: none;
+  }
+  .room-header-card.visible { display: block; }
+  .room-header-players {
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .room-header-player { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
+  .room-header-player.rhp-right { flex-direction: row-reverse; }
+  .room-header-player.rhp-right .rhp-player-info { text-align: right; }
+  .rhp-pic {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    border: 1.5px solid var(--border2); background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: var(--muted); overflow: hidden;
+  }
+  .rhp-pic img { width: 100%; height: 100%; object-fit: cover; }
+  .rhp-name { font-size: 12px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px; }
+  .rhp-you { font-size: 10px; color: var(--muted); }
+  .rhp-score-center { flex-shrink: 0; text-align: center; padding: 0 0.5rem; }
+  .rhp-score { font-size: 1.6rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; line-height: 1.1; }
+  .rhp-score-sep { font-size: 1rem; color: var(--muted); margin: 0 0.15rem; }
+  .rhp-game-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 0.15rem; }
   .cell.clickable { cursor: pointer; }
   .cell.clickable:hover { background: var(--surface2); border-color: var(--accent-border); transform: scale(1.04); }
   .cell.waiting-cell { opacity: 0.6; }
@@ -406,6 +438,33 @@
 <div id="screen-game" class="screen">
   <div class="page-wrap">
 
+    <div class="room-header-card" id="online-room-header">
+      <div class="room-header-players">
+        <div class="room-header-player" id="rhp-left">
+          <div class="rhp-pic" id="rhp-left-pic"></div>
+          <div class="rhp-player-info">
+            <div class="rhp-name" id="rhp-left-name">Player 1</div>
+            <div class="rhp-you" id="rhp-left-you"></div>
+          </div>
+        </div>
+        <div class="rhp-score-center">
+          <div>
+            <span class="rhp-score" id="rhp-score-left">0</span>
+            <span class="rhp-score-sep">–</span>
+            <span class="rhp-score" id="rhp-score-right">0</span>
+          </div>
+          <div class="rhp-game-label" id="rhp-game-label">Game 1 of 3</div>
+        </div>
+        <div class="room-header-player rhp-right" id="rhp-right">
+          <div class="rhp-pic" id="rhp-right-pic"></div>
+          <div class="rhp-player-info">
+            <div class="rhp-name" id="rhp-right-name">Player 2</div>
+            <div class="rhp-you" id="rhp-right-you"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="match-bar" id="match-bar"></div>
 
     <div class="status-bar">
@@ -431,6 +490,7 @@
       <div class="result-emoji" id="result-emoji"></div>
       <div class="result-title" id="result-title"></div>
       <div class="result-sub" id="result-sub"></div>
+      <div class="result-match-badge" id="result-match-badge"></div>
       <div class="result-score-update" id="result-score-update"></div>
       <div class="result-actions" id="result-actions"></div>
     </div>
@@ -748,7 +808,13 @@
   window.createGame = async function() {
     isAI = false; isLocal = false;
     roomCode = generateCode(); myPlayer = 'p1'; scoreUpdated = false; save();
-    await set(gameRef(), { board: emptyBoard(), turn: 0, status: 'waiting', winner: '', winCells: '', gameType });
+    const p1Name  = currentUser ? (currentUser.displayName || 'Player 1') : 'Guest';
+    const p1Photo = currentUser ? (currentUser.photoURL  || '') : '';
+    await set(gameRef(), {
+      board: emptyBoard(), turn: 0, status: 'waiting', winner: '', winCells: '', gameType,
+      p1Name, p1Photo, p2Name: '', p2Photo: '',
+      matchP1Score: 0, matchP2Score: 0, matchGame: 1, matchWinner: ''
+    });
     document.getElementById('room-code-display').textContent = roomCode;
     showScreen('screen-waiting');
     listen();
@@ -763,7 +829,9 @@
     if (g.status !== 'waiting') { showError('Game already in progress'); return; }
     setGameType(g.gameType || '4x4');
     isAI = false; isLocal = false; roomCode = code; myPlayer = 'p2'; scoreUpdated = false; save();
-    await update(gameRef(), { status: 'playing' });
+    const p2Name  = currentUser ? (currentUser.displayName || 'Player 2') : 'Guest';
+    const p2Photo = currentUser ? (currentUser.photoURL  || '') : '';
+    await update(gameRef(), { status: 'playing', p2Name, p2Photo });
     enterGame();
     listen();
   };
@@ -783,6 +851,13 @@
         enterGame();
       }
       if (document.getElementById('screen-game').classList.contains('active')) {
+        // If game restarted (banner visible but game playing), reset for next game
+        if (g.status === 'playing' && document.getElementById('result-banner').classList.contains('visible')) {
+          scoreUpdated = false;
+          document.getElementById('result-banner').classList.remove('visible');
+          document.getElementById('result-match-badge').textContent = '';
+          document.getElementById('result-match-badge').classList.remove('visible');
+        }
         render(g);
       }
     });
@@ -800,7 +875,7 @@
       myTurn = curP === myPlayer && g.status === 'playing';
     }
     const done = g.status === 'finished';
-    renderMatchBar();
+    renderMatchBar(g);
     renderStatus(g, myTurn, symIdx, curP);
     renderBoard(g, myTurn, symIdx, done, curP);
     renderQueue(g.turn, done);
@@ -808,11 +883,41 @@
     else document.getElementById('result-banner').classList.remove('visible');
   }
 
-  function renderMatchBar() {
-    const el = document.getElementById('match-bar');
-    if (!inMatch || (!isAI && !isLocal)) { el.classList.remove('visible'); return; }
-    el.classList.add('visible');
-    el.textContent = `Game ${matchGame} of 3  ·  ${matchScore.p1}–${matchScore.p2}`;
+  function renderMatchBar(g) {
+    const barEl = document.getElementById('match-bar');
+    const rhEl  = document.getElementById('online-room-header');
+    if (isAI || isLocal) {
+      rhEl.classList.remove('visible');
+      if (!inMatch) { barEl.classList.remove('visible'); return; }
+      barEl.classList.add('visible');
+      barEl.textContent = `Game ${matchGame} of 3  ·  ${matchScore.p1}–${matchScore.p2}`;
+      return;
+    }
+    // Online: room header card
+    barEl.classList.remove('visible');
+    if (!g || !g.p2Name) { rhEl.classList.remove('visible'); return; }
+    rhEl.classList.add('visible');
+    const p1Score = g.matchP1Score || 0;
+    const p2Score = g.matchP2Score || 0;
+    const mGame   = g.matchGame || 1;
+    renderPic('rhp-left-pic',  g.p1Photo || '', g.p1Name || 'P1');
+    renderPic('rhp-right-pic', g.p2Photo || '', g.p2Name || 'P2');
+    document.getElementById('rhp-left-name').textContent  = g.p1Name || 'Player 1';
+    document.getElementById('rhp-right-name').textContent = g.p2Name || 'Player 2';
+    document.getElementById('rhp-left-you').textContent   = myPlayer === 'p1' ? 'You' : '';
+    document.getElementById('rhp-right-you').textContent  = myPlayer === 'p2' ? 'You' : '';
+    document.getElementById('rhp-score-left').textContent  = p1Score;
+    document.getElementById('rhp-score-right').textContent = p2Score;
+    document.getElementById('rhp-game-label').textContent  = `Game ${mGame} of 3`;
+  }
+
+  function renderPic(elId, photoURL, name) {
+    const el = document.getElementById(elId);
+    if (photoURL) {
+      el.innerHTML = `<img src="${photoURL}" alt="" />`;
+    } else {
+      el.textContent = (name || '?').charAt(0).toUpperCase();
+    }
   }
 
   function renderStatus(g, myTurn, symIdx, curP) {
@@ -895,15 +1000,27 @@
     if ((g.turn % 2 === 0 ? 'p1' : 'p2') !== myPlayer) return;
     const si = g.turn % 3;
     board[i] = si;
-    const result = checkWin(board);
-    const full   = board.every(v => v !== null);
-    await update(gameRef(), {
+    const result   = checkWin(board);
+    const full     = board.every(v => v !== null);
+    const gameOver = !!(result || full);
+    const winner   = result ? myPlayer : full ? 'draw' : '';
+    const updates  = {
       board:    boardToStr(board),
       turn:     g.turn + 1,
-      status:   (result || full) ? 'finished' : 'playing',
-      winner:   result ? myPlayer : full ? 'draw' : '',
-      winCells: result ? result.cells.join(',') : ''
-    });
+      status:   gameOver ? 'finished' : 'playing',
+      winner,
+      winCells: result ? result.cells.join(',') : '',
+    };
+    if (gameOver) {
+      const newP1 = (g.matchP1Score || 0) + (winner === 'p1' ? 1 : 0);
+      const newP2 = (g.matchP2Score || 0) + (winner === 'p2' ? 1 : 0);
+      const mGame = g.matchGame || 1;
+      const mOver = newP1 >= 2 || newP2 >= 2 || mGame >= 3;
+      updates.matchP1Score = newP1;
+      updates.matchP2Score = newP2;
+      if (mOver) updates.matchWinner = newP1 > newP2 ? 'p1' : newP2 > newP1 ? 'p2' : 'tied';
+    }
+    await update(gameRef(), updates);
   }
 
   function applyMove(g, i, mover) {
@@ -1059,8 +1176,11 @@
     if (b.classList.contains('visible') && scoreUpdated) return;
     b.classList.add('visible');
 
-    const scoreEl = document.getElementById('result-score-update');
+    const scoreEl    = document.getElementById('result-score-update');
+    const matchBadge = document.getElementById('result-match-badge');
     scoreEl.textContent = '';
+    matchBadge.textContent = '';
+    matchBadge.classList.remove('visible');
 
     let iWon, isDraw;
     if (g.winner === 'draw') {
@@ -1090,13 +1210,35 @@
 
     scoreUpdated = true;
 
-    // Update match score
+    // Update match score / render result actions
     if (inMatch && (isAI || isLocal)) {
       if (!isDraw) {
         const winner = isLocal ? g.winner : (iWon ? 'p1' : 'p2');
         matchScore[winner]++;
       }
       renderMatchActions(isDraw, iWon, g);
+    } else if (!isAI && !isLocal) {
+      // Online match — scores come from Firebase
+      const mP1   = g.matchP1Score || 0;
+      const mP2   = g.matchP2Score || 0;
+      const mGame = g.matchGame || 1;
+      const mOver = mP1 >= 2 || mP2 >= 2 || mGame >= 3;
+      if (mP1 > 0 || mP2 > 0 || mGame > 1 || mOver) {
+        const myScore    = myPlayer === 'p1' ? mP1 : mP2;
+        const theirScore = myPlayer === 'p1' ? mP2 : mP1;
+        matchBadge.classList.add('visible');
+        if (mOver && g.matchWinner) {
+          const tied = g.matchWinner === 'tied';
+          const iWinMatch = g.matchWinner === myPlayer;
+          matchBadge.textContent = tied
+            ? `Match tied ${mP1}–${mP2}`
+            : iWinMatch ? `Match won! ${myScore}–${theirScore} 🎉`
+            : `Match lost. ${myScore}–${theirScore}`;
+        } else {
+          matchBadge.textContent = `Match: ${myScore}–${theirScore} · Game ${mGame} of 3`;
+        }
+      }
+      renderOnlineMatchActions(g);
     } else {
       renderOnlineActions();
     }
@@ -1136,6 +1278,52 @@
       <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
     `;
   }
+
+  function renderOnlineMatchActions(g) {
+    const mP1   = g.matchP1Score || 0;
+    const mP2   = g.matchP2Score || 0;
+    const mGame = g.matchGame || 1;
+    const mOver = mP1 >= 2 || mP2 >= 2 || mGame >= 3;
+    const actionsEl = document.getElementById('result-actions');
+    if (mOver) {
+      actionsEl.innerHTML = `
+        <button class="btn btn-primary" onclick="startNewOnlineMatch()">New match</button>
+        <button class="btn btn-secondary" onclick="leaveGame()">Leave</button>
+      `;
+    } else {
+      const nextNum = mGame + 1;
+      const score = myPlayer === 'p1' ? `${mP1}–${mP2}` : `${mP2}–${mP1}`;
+      actionsEl.innerHTML = `
+        <button class="btn btn-primary" onclick="nextOnlineGame()">Game ${nextNum} · ${score}</button>
+        <button class="btn btn-ghost" onclick="leaveGame()">Leave match</button>
+      `;
+    }
+  }
+
+  window.nextOnlineGame = async function() {
+    scoreUpdated = false;
+    const snap = await get(gameRef());
+    const g = snap.val();
+    await update(gameRef(), {
+      board: emptyBoard(), turn: 0, status: 'playing',
+      winner: '', winCells: '', matchGame: (g.matchGame || 1) + 1,
+    });
+    document.getElementById('result-banner').classList.remove('visible');
+    document.getElementById('result-match-badge').textContent = '';
+    document.getElementById('result-match-badge').classList.remove('visible');
+  };
+
+  window.startNewOnlineMatch = async function() {
+    scoreUpdated = false;
+    await update(gameRef(), {
+      board: emptyBoard(), turn: 0, status: 'playing',
+      winner: '', winCells: '',
+      matchP1Score: 0, matchP2Score: 0, matchGame: 1, matchWinner: '',
+    });
+    document.getElementById('result-banner').classList.remove('visible');
+    document.getElementById('result-match-badge').textContent = '';
+    document.getElementById('result-match-badge').classList.remove('visible');
+  };
 
   window.nextMatchGame = function() {
     matchGame++;
@@ -1221,6 +1409,7 @@
   window.leaveGame = function() {
     if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
     document.getElementById('pass-overlay').classList.remove('open');
+    document.getElementById('online-room-header').classList.remove('visible');
     passBlocked = false;
     if (isAI || isLocal) {
       isAI = false; isLocal = false; localGame = null; myPlayer = null;
