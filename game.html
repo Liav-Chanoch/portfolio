@@ -1053,8 +1053,6 @@
         cell.classList.add('clickable', 'preview-' + SYM_KEY[symIdx]);
         cell.dataset.preview = SYMBOLS[symIdx];
         cell.addEventListener('click', () => makeMove(i));
-      } else if (!done) {
-        cell.classList.add('waiting-cell');
       }
       el.appendChild(cell);
     }
