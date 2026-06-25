@@ -49,9 +49,9 @@
     display: flex; align-items: center; justify-content: space-between;
     transition: background 0.2s, border-color 0.2s;
   }
-  body.active-x nav { background: var(--sym-x); backdrop-filter: none; border-bottom-color: rgba(255,255,255,0.15); }
-  body.active-o nav { background: var(--sym-o); backdrop-filter: none; border-bottom-color: rgba(255,255,255,0.15); }
-  body.active-v nav { background: var(--sym-v); backdrop-filter: none; border-bottom-color: rgba(255,255,255,0.15); }
+  body.active-x nav { background: var(--sym-x); backdrop-filter: none; border-bottom-color: transparent; }
+  body.active-o nav { background: var(--sym-o); backdrop-filter: none; border-bottom-color: transparent; }
+  body.active-v nav { background: var(--sym-v); backdrop-filter: none; border-bottom-color: transparent; }
   body.active-x nav *, body.active-o nav *, body.active-v nav * { color: rgba(255,255,255,0.92) !important; }
   body.active-x .match-bar,
   body.active-o .match-bar,
@@ -1026,9 +1026,12 @@
     const meta = document.getElementById('theme-color-meta');
     if (color) {
       document.body.classList.add('active-' + color);
-      if (meta) meta.content = SYM_COLOR[SYM_KEY.indexOf(color)];
+      const hex = SYM_COLOR[SYM_KEY.indexOf(color)];
+      if (meta) meta.content = hex;
+      document.documentElement.style.background = hex;
     } else {
       if (meta) meta.content = '#ebe6da';
+      document.documentElement.style.background = '';
     }
   }
 
