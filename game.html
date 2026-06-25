@@ -1478,8 +1478,9 @@
     scoreUpdated = false;
     const snap = await get(gameRef());
     const g = snap.val();
+    const startTurn = g.winner === 'p2' ? 1 : 0;
     await update(gameRef(), {
-      board: emptyBoard(), turn: 0, status: 'playing',
+      board: emptyBoard(), turn: startTurn, status: 'playing',
       winner: '', winCells: '', matchGame: (g.matchGame || 1) + 1,
     });
     document.getElementById('result-banner').classList.remove('visible');
@@ -1496,12 +1497,12 @@
   };
 
   window.nextMatchGame = function() {
+    const startTurn = localGame && localGame.winner === 'p2' ? 1 : 0;
     matchGame++;
     scoreUpdated = false;
     passBlocked = false;
     if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
-    localGame = { board: emptyBoard(), turn: 0, status: 'playing', winner: '', winCells: '' };
-    if (isLocal) localTurnPlayer = 'p1';
+    localGame = { board: emptyBoard(), turn: startTurn, status: 'playing', winner: '', winCells: '' };
     document.getElementById('result-banner').classList.remove('visible');
     render(localGame);
   };
