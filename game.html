@@ -1154,11 +1154,40 @@
   function renderMatchBar(g, symIdx, curP) {
     const barEl = document.getElementById('match-bar');
     const rhEl  = document.getElementById('online-room-header');
-    if (isAI || isLocal) {
+
+    if (isLocal) {
       rhEl.classList.remove('visible');
       if (!inMatch || g.status === 'finished') { barEl.classList.remove('visible'); return; }
       barEl.classList.add('visible');
       barEl.textContent = `Game ${matchGame} of 3  ·  ${matchScore.p1}–${matchScore.p2}`;
+      return;
+    }
+
+    if (isAI) {
+      barEl.classList.remove('visible');
+      if (!inMatch || g.status === 'finished') { rhEl.classList.remove('visible'); return; }
+      rhEl.classList.add('visible');
+      const myName = shortName(currentUser?.displayName) || 'You';
+      renderPic('rhp-left-pic', currentUser?.photoURL || '', myName);
+      document.getElementById('rhp-left-name').textContent = myName;
+      document.getElementById('rhp-left-you').textContent  = 'You';
+      const rightPicEl = document.getElementById('rhp-right-pic');
+      rightPicEl.innerHTML = '';
+      rightPicEl.textContent = '🤖';
+      document.getElementById('rhp-right-name').textContent = 'XOV AI';
+      document.getElementById('rhp-right-you').textContent  = aiDifficulty ? aiDifficulty.charAt(0).toUpperCase() + aiDifficulty.slice(1) : 'AI';
+      document.getElementById('rhp-score-left').textContent  = matchScore.p1;
+      document.getElementById('rhp-score-right').textContent = matchScore.p2;
+      document.getElementById('rhp-game-label').textContent  = `Game ${matchGame} of 3`;
+      document.getElementById('rhp-h2h').textContent = '';
+      const leftPic  = document.getElementById('rhp-left-pic');
+      const color = SYM_COLOR[symIdx];
+      leftPic.style.background  = curP === 'p1' ? color : '';
+      leftPic.style.color       = curP === 'p1' ? '#fff' : '';
+      leftPic.style.borderColor = curP === 'p1' ? color : '';
+      rightPicEl.style.background  = curP === 'p2' ? color : '';
+      rightPicEl.style.color       = curP === 'p2' ? '#fff' : '';
+      rightPicEl.style.borderColor = curP === 'p2' ? color : '';
       return;
     }
     // Online: room header card
