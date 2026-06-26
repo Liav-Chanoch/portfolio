@@ -443,6 +443,7 @@
   .rhp-score { font-size: 1.4rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; line-height: 1.1; }
   .rhp-score-sep { font-size: 0.9rem; color: var(--muted); margin: 0 0.1rem; }
   .rhp-game-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 0.15rem; }
+  .rhp-h2h { font-size: 11px; font-weight: 600; color: var(--muted); text-align: center; margin-top: 0.5rem; letter-spacing: 0.02em; }
   .cell.clickable { cursor: pointer; }
   .cell.clickable:hover { background: var(--surface2); }
   .cell.waiting-cell { opacity: 0.5; }
@@ -662,6 +663,7 @@
             </div>
           </div>
         </div>
+        <div class="rhp-h2h" id="rhp-h2h"></div>
       </div>
     </div>
 
@@ -816,11 +818,21 @@
     document.getElementById('stats-card').classList.add('visible');
   }
 
-  async function updateScore(result) {
+  async function updateScore(result, g) {
     if (!currentUser || isGuest) return;
     const field = result === 'win' ? 'wins' : result === 'loss' ? 'losses' : 'draws';
     await updateDoc(doc(firestore, 'users', currentUser.uid), { [field]: increment(1) });
     await loadStats(currentUser.uid);
+    // Write head-to-head record for online games when opponent UID is known
+    if (g && !isAI && !isLocal) {
+      const oppUid  = myPlayer === 'p1' ? g.p2Uid : g.p1Uid;
+      const oppName = myPlayer === 'p1' ? g.p2Name : g.p1Name;
+      if (oppUid) {
+        const h2hRef = doc(firestore, 'users', currentUser.uid, 'h2h', oppUid);
+        await setDoc(h2hRef, { [field]: increment(1), opponentName: oppName || '' }, { merge: true });
+        loadH2H(oppUid, true);
+      }
+    }
   }
 
   function renderNav(user) {
@@ -1042,9 +1054,10 @@
     roomCode = generateCode(); myPlayer = 'p1'; scoreUpdated = false; save();
     const p1Name  = currentUser ? (currentUser.displayName || 'Player 1') : 'Guest';
     const p1Photo = currentUser ? (currentUser.photoURL  || '') : '';
+    const p1Uid   = currentUser ? currentUser.uid : '';
     await set(gameRef(), {
       board: emptyBoard(), turn: 0, status: 'waiting', winner: '', winCells: '', gameType,
-      p1Name, p1Photo, p2Name: '', p2Photo: '',
+      p1Name, p1Photo, p1Uid, p2Name: '', p2Photo: '', p2Uid: '',
       matchP1Score: 0, matchP2Score: 0, matchGame: 1, matchWinner: ''
     });
     document.getElementById('room-code-display').textContent = roomCode;
@@ -1063,7 +1076,8 @@
     isAI = false; isLocal = false; roomCode = code; myPlayer = 'p2'; scoreUpdated = false; save();
     const p2Name  = currentUser ? (currentUser.displayName || 'Player 2') : 'Guest';
     const p2Photo = currentUser ? (currentUser.photoURL  || '') : '';
-    await update(gameRef(), { status: 'playing', p2Name, p2Photo });
+    const p2Uid   = currentUser ? currentUser.uid : '';
+    await update(gameRef(), { status: 'playing', p2Name, p2Photo, p2Uid });
     enterGame();
     listen();
   };
@@ -1173,6 +1187,8 @@
     rightPic.style.background  = curP === 'p2' ? color : '';
     rightPic.style.color       = curP === 'p2' ? '#fff' : '';
     rightPic.style.borderColor = curP === 'p2' ? color : '';
+    const oppUid = myPlayer === 'p1' ? g.p2Uid : g.p1Uid;
+    loadH2H(oppUid);
   }
 
   function renderPic(elId, photoURL, name) {
@@ -1606,14 +1622,14 @@
     let iWon, isDraw;
     if (g.winner === 'draw') {
       isDraw = true; iWon = false;
-      if (!scoreUpdated && !isLocal) await updateScore('draw');
+      if (!scoreUpdated && !isLocal) await updateScore('draw', g);
     } else {
       isDraw = false;
       if (isLocal) {
         iWon = false;
       } else {
         iWon = isAI ? (g.winner === 'p1') : (g.winner === myPlayer);
-        if (!scoreUpdated) await updateScore(iWon ? 'win' : 'loss');
+        if (!scoreUpdated) await updateScore(iWon ? 'win' : 'loss', g);
       }
     }
 
@@ -1669,7 +1685,26 @@
     }, 800);
   }
 
-  let matchEndShown = false;
+  let matchEndShown  = false;
+  let h2hLoadedFor   = null;
+
+  async function loadH2H(opponentUid, force) {
+    const el = document.getElementById('rhp-h2h');
+    if (!el) return;
+    if (!currentUser || isGuest || !opponentUid) { el.textContent = ''; return; }
+    if (h2hLoadedFor === opponentUid && !force) return;
+    h2hLoadedFor = opponentUid;
+    const snap = await getDoc(doc(firestore, 'users', currentUser.uid, 'h2h', opponentUid));
+    if (!snap.exists()) {
+      el.textContent = 'First time playing each other';
+    } else {
+      const d = snap.data();
+      const w = d.wins || 0, l = d.losses || 0, dr = d.draws || 0;
+      const parts = [`${w}W`, `${l}L`];
+      if (dr) parts.push(`${dr}D`);
+      el.textContent = `All-time vs them: ${parts.join(' · ')}`;
+    }
+  }
 
   window.showMatchEndScreen = function(winnerName, loserName, winnerScore, loserScore, finalBoardState, winCells, iWon) {
     const overlay = document.getElementById('match-end-overlay');
@@ -1840,6 +1875,7 @@
   window.leaveGame = function() {
     setTheme(null);
     matchEndShown = false;
+    h2hLoadedFor  = null;
     document.getElementById('match-end-overlay').classList.remove('visible');
     if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
     document.getElementById('pass-overlay').classList.remove('open');
