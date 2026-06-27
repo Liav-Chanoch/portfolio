@@ -1040,8 +1040,27 @@
     document.getElementById('nav-name-btn').onclick = () => openNicknameModal(false);
   }
 
+  function isInAppBrowser() {
+    const ua = navigator.userAgent || '';
+    return /FBAN|FBAV|Instagram|WhatsApp|Line|WeChat|MicroMessenger|Snapchat/.test(ua)
+      || (/iPhone|iPad|iPod/.test(ua) && /AppleWebKit/.test(ua) && !/Safari\//.test(ua));
+  }
+
   window.signInGoogle = async function() {
-    try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(e) { console.error(e); }
+    const errEl = document.getElementById('auth-error');
+    if (isInAppBrowser()) {
+      errEl.textContent = 'Open in Safari or Chrome to sign in with Google';
+      return;
+    }
+    errEl.textContent = '';
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider());
+    } catch(e) {
+      if (e.code !== 'auth/popup-closed-by-user') {
+        errEl.textContent = 'Sign-in failed — open in Safari or Chrome and try again';
+      }
+      console.error(e);
+    }
   };
 
   let authMode = 'signin';
