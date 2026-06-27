@@ -488,6 +488,7 @@
     transition: background 0.1s;
   }
   .cell.cell-sm { font-size: clamp(1.8rem, 9vw, 3rem); }
+  .cell.cell-xs { font-size: clamp(1.1rem, 5.5vw, 2rem); }
 
   /* ONLINE ROOM HEADER */
   .rh-band { display: none; margin-bottom: 1rem; }
@@ -583,6 +584,7 @@
     font-size: clamp(2.8rem,14vw,4.8rem); opacity: 0; transition: opacity 0.12s;
   }
   .cell.cell-sm.clickable::after { font-size: clamp(1.8rem,9vw,3rem); }
+  .cell.cell-xs.clickable::after { font-size: clamp(1.1rem,5.5vw,2rem); }
   .cell.clickable:hover::after { opacity: 0.3; }
   .cell.preview-x::after { color: var(--sym-x); }
   .cell.preview-o::after { color: var(--sym-o); }
@@ -657,6 +659,37 @@
   }
   .difficulty-btn:hover { background: #ede0c0; }
   .difficulty-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 var(--ink); }
+
+  /* ── DRUM PICKERS ── */
+  .pickers-row { display: flex; gap: 10px; }
+  .picker-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .picker-lbl, .picker-unit {
+    font-family: 'Silkscreen', monospace; font-size: 7px; font-weight: 700;
+    color: var(--muted2); text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .picker-drum {
+    position: relative; width: 100%; height: 220px;
+    overflow: hidden; border: 3px solid var(--ink);
+    background: var(--paper); cursor: ns-resize;
+    user-select: none; -webkit-user-select: none;
+    touch-action: none;
+  }
+  .picker-band {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    left: 0; right: 0; height: 44px;
+    background: var(--ink); z-index: 1; pointer-events: none;
+  }
+  .picker-track { position: absolute; top: 0; left: 0; right: 0; will-change: transform; }
+  .picker-item {
+    height: 44px; display: flex; align-items: center; justify-content: center;
+    font-family: 'VT323', monospace; font-size: 34px; line-height: 1;
+    color: var(--muted2); position: relative; z-index: 0;
+  }
+  .picker-item.sel { color: var(--paper); position: relative; z-index: 3; }
+  .picker-fade {
+    position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    background: linear-gradient(to bottom, var(--paper) 0%, transparent 30%, transparent 70%, var(--paper) 100%);
+  }
 </style>
 </head>
 <body>
@@ -896,16 +929,17 @@
   const SYM_KEY = ['x', 'o', 'v'];
 
   // ── GAME TYPE STATE ───────────────────────────────────────────
-  let gameType  = '4x4'; // '4x4' | '5x5'
   let boardSize = 16;
   let gridCols  = 4;
   let winLen    = 3;
 
-  function setGameType(t) {
-    gameType  = t;
-    boardSize = t === '5x5' ? 25 : 16;
-    gridCols  = t === '5x5' ? 5  : 4;
-    winLen    = t === '5x5' ? 4  : 3;
+  function setGameConfig(cols, wl) {
+    gridCols  = cols;
+    boardSize = cols * cols;
+    winLen    = wl;
+  }
+  function setGameType(t) { // backward compat for old Firebase records
+    t === '5x5' ? setGameConfig(5, 4) : setGameConfig(4, 3);
   }
 
   function emptyBoard() { return '.'.repeat(boardSize); }
@@ -1124,16 +1158,99 @@
 
   // ── GAME TYPE MODAL ───────────────────────────────────────────
 
+  // ── PICKER DRUMS ─────────────────────────────────────────────
+  const PICKER_H   = 44;
+  const PICKER_PAD = 2;
+  let _pickerGrid = null, _pickerWin = null;
+
+  function setupPicker(drum, track, items, initialVal, onChange) {
+    let selIdx = Math.max(0, items.indexOf(initialVal));
+    let startY = 0, startOff = 0, curOff = 0, dragging = false;
+
+    function render() {
+      track.innerHTML = '';
+      for (let i = 0; i < PICKER_PAD; i++) {
+        const d = document.createElement('div'); d.className = 'picker-item'; track.appendChild(d);
+      }
+      items.forEach((v, i) => {
+        const d = document.createElement('div');
+        d.className = 'picker-item' + (i === selIdx ? ' sel' : '');
+        d.textContent = v; track.appendChild(d);
+      });
+      for (let i = 0; i < PICKER_PAD; i++) {
+        const d = document.createElement('div'); d.className = 'picker-item'; track.appendChild(d);
+      }
+    }
+
+    function applyOff(y, animate) {
+      y = Math.max(-(items.length - 1) * PICKER_H, Math.min(0, y));
+      curOff = y;
+      track.style.transition = animate ? 'transform 0.18s cubic-bezier(.25,.46,.45,.94)' : 'none';
+      track.style.transform = `translateY(${PICKER_PAD * PICKER_H + y}px)`;
+      const idx = Math.round(-y / PICKER_H);
+      track.querySelectorAll('.picker-item').forEach((el, i) => {
+        el.classList.toggle('sel', i - PICKER_PAD === idx);
+      });
+    }
+
+    function snapTo(idx) {
+      selIdx = Math.max(0, Math.min(items.length - 1, idx));
+      applyOff(-selIdx * PICKER_H, true);
+      onChange(items[selIdx]);
+    }
+
+    drum.addEventListener('touchstart', e => {
+      dragging = true; startY = e.touches[0].clientY; startOff = curOff;
+      track.style.transition = 'none';
+    }, { passive: true });
+    drum.addEventListener('touchmove', e => {
+      if (dragging) applyOff(startOff + (e.touches[0].clientY - startY), false);
+    }, { passive: true });
+    drum.addEventListener('touchend', () => {
+      dragging = false; snapTo(Math.round(-curOff / PICKER_H));
+    });
+    drum.addEventListener('mousedown', e => {
+      dragging = true; startY = e.clientY; startOff = curOff;
+      track.style.transition = 'none'; e.preventDefault();
+    });
+    document.addEventListener('mousemove', e => { if (dragging) applyOff(startOff + (e.clientY - startY), false); });
+    document.addEventListener('mouseup',   () => { if (dragging) { dragging = false; snapTo(Math.round(-curOff / PICKER_H)); } });
+    drum.addEventListener('wheel', e => {
+      e.preventDefault(); snapTo(selIdx + (e.deltaY > 0 ? 1 : -1));
+    }, { passive: false });
+
+    render();
+    applyOff(-selIdx * PICKER_H, false);
+    return { get: () => items[selIdx], snap: val => { const i = items.indexOf(val); if (i >= 0) snapTo(i); } };
+  }
+
   window.openTypeModal = function(mode) {
     pendingMode = mode;
+    if (!_pickerGrid) {
+      _pickerGrid = setupPicker(
+        document.getElementById('picker-grid'),
+        document.getElementById('picker-grid-track'),
+        [3,4,5,6,7,8], gridCols,
+        val => { if (_pickerWin && _pickerWin.get() > val) _pickerWin.snap(val); }
+      );
+      _pickerWin = setupPicker(
+        document.getElementById('picker-win'),
+        document.getElementById('picker-win-track'),
+        [3,4,5,6,7,8], winLen,
+        () => {}
+      );
+    }
     document.getElementById('type-modal').classList.add('open');
   };
+
   window.closeTypeModal = function() {
     document.getElementById('type-modal').classList.remove('open');
   };
 
-  window.selectGameType = function(t) {
-    setGameType(t);
+  window.confirmGameType = function() {
+    const cols = _pickerGrid ? _pickerGrid.get() : 4;
+    const wl   = _pickerWin  ? Math.min(_pickerWin.get(), cols) : 3;
+    setGameConfig(cols, wl);
     closeTypeModal();
     if (pendingMode === 'online') {
       createGame();
@@ -1215,7 +1332,7 @@
     const p1Photo = currentUser ? (currentUser.photoURL  || '') : '';
     const p1Uid   = currentUser ? currentUser.uid : '';
     await set(gameRef(), {
-      board: emptyBoard(), turn: 0, status: 'waiting', winner: '', winCells: '', gameType,
+      board: emptyBoard(), turn: 0, status: 'waiting', winner: '', winCells: '', gridCols, winLen,
       p1Name, p1Photo, p1Uid, p2Name: '', p2Photo: '', p2Uid: '',
       matchP1Score: 0, matchP2Score: 0, matchGame: 1, matchWinner: ''
     });
@@ -1231,7 +1348,7 @@
     if (!snap.exists()) { showError('Room not found'); return; }
     const g = snap.val();
     if (g.status !== 'waiting') { showError('Game already in progress'); return; }
-    setGameType(g.gameType || '4x4');
+    g.gridCols ? setGameConfig(g.gridCols, g.winLen || 3) : setGameType(g.gameType || '4x4');
     isAI = false; isLocal = false; roomCode = code; myPlayer = 'p2'; scoreUpdated = false; save();
     const p2Name  = currentUser ? (currentUser.displayName || 'Player 2') : 'Guest';
     const p2Photo = currentUser ? (currentUser.photoURL  || '') : '';
@@ -1476,11 +1593,11 @@
     el.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
     const board    = parseBoard(g.board);
     const winCells = parseWinCells(g.winCells);
-    const isSmall  = gridCols === 5;
+    const sizeClass = gridCols >= 6 ? 'cell-xs' : gridCols === 5 ? 'cell-sm' : '';
     const hasDimming = done && g.winner && g.winner !== 'draw';
     for (let i = 0; i < boardSize; i++) {
       const cell = document.createElement('div');
-      cell.className = 'cell' + (isSmall ? ' cell-sm' : '');
+      cell.className = 'cell' + (sizeClass ? ' ' + sizeClass : '');
       if (board[i] !== null) {
         const si = board[i];
         cell.classList.add('filled', SYM_CLS[si]);
@@ -1619,7 +1736,7 @@
   function aiHard(board, turn) {
     const e = getEmpty(board);
     let best = -Infinity, move = e[0];
-    const depth = gameType === '5x5' ? 3 : 4;
+    const depth = gridCols >= 5 ? 3 : 4;
     for (const i of e) {
       const b = board.slice(); b[i] = turn % 3;
       const s = mmAI(b, turn + 1, false, -Infinity, Infinity, depth);
@@ -1774,7 +1891,7 @@
     if (!isDraw) {
       const wc  = parseWinCells(g.winCells);
       const sym = wc ? SYMBOLS[parseBoard(g.board)[wc[0]]] : '';
-      const cnt = winLen === 4 ? 'Four' : 'Three';
+      const cnt = ['','','','Three','Four','Five','Six','Seven','Eight'][winLen] || String(winLen);
       subtitleText = sym ? `${cnt} ${sym}'s in a row` : '';
     }
 
@@ -2127,7 +2244,7 @@
     get(ref(db, `games/${roomCode}`)).then(snap => {
       if (!snap.exists()) { sessionStorage.clear(); return; }
       const g = snap.val();
-      setGameType(g.gameType || '4x4');
+      g.gridCols ? setGameConfig(g.gridCols, g.winLen || 3) : setGameType(g.gameType || '4x4');
       if (g.status === 'finished') { sessionStorage.clear(); return; }
       if (g.status === 'waiting' && myPlayer === 'p1') {
         document.getElementById('room-code-display').textContent = roomCode;
@@ -2146,12 +2263,29 @@
   <div class="modal-card">
     <div>
       <div class="modal-title">Choose game type</div>
-      <p class="modal-sub">Pick your board size</p>
+      <p class="modal-sub">Board size & win condition</p>
     </div>
-    <div class="difficulty-list">
-      <button class="difficulty-btn" onclick="selectGameType('4x4')">4×4 · Three in a row</button>
-      <button class="difficulty-btn" onclick="selectGameType('5x5')">5×5 · Four in a row</button>
+    <div class="pickers-row">
+      <div class="picker-col">
+        <div class="picker-lbl">Board Size</div>
+        <div class="picker-drum" id="picker-grid">
+          <div class="picker-band"></div>
+          <div class="picker-track" id="picker-grid-track"></div>
+          <div class="picker-fade"></div>
+        </div>
+        <div class="picker-unit">Rows</div>
+      </div>
+      <div class="picker-col">
+        <div class="picker-lbl">Win Length</div>
+        <div class="picker-drum" id="picker-win">
+          <div class="picker-band"></div>
+          <div class="picker-track" id="picker-win-track"></div>
+          <div class="picker-fade"></div>
+        </div>
+        <div class="picker-unit">In A Row</div>
+      </div>
     </div>
+    <button class="btn btn-primary btn-large" onclick="confirmGameType()">Play</button>
     <button class="btn btn-ghost" onclick="closeTypeModal()">Cancel</button>
   </div>
 </div>
