@@ -143,18 +143,22 @@
   .toggle-link { background: none; border: none; color: var(--ink); font-size: 16px; cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0; }
 
   /* ── HOME SCREEN ── */
-  .game-header { margin-bottom: 1.5rem; }
-  .game-eyebrow {
-    font-family: 'Silkscreen', monospace; font-size: 9px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase; color: var(--muted2); margin-bottom: 0.5rem;
-  }
+  .game-header { margin-bottom: 1.5rem; text-align: center; }
   .game-title {
-    font-family: 'Silkscreen', monospace; font-size: 3rem; font-weight: 700;
-    letter-spacing: 6px; color: var(--ink);
-    text-shadow: 4px 4px 0 var(--accent);
-    margin-bottom: 0.5rem; line-height: 1; text-transform: uppercase;
+    font-family: 'Silkscreen', monospace; font-size: 30px; font-weight: 700;
+    letter-spacing: 5px; color: var(--ink);
+    text-shadow: 3px 3px 0 var(--accent);
+    margin: 0.4rem 0 0; line-height: 1; text-transform: uppercase;
   }
-  .game-desc { font-size: 18px; color: var(--muted); line-height: 1.4; }
+  .game-tagline { font-family: 'VT323', monospace; font-size: 19px; color: var(--muted); letter-spacing: 3px; margin-top: 8px; }
+
+  /* XOV ice-cream logo */
+  .xov-logo { display: flex; flex-direction: column; align-items: center; font-family: 'Silkscreen', sans-serif; line-height: .74; }
+  .xov-scoops { display: flex; justify-content: center; position: relative; z-index: 2; transform: scaleY(1.08); }
+  .xov-x, .xov-o, .xov-cone { font-size: 46px; line-height: .74; }
+  .xov-x { color: #E5484D; -webkit-text-stroke: 1.4px #E5484D; }
+  .xov-o { color: #2D7DD2; -webkit-text-stroke: 1.4px #2D7DD2; margin-left: -9px; }
+  .xov-cone { color: #3FA34D; transform: scaleX(1.45); position: relative; z-index: 1; margin-top: -12px; }
 
   /* STATS CARD */
   .stats-card {
@@ -753,9 +757,14 @@
 <div id="screen-home" class="screen">
   <div class="page-wrap">
     <div class="game-header">
-      <p class="game-eyebrow">Multiplayer · Three symbols · Best of 3</p>
-      <h1 class="game-title">XOV</h1>
-      <p class="game-desc">X, O, and V rotate every turn. Get three (or four) in a row to win.</p>
+      <div class="xov-logo" aria-label="XOV">
+        <div class="xov-scoops">
+          <span class="xov-x">X</span><span class="xov-o">O</span>
+        </div>
+        <div class="xov-cone">V</div>
+      </div>
+      <div class="game-title">XOV</div>
+      <p class="game-tagline">// THREE-MARK TIC-TAC-TOE //</p>
     </div>
 
     <div class="stats-card" id="stats-card">
