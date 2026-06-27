@@ -661,34 +661,38 @@
   .difficulty-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 var(--ink); }
 
   /* ── DRUM PICKERS ── */
-  .pickers-row { display: flex; gap: 10px; }
-  .picker-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-  .picker-lbl, .picker-unit {
-    font-family: 'Silkscreen', monospace; font-size: 7px; font-weight: 700;
-    color: var(--muted2); text-transform: uppercase; letter-spacing: 0.5px;
+  .pickers-row { display: flex; gap: 12px; }
+  .picker-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .picker-lbl {
+    font-family: 'Silkscreen', monospace; font-size: 10px; font-weight: 700;
+    color: var(--ink); text-transform: uppercase; letter-spacing: 0.5px; text-align: center;
+  }
+  .picker-unit {
+    font-family: 'VT323', monospace; font-size: 20px;
+    color: var(--muted); text-transform: uppercase; text-align: center;
   }
   .picker-drum {
-    position: relative; width: 100%; height: 220px;
+    position: relative; width: 100%; height: 192px; /* 3 × 64px rows */
     overflow: hidden; border: 3px solid var(--ink);
     background: var(--paper); cursor: ns-resize;
     user-select: none; -webkit-user-select: none;
-    touch-action: none;
+    touch-action: none; box-shadow: 4px 4px 0 var(--ink);
   }
   .picker-band {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    left: 0; right: 0; height: 44px;
-    background: var(--ink); z-index: 1; pointer-events: none;
+    position: absolute; top: 64px; left: 0; right: 0; height: 64px;
+    background: var(--ink); pointer-events: none;
   }
-  .picker-track { position: absolute; top: 0; left: 0; right: 0; will-change: transform; }
+  /* No z-index / will-change on track — lets .sel item pierce above the band */
+  .picker-track { position: absolute; top: 0; left: 0; right: 0; }
   .picker-item {
-    height: 44px; display: flex; align-items: center; justify-content: center;
-    font-family: 'VT323', monospace; font-size: 34px; line-height: 1;
-    color: var(--muted2); position: relative; z-index: 0;
+    height: 64px; display: flex; align-items: center; justify-content: center;
+    font-family: 'VT323', monospace; font-size: 56px; line-height: 1;
+    color: var(--muted2);
   }
-  .picker-item.sel { color: var(--paper); position: relative; z-index: 3; }
+  .picker-item.sel { color: var(--paper); position: relative; z-index: 2; }
   .picker-fade {
-    position: absolute; inset: 0; pointer-events: none; z-index: 2;
-    background: linear-gradient(to bottom, var(--paper) 0%, transparent 30%, transparent 70%, var(--paper) 100%);
+    position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    background: linear-gradient(to bottom, var(--paper) 0%, transparent 34%, transparent 66%, var(--paper) 100%);
   }
 </style>
 </head>
@@ -1178,8 +1182,8 @@
   // ── GAME TYPE MODAL ───────────────────────────────────────────
 
   // ── PICKER DRUMS ─────────────────────────────────────────────
-  const PICKER_H   = 44;
-  const PICKER_PAD = 2;
+  const PICKER_H   = 64; // must match CSS .picker-item height and .picker-band top
+  const PICKER_PAD = 1;  // spacer items above and below
   let _pickerGrid = null, _pickerWin = null;
 
   function setupPicker(drum, track, items, initialVal, onChange) {
@@ -1205,7 +1209,7 @@
       y = Math.max(-(items.length - 1) * PICKER_H, Math.min(0, y));
       curOff = y;
       track.style.transition = animate ? 'transform 0.18s cubic-bezier(.25,.46,.45,.94)' : 'none';
-      track.style.transform = `translateY(${PICKER_PAD * PICKER_H + y}px)`;
+      track.style.transform = `translateY(${y}px)`;
       const idx = Math.round(-y / PICKER_H);
       track.querySelectorAll('.picker-item').forEach((el, i) => {
         el.classList.toggle('sel', i - PICKER_PAD === idx);
@@ -1249,13 +1253,13 @@
       _pickerGrid = setupPicker(
         document.getElementById('picker-grid'),
         document.getElementById('picker-grid-track'),
-        [3,4,5,6,7,8], gridCols,
+        [4,5], gridCols,
         val => { if (_pickerWin && _pickerWin.get() > val) _pickerWin.snap(val); }
       );
       _pickerWin = setupPicker(
         document.getElementById('picker-win'),
         document.getElementById('picker-win-track'),
-        [3,4,5,6,7,8], winLen,
+        [3,4], winLen,
         () => {}
       );
     }
