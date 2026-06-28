@@ -9,6 +9,11 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(console.warn);
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
@@ -924,7 +929,7 @@
 <script type="module">
   import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
   import { getDatabase, ref, set, onValue, update, get } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
   import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
   const app  = initializeApp({
@@ -940,6 +945,11 @@
   const db        = getDatabase(app);
   const auth      = getAuth(app);
   const firestore = getFirestore(app);
+
+  // Handle Google redirect result when returning from Capacitor/native auth flow
+  getRedirectResult(auth).catch(e => {
+    if (e?.code !== 'auth/no-auth-event') console.warn('redirect result:', e);
+  });
 
   const SYMBOLS = ['X', 'O', 'V'];
   const SYM_CLS = ['sym-x', 'sym-o', 'sym-v'];
@@ -1071,10 +1081,16 @@
     }
     errEl.textContent = '';
     try {
-      await signInWithPopup(auth, new GoogleAuthProvider());
+      const provider = new GoogleAuthProvider();
+      if (window.Capacitor?.isNativePlatform()) {
+        // Native WebView: use redirect (popup is blocked in WKWebView / Android WebView)
+        await signInWithRedirect(auth, provider);
+      } else {
+        await signInWithPopup(auth, provider);
+      }
     } catch(e) {
       if (e.code !== 'auth/popup-closed-by-user') {
-        errEl.textContent = 'Sign-in failed — open in Safari or Chrome and try again';
+        errEl.textContent = 'Sign-in failed — try again';
       }
       console.error(e);
     }
