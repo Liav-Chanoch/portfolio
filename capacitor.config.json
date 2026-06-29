@@ -1,7 +1,7 @@
 {
   "appId": "com.liav.xov",
   "appName": "XOV",
-  "webDir": ".",
+  "webDir": "www",
   "server": {
     "androidScheme": "https"
   }
