@@ -4,10 +4,11 @@
   "description": "Three-mark tic-tac-toe — X, O, and V rotate every turn.",
   "private": true,
   "scripts": {
-    "sync": "npx cap sync",
+    "build": "mkdir -p www && cp game.html www/index.html && cp manifest.json www/ && cp sw.js www/ && cp -r icons www/",
+    "sync": "npm run build && npx cap sync",
     "open:android": "npx cap open android",
     "open:ios": "npx cap open ios",
-    "assets": "npx @capacitor/assets generate"
+    "assets": "npx @capacitor/assets generate --iconBackgroundColor '#F4E7C9' --splashBackgroundColor '#F4E7C9'"
   },
   "dependencies": {
     "@capacitor/core": "^6.0.0"
