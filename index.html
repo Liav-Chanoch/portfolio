@@ -4,368 +4,845 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Liav Chanoch — Project Manager & Operations Lead</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── TOKENS ─────────────────────────────────────── */
+:root {
+  --bg:            #F6F5F1;
+  --ink:           #0F0E0C;
+  --dark:          #111009;
+  --surface:       #EDECE8;
+  --surface2:      #E3E1D9;
+  --border:        rgba(15,14,12,0.08);
+  --border-md:     rgba(15,14,12,0.15);
+  --border-strong: rgba(15,14,12,0.22);
+  --muted:         #8A877F;
+  --muted-light:   rgba(15,14,12,0.4);
+  --signal:        #E8411A;
+  --signal-dim:    rgba(232,65,26,0.14);
+  --signal-border: rgba(232,65,26,0.28);
+  --teal:          #0D8B6A;
+  --teal-dim:      rgba(13,139,106,0.11);
+  --teal-border:   rgba(13,139,106,0.28);
+  --amber:         #8A5C18;
+  --amber-dim:     rgba(138,92,24,0.10);
+  --amber-border:  rgba(138,92,24,0.28);
+}
 
-  :root {
-    --bg: #f7f4ee;
-    --surface: #edeae2;
-    --surface2: #e4e0d6;
-    --border: rgba(26,24,20,0.10);
-    --border2: rgba(26,24,20,0.18);
-    --text: #1a1814;
-    --muted: #7a7569;
-    --accent: #1a1814;
-    --accent2: #3d3830;
-    --accent-bg: rgba(26,24,20,0.06);
-    --accent-border: rgba(26,24,20,0.20);
-    --teal: #4a6741;
-    --teal-bg: rgba(74,103,65,0.09);
-    --amber: #7a5c2e;
-    --amber-bg: rgba(122,92,46,0.09);
-  }
+/* ── RESET ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-  html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, 'Inter', BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 15px;
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
-  }
+/* ── NAV ────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(246,245,241,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2.5rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  /* NAV */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(247,244,238,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .nav-logo {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--text);
-    text-decoration: none;
-  }
-  .nav-links { display: flex; gap: 2rem; }
-  .nav-links a {
-    font-size: 13px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); }
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-decoration: none;
+}
 
-  /* SECTIONS */
-  section { padding: 5rem 0; }
-  .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+.nav-links { display: flex; gap: 2.25rem; align-items: center; }
 
-  /* HERO */
-  #hero {
-    padding: 7rem 0 5rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .hero-eyebrow {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-  .hero-name {
-    font-size: clamp(2.4rem, 6vw, 3.8rem);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 1rem;
-  }
-  .hero-title {
-    font-size: 1.1rem;
-    color: var(--muted);
-    max-width: 520px;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2.5rem; }
-  .tag {
-    font-size: 12px;
-    font-weight: 500;
-    padding: 4px 12px;
-    border-radius: 100px;
-    border: 1px solid var(--border2);
-    color: var(--muted);
-    background: var(--surface);
-  }
-  .tag.accent { border-color: var(--accent-border); color: var(--accent2); background: var(--accent-bg); }
-  .tag.teal { border-color: rgba(45,212,170,0.3); color: var(--teal); background: var(--teal-bg); }
-  .hero-contact { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-  .hero-contact a {
-    font-size: 13px;
-    color: var(--muted);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 0.2s;
-  }
-  .hero-contact a:hover { color: var(--text); }
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  letter-spacing: 0.01em;
+}
 
-  /* SECTION HEADER */
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-  .section-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-  .section-sub {
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 3rem;
-  }
-  .section-divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin-bottom: 3rem;
-  }
+.nav-links a:hover { color: var(--ink); }
 
-  /* STRENGTHS GRID */
-  .strengths-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-  }
-  .strength-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    transition: border-color 0.2s;
-  }
-  .strength-card:hover { border-color: var(--border2); }
-  .strength-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--accent-bg);
-    border: 1px solid var(--accent-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.75rem;
-  }
-  .strength-icon svg { width: 16px; height: 16px; stroke: var(--accent2); fill: none; stroke-width: 1.8; }
-  .strength-icon.teal { background: var(--teal-bg); border-color: rgba(45,212,170,0.3); }
-  .strength-icon.teal svg { stroke: var(--teal); }
-  .strength-icon.amber { background: var(--amber-bg); border-color: rgba(245,158,11,0.3); }
-  .strength-icon.amber svg { stroke: var(--amber); }
-  .strength-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .strength-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.nav-xov {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--signal) !important;
+  padding: 5px 11px;
+  border: 1px solid var(--signal-border);
+  border-radius: 5px;
+  transition: background 0.2s !important;
+}
+.nav-xov:hover { background: var(--signal-dim) !important; color: var(--signal) !important; }
 
-  /* EXPERIENCE */
-  .exp-list { display: flex; flex-direction: column; gap: 0; }
-  .exp-item {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 2rem;
-    padding: 2rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .exp-item:last-child { border-bottom: none; }
-  .exp-meta { padding-top: 2px; }
-  .exp-period { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-  .exp-company {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-  }
-  .exp-role { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
-  .exp-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 0.75rem; }
-  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-  .exp-bullets li {
-    font-size: 13px;
-    color: var(--muted);
-    padding-left: 1rem;
-    position: relative;
-    line-height: 1.55;
-  }
-  .exp-bullets li::before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--accent);
-    position: absolute;
-    left: 0;
-    top: 8px;
-  }
+/* ── LAYOUT ─────────────────────────────────────── */
+.container { max-width: 980px; margin: 0 auto; padding: 0 2.5rem; }
 
-  /* CASE STUDIES */
-  #cases { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .cases-grid { display: flex; flex-direction: column; gap: 24px; }
-  .case-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-  .case-card:hover { border-color: var(--border2); }
-  .case-header {
-    padding: 1.5rem 1.75rem 1rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-  .case-number {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-  .case-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.35; }
-  .case-context { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .case-body { padding: 1.25rem 1.75rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-  .case-section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-  .case-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
-  .case-solution-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-  .case-solution-items li { font-size: 13px; color: var(--muted); padding-left: 1rem; position: relative; line-height: 1.5; }
-  .case-solution-items li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--teal); position: absolute; left: 0; top: 8px; }
-  .case-outcome {
-    margin: 0 1.75rem 1.5rem;
-    background: var(--teal-bg);
-    border: 1px solid rgba(45,212,170,0.2);
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-    font-size: 13px;
-    color: var(--teal);
-    line-height: 1.55;
-  }
-  .outcome-label { font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; opacity: 0.7; }
+/* ── HERO ───────────────────────────────────────── */
+#hero {
+  background: var(--dark);
+  padding: 5.5rem 0 0;
+  position: relative;
+  overflow: hidden;
+}
 
-  /* SKILLS */
-  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-  .skill-group {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-  }
-  .skill-group-title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
-  .skill-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .skill-item:last-child { margin-bottom: 0; }
-  .skill-name { font-size: 13px; color: var(--text); }
-  .skill-level {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 100px;
-  }
-  .level-expert { background: var(--accent-bg); color: var(--accent2); }
-  .level-skillful { background: var(--teal-bg); color: var(--teal); }
-  .level-experienced { background: rgba(255,255,255,0.06); color: var(--muted); }
-  .level-basic { background: var(--amber-bg); color: var(--amber); }
+/* Waveform — the signature element */
+.hero-waveform {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 88px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  padding: 0 2.5rem;
+  pointer-events: none;
+  opacity: 0.18;
+}
 
-  /* EDUCATION */
-  .edu-list { display: flex; flex-direction: column; gap: 16px; }
-  .edu-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem 1.25rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-  }
-  .edu-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--accent-bg);
-    border: 1px solid var(--accent-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .edu-icon svg { width: 16px; height: 16px; stroke: var(--accent2); fill: none; stroke-width: 1.8; }
-  .edu-degree { font-size: 14px; font-weight: 600; color: var(--text); }
-  .edu-school { font-size: 13px; color: var(--muted); }
-  .edu-period { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.hero-waveform span {
+  flex: 1;
+  max-width: 14px;
+  background: var(--signal);
+  border-radius: 2px 2px 0 0;
+  transform-origin: bottom;
+  animation: wave-bar 2.8s ease-in-out infinite;
+}
 
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2.5rem 0;
-    text-align: center;
-  }
-  .footer-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .footer-sub { font-size: 12px; color: var(--muted); }
-  .footer-contact { display: flex; justify-content: center; gap: 1.5rem; margin-top: 1rem; }
-  .footer-contact a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-  .footer-contact a:hover { color: var(--accent2); }
+@keyframes wave-bar {
+  0%, 100% { transform: scaleY(1); }
+  50%       { transform: scaleY(var(--peak)); }
+}
 
-  @media (max-width: 640px) {
-    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
-    .case-body { grid-template-columns: 1fr; }
-    .nav-links { display: none; }
-  }
+.hero-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 2.5rem;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+  flex-shrink: 0;
+  animation: pulse-dot 2.6s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(232,65,26,0.45); }
+  50%       { opacity: 0.5; transform: scale(0.8); box-shadow: 0 0 0 5px rgba(232,65,26,0); }
+}
+
+.hero-name {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(4rem, 11vw, 9.2rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  color: #FFFFFF;
+  margin-bottom: 2.25rem;
+}
+
+.hero-rule {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 2rem;
+}
+.hero-rule-line {
+  height: 1px;
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  position: relative;
+}
+.hero-rule-line::before {
+  content: '';
+  position: absolute;
+  left: 0; top: -1px;
+  width: 52px; height: 3px;
+  background: var(--signal);
+  border-radius: 2px;
+}
+
+/* Stat strip */
+.hero-stats {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2.25rem;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  padding: 0 2rem 0 0;
+  margin-right: 2rem;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.hero-stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.38);
+  font-weight: 500;
+  margin-top: 1px;
+  letter-spacing: 0.02em;
+}
+
+.hero-desc {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.52);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  font-weight: 400;
+}
+
+.hero-desc em {
+  color: rgba(255,255,255,0.72);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.hero-contact {
+  display: flex;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+  padding-bottom: 5rem;
+}
+
+.hero-contact a {
+  font-size: 13px;
+  color: rgba(255,255,255,0.36);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+.hero-contact a:hover { color: rgba(255,255,255,0.78); }
+
+/* ── SECTION ────────────────────────────────────── */
+section { padding: 5.5rem 0; }
+
+.section-eyebrow {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 0.35rem;
+  line-height: 1.15;
+}
+
+.section-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 2.75rem;
+  max-width: 520px;
+  line-height: 1.65;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin-bottom: 2.75rem;
+}
+
+/* Dark section variants */
+.dark-section {
+  background: var(--dark);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.dark-section .section-eyebrow { color: rgba(232,65,26,0.85); }
+.dark-section .section-title   { color: #FFFFFF; }
+.dark-section .section-sub     { color: rgba(255,255,255,0.38); }
+.dark-section .section-divider { border-color: rgba(255,255,255,0.06); }
+
+/* ── STRENGTHS ──────────────────────────────────── */
+.strengths-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.strength-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem 1.25rem;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.strength-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--border-strong);
+  border-radius: 12px 12px 0 0;
+  transition: background 0.22s ease;
+}
+
+.strength-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(15,14,12,0.1);
+  border-color: var(--border-md);
+}
+.strength-card:hover::before     { background: var(--signal); }
+.strength-card.teal:hover::before  { background: var(--teal); }
+.strength-card.amber:hover::before { background: var(--amber); }
+
+.strength-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+}
+.strength-icon svg { width: 15px; height: 15px; stroke: var(--muted); fill: none; stroke-width: 1.8; }
+.strength-icon.teal  svg { stroke: var(--teal); }
+.strength-icon.amber svg { stroke: var(--amber); }
+
+.strength-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.strength-desc { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+/* ── EXPERIENCE ─────────────────────────────────── */
+#experience { border-top: 1px solid var(--border); }
+
+.exp-list { display: flex; flex-direction: column; }
+
+.exp-item {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 2.5rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.exp-item:last-child { border-bottom: none; }
+
+.exp-meta { padding-top: 3px; }
+
+.exp-period {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.exp-company { font-size: 12px; font-weight: 500; color: var(--muted); opacity: 0.75; }
+
+.exp-current-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 8px;
+}
+.exp-current-badge::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--signal);
+  display: block;
+}
+
+.exp-role {
+  font-family: 'Syne', sans-serif;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.015em;
+}
+.exp-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+
+.exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.exp-bullets li {
+  font-size: 13px;
+  color: var(--muted);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.55;
+}
+.exp-bullets li::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  position: absolute;
+  left: 0; top: 9px;
+}
+
+/* ── CASE STUDIES ───────────────────────────────── */
+.cases-grid { display: flex; flex-direction: column; gap: 16px; }
+
+.case-card {
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.case-card:hover {
+  border-color: rgba(255,255,255,0.14);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.28);
+}
+
+.case-header {
+  padding: 1.6rem 1.75rem 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.case-header-left { flex: 1; }
+
+.case-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+.case-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+.case-context {
+  font-size: 12px;
+  color: rgba(255,255,255,0.28);
+  margin-top: 5px;
+}
+
+.case-body {
+  padding: 1.5rem 1.75rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.25rem;
+}
+
+.case-col-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 10px;
+}
+.case-text { font-size: 13px; color: rgba(255,255,255,0.48); line-height: 1.65; }
+
+.case-items { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.case-items li {
+  font-size: 13px;
+  color: rgba(255,255,255,0.48);
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.5;
+}
+.case-items li::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--teal);
+  position: absolute;
+  left: 0; top: 8px;
+}
+
+.case-outcome {
+  margin: 0 1.75rem 1.75rem;
+  background: rgba(13,139,106,0.1);
+  border: 1px solid rgba(13,139,106,0.2);
+  border-left: 3px solid var(--teal);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+.outcome-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: var(--teal);
+}
+.outcome-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.65;
+}
+
+/* ── SKILLS ─────────────────────────────────────── */
+#skills { border-top: 1px solid var(--border); }
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.skill-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.25rem 1rem;
+  transition: border-color 0.2s;
+}
+.skill-group:hover { border-color: var(--border-md); }
+
+.skill-group-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.skill-item:last-child { border-bottom: none; padding-bottom: 0; }
+.skill-name { font-size: 13px; color: var(--ink); font-weight: 500; }
+
+.skill-level {
+  font-family: 'Syne', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2.5px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.level-expert     { background: var(--signal-dim);  color: var(--signal); border: 1px solid var(--signal-border); }
+.level-skillful   { background: var(--teal-dim);    color: var(--teal);   border: 1px solid var(--teal-border); }
+.level-experienced { background: var(--surface2);   color: var(--muted);  border: 1px solid var(--border-strong); }
+.level-basic      { background: var(--amber-dim);   color: var(--amber);  border: 1px solid var(--amber-border); }
+
+/* ── EDUCATION ──────────────────────────────────── */
+#education { border-top: 1px solid var(--border); }
+
+.edu-list { display: flex; flex-direction: column; gap: 10px; }
+
+.edu-item {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.edu-item:hover {
+  border-color: var(--border-md);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(15,14,12,0.06);
+}
+
+.edu-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.edu-icon svg { width: 16px; height: 16px; stroke: var(--muted); fill: none; stroke-width: 1.8; }
+
+.edu-degree { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+.edu-school { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.edu-period { font-size: 11.5px; color: var(--muted); opacity: 0.65; margin-top: 2px; }
+
+/* ── CTA ────────────────────────────────────────── */
+#cta {
+  background: var(--dark);
+  padding: 6rem 0 5.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.cta-eyebrow {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 1.25rem;
+  opacity: 0.85;
+}
+
+.cta-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  margin-bottom: 1rem;
+}
+
+.cta-heading span { color: var(--signal); }
+
+.cta-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.4);
+  max-width: 420px;
+  margin: 0 auto 2.75rem;
+  line-height: 1.65;
+}
+
+.cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--signal);
+  color: #FFFFFF;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 13px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.65);
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 13px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.9);
+  border-color: rgba(255,255,255,0.2);
+}
+
+/* ── FOOTER ─────────────────────────────────────── */
+footer {
+  background: var(--dark);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 2rem 0;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.06em;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ── SCROLL ANIMATIONS ──────────────────────────── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 680px) {
+  nav { padding: 0 1.25rem; }
+  .nav-links { display: none; }
+  .container { padding: 0 1.25rem; }
+
+  #hero { padding: 4rem 0 0; }
+  .hero-name { font-size: 3.4rem; }
+  .hero-stats { gap: 0; }
+  .hero-stat { padding: 0 1.25rem 0 0; margin-right: 1.25rem; }
+  .hero-stat-num { font-size: 1.2rem; }
+  .hero-contact { padding-bottom: 4.5rem; }
+
+  section { padding: 4rem 0; }
+  #cta { padding: 4.5rem 0 4rem; }
+
+  .exp-item { grid-template-columns: 1fr; gap: 0.4rem; }
+  .case-body { grid-template-columns: 1fr; }
+  .case-header { flex-direction: column; }
+
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+}
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <a href="#hero" class="nav-logo">LC</a>
   <div class="nav-links">
+    <a href="#strengths">Strengths</a>
     <a href="#experience">Experience</a>
     <a href="#cases">Case Studies</a>
     <a href="#skills">Skills</a>
-    <a href="#education">Education</a>
-    <a href="game.html" style="color: var(--teal); font-weight: 600;">XOV ↗</a>
+    <a href="game.html" class="nav-xov">XOV ↗</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
   <div class="container">
-    <p class="hero-eyebrow">Available for new opportunities</p>
-    <h1 class="hero-name">Liav Chanoch</h1>
-    <p class="hero-title">Project Manager with 5+ years delivering complex digital and system implementation projects for external clients — and a parallel career in music production.</p>
-    <div class="hero-tags">
-      <span class="tag accent">Project Management</span>
-      <span class="tag accent">System Implementation</span>
-      <span class="tag teal">ERP & CRM</span>
-      <span class="tag teal">API Integrations</span>
-      <span class="tag">Zoho Suite</span>
-      <span class="tag">AI-Assisted Tools</span>
-      <span class="tag">Cross-Functional Teams</span>
-      <span class="tag">Music Production</span>
+    <div class="hero-status">
+      <span class="status-dot"></span>
+      Available for new opportunities
     </div>
+
+    <h1 class="hero-name">Liav<br>Chanoch</h1>
+
+    <div class="hero-rule">
+      <div class="hero-rule-line"></div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">5+</div>
+        <div class="hero-stat-label">Years in PM</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">30+</div>
+        <div class="hero-stat-label">Client projects</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">ERP builds</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">15+</div>
+        <div class="hero-stat-label">Years in music</div>
+      </div>
+    </div>
+
+    <p class="hero-desc">
+      Project Manager delivering complex digital and system implementation projects for external clients — <em>with a parallel career as a music producer that shapes how I think about orchestration, tempo, and clarity.</em>
+    </p>
+
     <div class="hero-contact">
       <a href="mailto:liavch1@gmail.com">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
@@ -375,71 +852,81 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.19 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.1 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 10.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
         050-2197706
       </a>
-      <a href="#">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        Tel Aviv, Israel
-      </a>
       <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
         LinkedIn
       </a>
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Tel Aviv, Israel
+      </a>
     </div>
   </div>
+
+  <!-- Animated waveform — the signature element -->
+  <div class="hero-waveform" aria-hidden="true" id="heroWaveform"></div>
 </section>
 
 <!-- STRENGTHS -->
 <section id="strengths">
   <div class="container">
-    <p class="section-label">What I bring</p>
+    <p class="section-eyebrow">What I deliver</p>
     <h2 class="section-title">Key strengths</h2>
+    <p class="section-sub">From ERP rollouts to client-facing digital products — end-to-end delivery, no hand-holding required.</p>
     <hr class="section-divider">
     <div class="strengths-grid">
-      <div class="strength-card">
+
+      <div class="strength-card fade-up">
         <div class="strength-icon">
           <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <div class="strength-name">System Implementation</div>
-        <div class="strength-desc">End-to-end delivery of enterprise system rollouts — ERP, CRM, and API integrations — from scoping through go-live and post-implementation support.</div>
+        <div class="strength-desc">End-to-end delivery of ERP, CRM, and API integrations — from scoping through go-live and post-launch stabilization.</div>
       </div>
-      <div class="strength-card">
+
+      <div class="strength-card fade-up" style="transition-delay:0.08s">
         <div class="strength-icon">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         </div>
         <div class="strength-name">Project & Delivery Management</div>
-        <div class="strength-desc">Full lifecycle project management: timelines, budgets, stakeholder governance, and cross-functional coordination across concurrent workstreams.</div>
+        <div class="strength-desc">Full lifecycle PM: timelines, budgets, stakeholder governance, and cross-functional coordination across concurrent workstreams.</div>
       </div>
-      <div class="strength-card">
+
+      <div class="strength-card teal fade-up" style="transition-delay:0.16s">
         <div class="strength-icon teal">
           <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
         </div>
         <div class="strength-name">Digital Project Delivery</div>
-        <div class="strength-desc">Managed dozens of client-facing web and digital projects including Wix-based builds, landing pages, and digital ecosystems — coordinating design, UX, and development.</div>
+        <div class="strength-desc">Managed dozens of client-facing web and digital projects including Wix builds, landing pages, and digital ecosystems — coordinating design, UX, and dev.</div>
       </div>
-      <div class="strength-card">
+
+      <div class="strength-card amber fade-up" style="transition-delay:0.24s">
         <div class="strength-icon amber">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
         </div>
         <div class="strength-name">AI-Assisted Workflows</div>
-        <div class="strength-desc">Active daily use of AI tools including Claude Code and Lovable to prototype, automate repetitive workflows, and accelerate project delivery.</div>
+        <div class="strength-desc">Daily use of Claude Code and Lovable to prototype, automate repetitive workflows, and accelerate delivery — no fluff, just shipped output.</div>
       </div>
+
     </div>
   </div>
 </section>
 
 <!-- EXPERIENCE -->
-<section id="experience" style="border-top: 1px solid var(--border);">
+<section id="experience">
   <div class="container">
-    <p class="section-label">Work history</p>
+    <p class="section-eyebrow">Work history</p>
     <h2 class="section-title">Experience</h2>
     <hr class="section-divider">
     <div class="exp-list">
 
-      <div class="exp-item">
+      <div class="exp-item fade-up">
         <div class="exp-meta">
           <div class="exp-period">Aug 2020 — Present</div>
           <div class="exp-company">OTW SRL · Tel Aviv</div>
         </div>
         <div>
+          <div class="exp-current-badge">Current</div>
           <div class="exp-role">Project Owner & CS Manager</div>
           <div class="exp-desc">Led post-sale web development projects end-to-end, managing cross-functional teams while maintaining a direct reporting line to the CEO.</div>
           <ul class="exp-bullets">
@@ -451,12 +938,13 @@
         </div>
       </div>
 
-      <div class="exp-item">
+      <div class="exp-item fade-up">
         <div class="exp-meta">
           <div class="exp-period">Aug 2020 — Present</div>
           <div class="exp-company">OTW SRL · Tel Aviv</div>
         </div>
         <div>
+          <div class="exp-current-badge">Current</div>
           <div class="exp-role">Internal App Development Lead</div>
           <div class="exp-desc">Led the design and development of internal business applications using Zoho Suite, streamlining sales, finance, and project management operations company-wide.</div>
           <ul class="exp-bullets">
@@ -468,12 +956,13 @@
         </div>
       </div>
 
-      <div class="exp-item">
+      <div class="exp-item fade-up">
         <div class="exp-meta">
           <div class="exp-period">2010 — Present</div>
           <div class="exp-company">Self-Employed · Tel Aviv</div>
         </div>
         <div>
+          <div class="exp-current-badge">Current</div>
           <div class="exp-role">Music Producer & DJ</div>
           <div class="exp-desc">15+ years of independent work in music production, sound design, and live performance across a wide range of genres and platforms.</div>
           <ul class="exp-bullets">
@@ -489,30 +978,30 @@
 </section>
 
 <!-- CASE STUDIES -->
-<section id="cases">
+<section id="cases" class="dark-section">
   <div class="container">
-    <p class="section-label">Selected work</p>
+    <p class="section-eyebrow">Selected work</p>
     <h2 class="section-title">Product operations case studies</h2>
     <p class="section-sub">Three internal tools built at OTW SRL that demonstrate full-lifecycle product thinking.</p>
+    <hr class="section-divider">
     <div class="cases-grid">
 
-      <!-- Case 1 -->
-      <div class="case-card">
+      <div class="case-card fade-up">
         <div class="case-header">
-          <div>
-            <div class="case-number">Case study 01</div>
+          <div class="case-header-left">
+            <div class="case-num">Case study 01</div>
             <div class="case-title">End-to-end billing automation & ERP integration</div>
             <div class="case-context">OTW SRL — Zoho + Teamleader</div>
           </div>
         </div>
         <div class="case-body">
           <div>
-            <div class="case-section-title">The challenge</div>
+            <div class="case-col-label">The challenge</div>
             <p class="case-text">Invoicing was a fragmented, manual process spanning three disconnected systems — causing significant time loss and high error rates in financial reporting.</p>
           </div>
           <div>
-            <div class="case-section-title">The solution</div>
-            <ul class="case-solution-items">
+            <div class="case-col-label">The solution</div>
+            <ul class="case-items">
               <li>Led a dedicated team to architect a custom Zoho module aggregating CRM and PM data</li>
               <li>Built custom automations tailored to specific business logic using Zoho's native capabilities</li>
               <li>Integrated with Teamleader (3rd-party ERP) via API for one-click invoice generation</li>
@@ -521,27 +1010,26 @@
         </div>
         <div class="case-outcome">
           <div class="outcome-label">Outcome</div>
-          Eliminated manual data entry and established a single source of truth in the CRM — drastically reducing invoicing cycle time, error rates, and improving financial transparency.
+          <p class="outcome-text">Eliminated manual data entry and established a single source of truth in the CRM — drastically reducing invoicing cycle time, error rates, and improving financial transparency.</p>
         </div>
       </div>
 
-      <!-- Case 2 -->
-      <div class="case-card">
+      <div class="case-card fade-up" style="transition-delay:0.1s">
         <div class="case-header">
-          <div>
-            <div class="case-number">Case study 02</div>
+          <div class="case-header-left">
+            <div class="case-num">Case study 02</div>
             <div class="case-title">Affiliate ecosystem: transparency & financial ops scaling</div>
             <div class="case-context">OTW SRL — Affiliate Management Platform</div>
           </div>
         </div>
         <div class="case-body">
           <div>
-            <div class="case-section-title">The challenge</div>
+            <div class="case-col-label">The challenge</div>
             <p class="case-text">Managing a growing affiliate network relied on manual end-of-month audits — creating opacity, delayed payments, and eroding partner trust.</p>
           </div>
           <div>
-            <div class="case-section-title">The solution</div>
-            <ul class="case-solution-items">
+            <div class="case-col-label">The solution</div>
+            <ul class="case-items">
               <li>Designed a multi-sided affiliate platform automating the full tracking and payout lifecycle</li>
               <li>Built a real-time partner portal for transparent earnings and invoice status visibility</li>
               <li>Created a dedicated finance module for single-click payouts driven by validated data</li>
@@ -550,27 +1038,26 @@
         </div>
         <div class="case-outcome">
           <div class="outcome-label">Outcome</div>
-          Transformed a reactive process into a scalable, proactive system. Partner trust increased, referral volume grew, and internal accounting workload was drastically reduced.
+          <p class="outcome-text">Transformed a reactive process into a scalable, proactive system. Partner trust increased, referral volume grew, and internal accounting workload was drastically reduced.</p>
         </div>
       </div>
 
-      <!-- Case 3 -->
-      <div class="case-card">
+      <div class="case-card fade-up" style="transition-delay:0.2s">
         <div class="case-header">
-          <div>
-            <div class="case-number">Case study 03</div>
+          <div class="case-header-left">
+            <div class="case-num">Case study 03</div>
             <div class="case-title">Centralized project governance & hybrid resource dashboard</div>
             <div class="case-context">OTW SRL — Cross-Project Command Center</div>
           </div>
         </div>
         <div class="case-body">
           <div>
-            <div class="case-section-title">The challenge</div>
+            <div class="case-col-label">The challenge</div>
             <p class="case-text">Zoho Projects lacked native visibility across hybrid workstreams — milestone-based projects vs. ongoing maintenance — requiring manual, time-consuming reporting.</p>
           </div>
           <div>
-            <div class="case-section-title">The solution</div>
-            <ul class="case-solution-items">
+            <div class="case-col-label">The solution</div>
+            <ul class="case-items">
               <li>Characterized and managed the build of an external dashboard pulling real-time data from Zoho Projects via API</li>
               <li>Unified KPIs: milestones, deadlines, and budget utilization in a single view</li>
               <li>Implemented categorized filtering to separate project-based work from ongoing retainers</li>
@@ -579,7 +1066,7 @@
         </div>
         <div class="case-outcome">
           <div class="outcome-label">Outcome</div>
-          Established a "Command Center" for all active projects — enabling data-driven resource allocation and precise tracking of budget burn rates and deadline risks across the entire portfolio.
+          <p class="outcome-text">Established a "Command Center" for all active projects — enabling data-driven resource allocation and precise tracking of budget burn rates and deadline risks across the entire portfolio.</p>
         </div>
       </div>
 
@@ -588,13 +1075,14 @@
 </section>
 
 <!-- SKILLS -->
-<section id="skills" style="border-top: 1px solid var(--border);">
+<section id="skills">
   <div class="container">
-    <p class="section-label">Technical toolkit</p>
+    <p class="section-eyebrow">Technical toolkit</p>
     <h2 class="section-title">Skills</h2>
     <hr class="section-divider">
     <div class="skills-grid">
-      <div class="skill-group">
+
+      <div class="skill-group fade-up">
         <div class="skill-group-title">Operations & PM</div>
         <div class="skill-item"><span class="skill-name">Zoho Suite</span><span class="skill-level level-expert">Expert</span></div>
         <div class="skill-item"><span class="skill-name">Jira</span><span class="skill-level level-skillful">Skillful</span></div>
@@ -603,7 +1091,8 @@
         <div class="skill-item"><span class="skill-name">Asana</span><span class="skill-level level-experienced">Experienced</span></div>
         <div class="skill-item"><span class="skill-name">Zoho Analytics</span><span class="skill-level level-skillful">Skillful</span></div>
       </div>
-      <div class="skill-group">
+
+      <div class="skill-group fade-up" style="transition-delay:0.07s">
         <div class="skill-group-title">Technical</div>
         <div class="skill-item"><span class="skill-name">API Integrations</span><span class="skill-level level-skillful">Skillful</span></div>
         <div class="skill-item"><span class="skill-name">ERP / CRM Systems</span><span class="skill-level level-skillful">Skillful</span></div>
@@ -611,20 +1100,23 @@
         <div class="skill-item"><span class="skill-name">SDLC / PMLC</span><span class="skill-level level-skillful">Skillful</span></div>
         <div class="skill-item"><span class="skill-name">Python (Basic)</span><span class="skill-level level-basic">Basic</span></div>
       </div>
-      <div class="skill-group">
+
+      <div class="skill-group fade-up" style="transition-delay:0.14s">
         <div class="skill-group-title">Design & Digital</div>
         <div class="skill-item"><span class="skill-name">Figma</span><span class="skill-level level-experienced">Experienced</span></div>
         <div class="skill-item"><span class="skill-name">Miro</span><span class="skill-level level-experienced">Experienced</span></div>
         <div class="skill-item"><span class="skill-name">Wix</span><span class="skill-level level-experienced">Experienced</span></div>
         <div class="skill-item"><span class="skill-name">Wireframing</span><span class="skill-level level-experienced">Experienced</span></div>
       </div>
-      <div class="skill-group">
+
+      <div class="skill-group fade-up" style="transition-delay:0.21s">
         <div class="skill-group-title">AI & Productivity</div>
         <div class="skill-item"><span class="skill-name">Claude Code</span><span class="skill-level level-experienced">Experienced</span></div>
         <div class="skill-item"><span class="skill-name">Lovable</span><span class="skill-level level-experienced">Experienced</span></div>
         <div class="skill-item"><span class="skill-name">AI-assisted workflows</span><span class="skill-level level-expert">Expert</span></div>
       </div>
-      <div class="skill-group">
+
+      <div class="skill-group fade-up" style="transition-delay:0.28s">
         <div class="skill-group-title">Methodologies</div>
         <div class="skill-item"><span class="skill-name">Agile / Scrum</span><span class="skill-level level-skillful">Skillful</span></div>
         <div class="skill-item"><span class="skill-name">Stakeholder Management</span><span class="skill-level level-expert">Expert</span></div>
@@ -632,18 +1124,19 @@
         <div class="skill-item"><span class="skill-name">Matrix Team Coordination</span><span class="skill-level level-expert">Expert</span></div>
         <div class="skill-item"><span class="skill-name">Risk Management</span><span class="skill-level level-skillful">Skillful</span></div>
       </div>
+
     </div>
   </div>
 </section>
 
 <!-- EDUCATION -->
-<section id="education" style="border-top: 1px solid var(--border);">
+<section id="education">
   <div class="container">
-    <p class="section-label">Background</p>
+    <p class="section-eyebrow">Background</p>
     <h2 class="section-title">Education</h2>
     <hr class="section-divider">
     <div class="edu-list">
-      <div class="edu-item">
+      <div class="edu-item fade-up">
         <div class="edu-icon">
           <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
         </div>
@@ -653,7 +1146,7 @@
           <div class="edu-period">Dec 2018 — Jul 2020</div>
         </div>
       </div>
-      <div class="edu-item">
+      <div class="edu-item fade-up" style="transition-delay:0.1s">
         <div class="edu-icon">
           <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
         </div>
@@ -667,18 +1160,84 @@
   </div>
 </section>
 
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <p class="cta-eyebrow">Let's work together</p>
+    <h2 class="cta-heading">Ready to ship<br>something that <span>works?</span></h2>
+    <p class="cta-sub">Open to freelance PM engagements, system implementations, and consulting — remote or Tel Aviv.</p>
+    <div class="cta-buttons">
+      <a href="mailto:liavch1@gmail.com" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        Send an email
+      </a>
+      <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
+        LinkedIn
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
   <div class="container">
-    <div class="footer-name">Liav Chanoch</div>
-    <div class="footer-sub">Project Manager · Operations Lead · Music Producer</div>
-    <div class="footer-contact">
-      <a href="mailto:liavch1@gmail.com">liavch1@gmail.com</a>
-      <a href="tel:0502197706">050-2197706</a>
-      <a href="#">Tel Aviv, Israel</a>
-      <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank">LinkedIn</a>
+    <div class="footer-inner">
+      <div class="footer-name">Liav Chanoch</div>
+      <div class="footer-links">
+        <a href="mailto:liavch1@gmail.com">liavch1@gmail.com</a>
+        <a href="tel:0502197706">050-2197706</a>
+        <a href="#">Tel Aviv, Israel</a>
+        <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank">LinkedIn</a>
+        <a href="game.html">XOV ↗</a>
+      </div>
     </div>
   </div>
 </footer>
 
+<script>
+/* ── Scroll reveal ── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+/* ── Waveform generator ── */
+(function () {
+  const container = document.getElementById('heroWaveform');
+  if (!container) return;
+
+  const heights = [
+    18, 28, 44, 36, 56, 42, 68, 52, 78, 60, 72, 48, 64, 80, 55, 70,
+    82, 65, 50, 74, 58, 84, 62, 46, 76, 40, 54, 66, 38, 72, 44, 60,
+    80, 52, 68, 36, 58, 76, 48, 64, 30, 56, 42, 70, 34, 62, 50, 78,
+    24, 44, 66, 32, 54, 40, 72, 28, 50, 38, 64, 46, 56, 34, 60, 42
+  ];
+
+  const delays = [
+    0, 0.3, 0.6, 0.1, 0.8, 0.4, 1.1, 0.7, 0.2, 0.9, 0.5, 1.3, 0.6, 0.2, 1.0, 0.4,
+    0.8, 0.1, 0.7, 0.3, 1.2, 0.5, 0.9, 0.2, 0.6, 1.1, 0.4, 0.8, 0.3, 0.7, 1.0, 0.5,
+    0.2, 0.9, 0.4, 1.2, 0.6, 0.1, 0.8, 0.3, 1.0, 0.5, 0.7, 0.2, 0.9, 0.4, 1.1, 0.6,
+    0.3, 0.8, 0.1, 1.0, 0.5, 0.7, 0.2, 0.9, 0.4, 1.2, 0.6, 0.3, 0.8, 1.0, 0.5, 0.7
+  ];
+
+  heights.forEach((h, i) => {
+    const bar = document.createElement('span');
+    const peak = (h / 84 * 1.6 + 0.4).toFixed(2);
+    bar.style.cssText = `
+      height: ${h}px;
+      --peak: ${peak};
+      animation-delay: ${delays[i % delays.length]}s;
+      animation-duration: ${(2.2 + (i % 7) * 0.3).toFixed(1)}s;
+    `;
+    container.appendChild(bar);
+  });
+})();
+</script>
 </body>
 </html>
