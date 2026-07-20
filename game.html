@@ -929,7 +929,7 @@
 <script type="module">
   import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
   import { getDatabase, ref, set, onValue, update, get } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signInAnonymously, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
   import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
   const app  = initializeApp({
@@ -1002,7 +1002,7 @@
   // ── AUTH ──────────────────────────────────────────────────────
 
   onAuthStateChanged(auth, async user => {
-    if (user) {
+    if (user && !user.isAnonymous) {
       currentUser = user;
       isGuest = false;
       await ensureUserProfile(user);
@@ -1010,6 +1010,12 @@
       renderNav(user);
       goHome();
       if (!user.displayName) openNicknameModal(true);
+    } else if (user && user.isAnonymous) {
+      // Guest with anonymous Firebase auth — has a UID for DB writes but no profile
+      currentUser = user;
+      isGuest = true;
+      document.getElementById('stats-card').classList.remove('visible');
+      goHome();
     } else if (!isGuest) {
       showScreen('screen-login');
     }
@@ -1143,10 +1149,16 @@
     return map[code] || 'Something went wrong, try again';
   }
 
-  window.playAsGuest = function() {
-    isGuest = true; currentUser = null;
-    document.getElementById('stats-card').classList.remove('visible');
-    goHome();
+  window.playAsGuest = async function() {
+    try {
+      await signInAnonymously(auth); // onAuthStateChanged handles the rest
+    } catch(e) {
+      // Fallback: unauthenticated guest (DB writes will fail with secure rules)
+      isGuest = true; currentUser = null;
+      document.getElementById('stats-card').classList.remove('visible');
+      goHome();
+      console.warn('Anonymous auth failed:', e);
+    }
   };
 
   window.signOutUser = async function() {
