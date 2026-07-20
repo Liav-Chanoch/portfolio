@@ -3,791 +3,406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liav Chanoch — Project Manager & Operations Lead</title>
+<title>Liav Chanoch — Product & Project Manager, Systems Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ── TOKENS ─────────────────────────────────────── */
 :root {
-  --bg:            #F6F5F1;
-  --ink:           #0F0E0C;
-  --dark:          #111009;
-  --surface:       #EDECE8;
-  --surface2:      #E3E1D9;
-  --border:        rgba(15,14,12,0.08);
-  --border-md:     rgba(15,14,12,0.15);
-  --border-strong: rgba(15,14,12,0.22);
-  --muted:         #8A877F;
-  --muted-light:   rgba(15,14,12,0.4);
-  --signal:        #E8411A;
-  --signal-dim:    rgba(232,65,26,0.14);
-  --signal-border: rgba(232,65,26,0.28);
-  --teal:          #0D8B6A;
-  --teal-dim:      rgba(13,139,106,0.11);
-  --teal-border:   rgba(13,139,106,0.28);
-  --amber:         #8A5C18;
-  --amber-dim:     rgba(138,92,24,0.10);
-  --amber-border:  rgba(138,92,24,0.28);
+  --paper:   #ECE8DE;
+  --paper2:  #E4E0D3;
+  --ink:     #1C1A16;
+  --sub:     #6E6A5E;
+  --line:    rgba(28,26,22,0.14);
+  --line-md: rgba(28,26,22,0.20);
+  --line-strong: rgba(28,26,22,0.30);
+  --stamp:      #A6392B;
+  --stamp-dim:  rgba(166,57,43,0.07);
+  --stamp-border: rgba(166,57,43,0.32);
 }
 
 /* ── RESET ──────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
 
 body {
-  background: var(--bg);
+  background: var(--paper);
   color: var(--ink);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  font-size: 15px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 16px;
   line-height: 1.7;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
 }
+
+.mono { font-family: 'IBM Plex Mono', monospace; }
 
 /* ── NAV ────────────────────────────────────────── */
 nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(246,245,241,0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(236,232,222,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
   padding: 0 2.5rem;
-  height: 56px;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .nav-logo {
-  font-family: 'Syne', sans-serif;
-  font-size: 13.5px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   color: var(--ink);
   text-decoration: none;
 }
 
-.nav-links { display: flex; gap: 2.25rem; align-items: center; }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
 
 .nav-links a {
-  font-size: 13px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
   font-weight: 500;
-  color: var(--muted);
+  letter-spacing: 0.04em;
+  color: var(--sub);
   text-decoration: none;
   transition: color 0.2s;
-  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
-
 .nav-links a:hover { color: var(--ink); }
 
-.nav-xov {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--signal) !important;
-  padding: 5px 11px;
-  border: 1px solid var(--signal-border);
-  border-radius: 5px;
-  transition: background 0.2s !important;
-}
-.nav-xov:hover { background: var(--signal-dim) !important; color: var(--signal) !important; }
-
 /* ── LAYOUT ─────────────────────────────────────── */
-.container { max-width: 980px; margin: 0 auto; padding: 0 2.5rem; }
+.container { max-width: 940px; margin: 0 auto; padding: 0 2.5rem; }
 
-/* ── HERO ───────────────────────────────────────── */
-#hero {
-  background: var(--dark);
-  padding: 5.5rem 0 0;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Waveform — the signature element */
-.hero-waveform {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 88px;
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  padding: 0 2.5rem;
-  pointer-events: none;
-  opacity: 0.18;
-}
-
-.hero-waveform span {
-  flex: 1;
-  max-width: 14px;
-  background: var(--signal);
-  border-radius: 2px 2px 0 0;
-  transform-origin: bottom;
-  animation: wave-bar 2.8s ease-in-out infinite;
-}
-
-@keyframes wave-bar {
-  0%, 100% { transform: scaleY(1); }
-  50%       { transform: scaleY(var(--peak)); }
-}
-
-.hero-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--signal);
-  margin-bottom: 2.5rem;
-}
-
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--signal);
-  flex-shrink: 0;
-  animation: pulse-dot 2.6s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(232,65,26,0.45); }
-  50%       { opacity: 0.5; transform: scale(0.8); box-shadow: 0 0 0 5px rgba(232,65,26,0); }
-}
-
-.hero-name {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(4rem, 11vw, 9.2rem);
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.035em;
-  color: #FFFFFF;
-  margin-bottom: 2.25rem;
-}
-
-.hero-rule {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 2rem;
-}
-.hero-rule-line {
-  height: 1px;
-  flex: 1;
-  background: rgba(255,255,255,0.08);
-  position: relative;
-}
-.hero-rule-line::before {
-  content: '';
-  position: absolute;
-  left: 0; top: -1px;
-  width: 52px; height: 3px;
-  background: var(--signal);
-  border-radius: 2px;
-}
-
-/* Stat strip */
-.hero-stats {
-  display: flex;
-  gap: 0;
-  margin-bottom: 2.25rem;
-  flex-wrap: wrap;
-}
-.hero-stat {
-  padding: 0 2rem 0 0;
-  margin-right: 2rem;
-  border-right: 1px solid rgba(255,255,255,0.1);
-}
-.hero-stat:last-child { border-right: none; }
-.hero-stat-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.55rem;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-.hero-stat-label {
+/* ── FOLIO STRIP (recurring dossier device) ───────── */
+.folio {
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
-  color: rgba(255,255,255,0.38);
-  font-weight: 500;
-  margin-top: 1px;
-  letter-spacing: 0.02em;
-}
-
-.hero-desc {
-  font-size: 1rem;
-  color: rgba(255,255,255,0.52);
-  max-width: 520px;
-  line-height: 1.7;
-  margin-bottom: 2.5rem;
-  font-weight: 400;
-}
-
-.hero-desc em {
-  color: rgba(255,255,255,0.72);
-  font-style: normal;
-  font-weight: 500;
-}
-
-.hero-contact {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sub);
   display: flex;
   gap: 1.75rem;
   flex-wrap: wrap;
-  padding-bottom: 5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 2.5rem;
 }
 
+/* ── HERO ───────────────────────────────────────── */
+#hero { padding: 3rem 0 4.5rem; }
+
+.hero-name {
+  font-size: clamp(3rem, 8vw, 5.6rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 1.1rem;
+}
+
+.hero-role {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--sub);
+  max-width: 480px;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.hero-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  border: 1.5px solid var(--stamp);
+  border-radius: 3px;
+  padding: 5px 11px;
+  transform: rotate(-1.5deg);
+  margin-bottom: 2.5rem;
+}
+.hero-stamp::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--stamp);
+}
+
+.hero-desc {
+  font-size: 1.02rem;
+  color: var(--ink);
+  max-width: 560px;
+  line-height: 1.8;
+  margin-bottom: 2.75rem;
+}
+.hero-desc em { font-style: normal; font-weight: 600; }
+
+.hero-stats {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2.75rem;
+  padding-bottom: 2.75rem;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.hero-stat { padding: 0 2.5rem 0 0; margin-right: 2.5rem; border-right: 1px solid var(--line); }
+.hero-stat:last-child { border-right: none; }
+.hero-stat-num {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.hero-stat-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sub);
+  margin-top: 6px;
+}
+
+.hero-contact { display: flex; gap: 1.75rem; flex-wrap: wrap; }
 .hero-contact a {
-  font-size: 13px;
-  color: rgba(255,255,255,0.36);
+  font-size: 13.5px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--sub);
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   transition: color 0.2s;
-  font-weight: 500;
 }
-.hero-contact a:hover { color: rgba(255,255,255,0.78); }
+.hero-contact a:hover { color: var(--stamp); }
+.hero-contact svg { opacity: 0.75; }
 
 /* ── SECTION ────────────────────────────────────── */
-section { padding: 5.5rem 0; }
+section { padding: 4.5rem 0; }
 
 .section-eyebrow {
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--signal);
-  margin-bottom: 0.5rem;
+  color: var(--sub);
+  margin-bottom: 0.6rem;
 }
 
 .section-title {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  font-family: 'Source Serif 4', serif;
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: var(--ink);
-  margin-bottom: 0.35rem;
-  line-height: 1.15;
+  margin-bottom: 0.4rem;
+  line-height: 1.25;
 }
 
 .section-sub {
-  font-size: 14px;
-  color: var(--muted);
+  font-size: 14.5px;
+  color: var(--sub);
   margin-bottom: 2.75rem;
-  max-width: 520px;
+  max-width: 540px;
   line-height: 1.65;
+  font-style: italic;
 }
 
-.section-divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin-bottom: 2.75rem;
-}
+.section-divider { border: none; border-top: 1px solid var(--line); margin-bottom: 2.75rem; }
 
-/* Dark section variants */
-.dark-section {
-  background: var(--dark);
-  border-top: 1px solid rgba(255,255,255,0.04);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-.dark-section .section-eyebrow { color: rgba(232,65,26,0.85); }
-.dark-section .section-title   { color: #FFFFFF; }
-.dark-section .section-sub     { color: rgba(255,255,255,0.38); }
-.dark-section .section-divider { border-color: rgba(255,255,255,0.06); }
+.surface2 { background: var(--paper2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 
 /* ── STRENGTHS ──────────────────────────────────── */
 .strengths-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
 }
 
-.strength-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.5rem 1.25rem;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-  position: relative;
-  overflow: hidden;
-}
+.strength-card { background: var(--paper); padding: 1.75rem 1.5rem; }
 
-.strength-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--border-strong);
-  border-radius: 12px 12px 0 0;
-  transition: background 0.22s ease;
-}
-
-.strength-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(15,14,12,0.1);
-  border-color: var(--border-md);
-}
-.strength-card:hover::before     { background: var(--signal); }
-.strength-card.teal:hover::before  { background: var(--teal); }
-.strength-card.amber:hover::before { background: var(--amber); }
-
-.strength-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: var(--surface2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.tag {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--sub);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 2px 7px;
   margin-bottom: 1rem;
-  border: 1px solid var(--border);
 }
-.strength-icon svg { width: 15px; height: 15px; stroke: var(--muted); fill: none; stroke-width: 1.8; }
-.strength-icon.teal  svg { stroke: var(--teal); }
-.strength-icon.amber svg { stroke: var(--amber); }
 
 .strength-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
+  font-family: 'Source Serif 4', serif;
+  font-size: 15.5px;
+  font-weight: 600;
   color: var(--ink);
-  margin-bottom: 6px;
-  letter-spacing: -0.01em;
+  margin-bottom: 7px;
 }
-.strength-desc { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+.strength-desc { font-size: 13px; color: var(--sub); line-height: 1.65; font-family: -apple-system, sans-serif; }
 
 /* ── EXPERIENCE ─────────────────────────────────── */
-#experience { border-top: 1px solid var(--border); }
-
 .exp-list { display: flex; flex-direction: column; }
 
 .exp-item {
   display: grid;
-  grid-template-columns: 180px 1fr;
+  grid-template-columns: 170px 1fr;
   gap: 2.5rem;
-  padding: 2.5rem 0;
-  border-bottom: 1px solid var(--border);
-  position: relative;
+  padding: 2.25rem 0;
+  border-bottom: 1px solid var(--line);
 }
 .exp-item:last-child { border-bottom: none; }
 
 .exp-meta { padding-top: 3px; }
-
-.exp-period {
-  font-family: 'Syne', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-  margin-bottom: 3px;
-}
-.exp-company { font-size: 12px; font-weight: 500; color: var(--muted); opacity: 0.75; }
+.exp-period { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--sub); margin-bottom: 4px; }
+.exp-company { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--sub); opacity: 0.7; }
 
 .exp-current-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-family: 'Syne', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--signal);
-  margin-bottom: 8px;
+  color: var(--stamp);
+  margin-bottom: 9px;
 }
-.exp-current-badge::before {
-  content: '';
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--signal);
-  display: block;
-}
+.exp-current-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--stamp); }
 
-.exp-role {
-  font-family: 'Syne', sans-serif;
-  font-size: 15.5px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.015em;
-}
-.exp-desc {
-  font-size: 13.5px;
-  color: var(--muted);
-  line-height: 1.65;
-  margin-bottom: 1rem;
-}
+.exp-role { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 17px; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
+.exp-desc { font-size: 14px; color: var(--sub); line-height: 1.7; margin-bottom: 1rem; }
 
-.exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.exp-bullets li {
-  font-size: 13px;
-  color: var(--muted);
-  padding-left: 16px;
-  position: relative;
-  line-height: 1.55;
-}
-.exp-bullets li::before {
-  content: '';
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--border-strong);
-  position: absolute;
-  left: 0; top: 9px;
-}
+.exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 7px; font-family: -apple-system, sans-serif; }
+.exp-bullets li { font-size: 13.5px; color: var(--sub); padding-left: 16px; position: relative; line-height: 1.6; }
+.exp-bullets li::before { content: '—'; position: absolute; left: 0; color: var(--line-strong); }
 
-/* ── CASE STUDIES ───────────────────────────────── */
-.cases-grid { display: flex; flex-direction: column; gap: 16px; }
+/* ── CASE FILES ─────────────────────────────────── */
+.cases-grid { display: flex; flex-direction: column; gap: 14px; }
 
-.case-card {
-  background: rgba(255,255,255,0.035);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  overflow: hidden;
-  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
-}
-.case-card:hover {
-  border-color: rgba(255,255,255,0.14);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.28);
-}
+.case-card { background: var(--paper); border: 1px solid var(--line-md); }
 
-.case-header {
-  padding: 1.6rem 1.75rem 1.2rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-}
+.case-header { padding: 1.5rem 1.75rem 1.1rem; border-bottom: 1px solid var(--line); }
+.case-num { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; }
+.case-title { font-family: 'Source Serif 4', serif; font-size: 17px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+.case-context { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--sub); margin-top: 6px; opacity: 0.75; }
 
-.case-header-left { flex: 1; }
-
-.case-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--signal);
-  margin-bottom: 8px;
-  opacity: 0.85;
-}
-.case-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #FFFFFF;
-  line-height: 1.3;
-  letter-spacing: -0.015em;
-}
-.case-context {
-  font-size: 12px;
-  color: rgba(255,255,255,0.28);
-  margin-top: 5px;
-}
-
-.case-body {
-  padding: 1.5rem 1.75rem 1.25rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2.25rem;
-}
-
-.case-col-label {
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.28);
-  margin-bottom: 10px;
-}
-.case-text { font-size: 13px; color: rgba(255,255,255,0.48); line-height: 1.65; }
-
+.case-body { padding: 1.4rem 1.75rem 1.1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2.25rem; font-family: -apple-system, sans-serif; }
+.case-col-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sub); margin-bottom: 10px; }
+.case-text { font-size: 13px; color: var(--sub); line-height: 1.65; }
 .case-items { list-style: none; display: flex; flex-direction: column; gap: 9px; }
-.case-items li {
-  font-size: 13px;
-  color: rgba(255,255,255,0.48);
-  padding-left: 14px;
-  position: relative;
-  line-height: 1.5;
-}
-.case-items li::before {
-  content: '';
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--teal);
-  position: absolute;
-  left: 0; top: 8px;
-}
+.case-items li { font-size: 13px; color: var(--sub); padding-left: 14px; position: relative; line-height: 1.55; }
+.case-items li::before { content: '—'; position: absolute; left: 0; color: var(--line-strong); }
 
 .case-outcome {
-  margin: 0 1.75rem 1.75rem;
-  background: rgba(13,139,106,0.1);
-  border: 1px solid rgba(13,139,106,0.2);
-  border-left: 3px solid var(--teal);
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
+  margin: 0 1.75rem 1.6rem;
+  border-left: 2px solid var(--stamp);
+  background: var(--stamp-dim);
+  padding: 0.9rem 1.2rem;
 }
-.outcome-label {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-  color: var(--teal);
-}
-.outcome-text {
-  font-size: 13px;
-  color: rgba(255,255,255,0.6);
-  line-height: 1.65;
-}
+.outcome-label { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; color: var(--stamp); }
+.outcome-text { font-size: 13px; color: var(--ink); line-height: 1.65; font-family: -apple-system, sans-serif; }
 
 /* ── SKILLS ─────────────────────────────────────── */
-#skills { border-top: 1px solid var(--border); }
-
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-.skill-group {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.25rem 1.25rem 1rem;
-  transition: border-color 0.2s;
-}
-.skill-group:hover { border-color: var(--border-md); }
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem 2rem; }
 
 .skill-group-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 14px;
+  color: var(--sub);
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
 }
 
-.skill-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--border);
-}
-.skill-item:last-child { border-bottom: none; padding-bottom: 0; }
-.skill-name { font-size: 13px; color: var(--ink); font-weight: 500; }
-
-.skill-level {
-  font-family: 'Syne', sans-serif;
-  font-size: 9.5px;
-  font-weight: 700;
-  padding: 2.5px 8px;
+.skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-tag {
+  font-family: -apple-system, sans-serif;
+  font-size: 12.5px;
+  color: var(--ink);
+  background: var(--paper2);
+  border: 1px solid var(--line-md);
   border-radius: 4px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  padding: 5px 10px;
 }
-.level-expert     { background: var(--signal-dim);  color: var(--signal); border: 1px solid var(--signal-border); }
-.level-skillful   { background: var(--teal-dim);    color: var(--teal);   border: 1px solid var(--teal-border); }
-.level-experienced { background: var(--surface2);   color: var(--muted);  border: 1px solid var(--border-strong); }
-.level-basic      { background: var(--amber-dim);   color: var(--amber);  border: 1px solid var(--amber-border); }
-
-/* ── EDUCATION ──────────────────────────────────── */
-#education { border-top: 1px solid var(--border); }
-
-.edu-list { display: flex; flex-direction: column; gap: 10px; }
-
-.edu-item {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 1.1rem 1.25rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-.edu-item:hover {
-  border-color: var(--border-md);
-  transform: translateX(4px);
-  box-shadow: 0 4px 16px rgba(15,14,12,0.06);
-}
-
-.edu-icon {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.edu-icon svg { width: 16px; height: 16px; stroke: var(--muted); fill: none; stroke-width: 1.8; }
-
-.edu-degree { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
-.edu-school { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
-.edu-period { font-size: 11.5px; color: var(--muted); opacity: 0.65; margin-top: 2px; }
 
 /* ── CTA ────────────────────────────────────────── */
-#cta {
-  background: var(--dark);
-  padding: 6rem 0 5.5rem;
-  text-align: center;
-  border-top: 1px solid rgba(255,255,255,0.04);
-}
+#cta { text-align: center; padding: 5.5rem 0; }
 
-.cta-eyebrow {
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--signal);
-  margin-bottom: 1.25rem;
-  opacity: 0.85;
-}
-
-.cta-heading {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  font-weight: 800;
-  color: #FFFFFF;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
-  margin-bottom: 1rem;
-}
-
-.cta-heading span { color: var(--signal); }
-
-.cta-sub {
-  font-size: 15px;
-  color: rgba(255,255,255,0.4);
-  max-width: 420px;
-  margin: 0 auto 2.75rem;
-  line-height: 1.65;
-}
+.cta-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sub); margin-bottom: 1.25rem; }
+.cta-heading { font-family: 'Source Serif 4', serif; font-size: clamp(1.9rem, 4vw, 2.8rem); font-weight: 500; color: var(--ink); line-height: 1.25; margin-bottom: 1.1rem; }
+.cta-heading em { color: var(--stamp); font-style: italic; }
+.cta-sub { font-size: 15px; color: var(--sub); max-width: 440px; margin: 0 auto 2.5rem; line-height: 1.65; font-style: italic; }
 
 .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
 .btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--signal);
-  color: #FFFFFF;
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 13px 24px;
-  border-radius: 8px;
-  text-decoration: none;
-  border: 1px solid transparent;
-  transition: opacity 0.2s, transform 0.2s;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--ink); color: var(--paper);
+  font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; letter-spacing: 0.03em;
+  padding: 12px 22px; border-radius: 4px; text-decoration: none; border: 1px solid var(--ink);
+  transition: opacity 0.2s;
 }
-.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-primary:hover { opacity: 0.82; }
 
 .btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.65);
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 13px 24px;
-  border-radius: 8px;
-  text-decoration: none;
-  border: 1px solid rgba(255,255,255,0.12);
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--ink);
+  font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; letter-spacing: 0.03em;
+  padding: 12px 22px; border-radius: 4px; text-decoration: none; border: 1px solid var(--line-strong);
+  transition: border-color 0.2s, background 0.2s;
 }
-.btn-secondary:hover {
-  background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.9);
-  border-color: rgba(255,255,255,0.2);
-}
+.btn-secondary:hover { border-color: var(--ink); background: var(--paper2); }
 
 /* ── FOOTER ─────────────────────────────────────── */
-footer {
-  background: var(--dark);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 2rem 0;
-}
-
-.footer-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.footer-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 0.06em;
-}
-
-.footer-links {
-  display: flex;
-  gap: 1.75rem;
-  flex-wrap: wrap;
-}
-.footer-links a {
-  font-size: 12.5px;
-  color: rgba(255,255,255,0.3);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.footer-links a:hover { color: rgba(255,255,255,0.7); }
+footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.footer-name { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--sub); letter-spacing: 0.03em; }
+.footer-links { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+.footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--sub); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--stamp); }
 
 /* ── SCROLL ANIMATIONS ──────────────────────────── */
-.fade-up {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.fade-up.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.fade-up { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
 
 /* ── RESPONSIVE ─────────────────────────────────── */
 @media (max-width: 680px) {
   nav { padding: 0 1.25rem; }
   .nav-links { display: none; }
   .container { padding: 0 1.25rem; }
-
-  #hero { padding: 4rem 0 0; }
-  .hero-name { font-size: 3.4rem; }
+  #hero { padding: 2rem 0 3.5rem; }
+  .hero-name { font-size: 2.6rem; }
   .hero-stats { gap: 0; }
   .hero-stat { padding: 0 1.25rem 0 0; margin-right: 1.25rem; }
-  .hero-stat-num { font-size: 1.2rem; }
-  .hero-contact { padding-bottom: 4.5rem; }
-
-  section { padding: 4rem 0; }
-  #cta { padding: 4.5rem 0 4rem; }
-
+  .hero-stat-num { font-size: 1.25rem; }
+  section { padding: 3.5rem 0; }
+  #cta { padding: 4rem 0; }
   .exp-item { grid-template-columns: 1fr; gap: 0.4rem; }
   .case-body { grid-template-columns: 1fr; }
-  .case-header { flex-direction: column; }
-
   .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
 </style>
@@ -798,114 +413,89 @@ footer {
 <nav>
   <a href="#hero" class="nav-logo">LC</a>
   <div class="nav-links">
-    <a href="#strengths">Strengths</a>
+    <a href="#strengths">Focus</a>
     <a href="#experience">Experience</a>
-    <a href="#cases">Case Studies</a>
+    <a href="#cases">Case files</a>
     <a href="#skills">Skills</a>
-    <a href="game.html" class="nav-xov">XOV ↗</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
   <div class="container">
-    <div class="hero-status">
-      <span class="status-dot"></span>
-      Available for new opportunities
+    <div class="folio">
+      <span>Ref. LC-01</span>
+      <span>Status: Active</span>
+      <span>Tel Aviv, Israel</span>
     </div>
 
-    <h1 class="hero-name">Liav<br>Chanoch</h1>
+    <h1 class="hero-name">Liav Chanoch</h1>
+    <p class="hero-role">Product &amp; project management, with the systems built by hand.</p>
 
-    <div class="hero-rule">
-      <div class="hero-rule-line"></div>
-    </div>
-
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="hero-stat-num">5+</div>
-        <div class="hero-stat-label">Years in PM</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">30+</div>
-        <div class="hero-stat-label">Client projects</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">3</div>
-        <div class="hero-stat-label">ERP builds</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">5+</div>
-        <div class="hero-stat-label">Years in CS</div>
-      </div>
-    </div>
+    <div class="hero-stamp">Available for engagement</div>
 
     <p class="hero-desc">
-      Project Manager and Customer Success Manager delivering complex system implementations and client-facing digital projects — <em>owning each engagement end-to-end from scoping through go-live and beyond.</em>
+      Project Owner and Customer Success Manager delivering client-facing digital work end-to-end — <em>and the one who builds the internal systems that run it,</em> using Claude Code and AI-assisted development to ship production tools without a dev team.
     </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">5+</div><div class="hero-stat-label">Years in PM &amp; CS</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">30+</div><div class="hero-stat-label">Client projects delivered</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">3</div><div class="hero-stat-label">Systems shipped end-to-end</div></div>
+    </div>
 
     <div class="hero-contact">
       <a href="mailto:liavch1@gmail.com">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
         liavch1@gmail.com
       </a>
-      <a href="tel:0502197706">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.19 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.1 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 10.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
-        050-2197706
+      <a href="https://wa.me/972502197706" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2.003c-5.514 0-9.997 4.483-9.997 9.997 0 1.762.464 3.484 1.345 4.997L2 22l5.176-1.352a9.94 9.94 0 0 0 4.828 1.24h.004c5.514 0 9.997-4.483 9.997-9.997 0-2.67-1.04-5.181-2.929-7.07a9.935 9.935 0 0 0-7.072-2.918zm0 18.09h-.003a8.36 8.36 0 0 1-4.259-1.166l-.305-.181-3.176.831.848-3.096-.198-.317a8.375 8.375 0 0 1-1.284-4.467c0-4.632 3.769-8.401 8.401-8.401 2.245 0 4.353.874 5.94 2.462a8.34 8.34 0 0 1 2.46 5.938c-.001 4.633-3.77 8.397-8.424 8.397z"/></svg>
+        WhatsApp
       </a>
       <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
         LinkedIn
       </a>
       <a href="#">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Tel Aviv, Israel
       </a>
     </div>
   </div>
-
-  <!-- Animated waveform — the signature element -->
-  <div class="hero-waveform" aria-hidden="true" id="heroWaveform"></div>
 </section>
 
 <!-- STRENGTHS -->
-<section id="strengths">
+<section id="strengths" class="surface2">
   <div class="container">
-    <p class="section-eyebrow">What I deliver</p>
-    <h2 class="section-title">Key strengths</h2>
-    <p class="section-sub">From ERP rollouts to client-facing digital products — end-to-end delivery, no hand-holding required.</p>
+    <p class="section-eyebrow">How I work</p>
+    <h2 class="section-title">Two disciplines, one delivery track</h2>
+    <p class="section-sub">Project and product management paired with hands-on systems building — using AI tools to close the gap between plan and shipped product.</p>
     <hr class="section-divider">
     <div class="strengths-grid">
 
       <div class="strength-card fade-up">
-        <div class="strength-icon">
-          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
+        <span class="tag">PM</span>
         <div class="strength-name">System Implementation</div>
         <div class="strength-desc">End-to-end delivery of ERP, CRM, and API integrations — from scoping through go-live and post-launch stabilization.</div>
       </div>
 
-      <div class="strength-card fade-up" style="transition-delay:0.08s">
-        <div class="strength-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        </div>
-        <div class="strength-name">Project & Delivery Management</div>
+      <div class="strength-card fade-up" style="transition-delay:0.06s">
+        <span class="tag">PM</span>
+        <div class="strength-name">Project &amp; Delivery Management</div>
         <div class="strength-desc">Full lifecycle PM: timelines, budgets, stakeholder governance, and cross-functional coordination across concurrent workstreams.</div>
       </div>
 
-      <div class="strength-card teal fade-up" style="transition-delay:0.16s">
-        <div class="strength-icon teal">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-        </div>
-        <div class="strength-name">Digital Project Delivery</div>
-        <div class="strength-desc">Managed dozens of client-facing web and digital projects including Wix builds, landing pages, and digital ecosystems — coordinating design, UX, and dev.</div>
+      <div class="strength-card fade-up" style="transition-delay:0.12s">
+        <span class="tag">SYSTEMS</span>
+        <div class="strength-name">Product &amp; Systems Building</div>
+        <div class="strength-desc">Internal tools, dashboards, and automations designed and shipped end-to-end — replacing manual workflows with live systems.</div>
       </div>
 
-      <div class="strength-card amber fade-up" style="transition-delay:0.24s">
-        <div class="strength-icon amber">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-        </div>
-        <div class="strength-name">AI-Assisted Workflows</div>
-        <div class="strength-desc">Daily use of Claude Code and Lovable to prototype, automate repetitive workflows, and accelerate delivery — no fluff, just shipped output.</div>
+      <div class="strength-card fade-up" style="transition-delay:0.18s">
+        <span class="tag">SYSTEMS</span>
+        <div class="strength-name">AI-Assisted Development</div>
+        <div class="strength-desc">Daily use of Claude Code and Lovable to prototype, build, and ship production tools — no fluff, just shipped output.</div>
       </div>
 
     </div>
@@ -927,7 +517,7 @@ footer {
         </div>
         <div>
           <div class="exp-current-badge">Current</div>
-          <div class="exp-role">Project Owner & CS Manager</div>
+          <div class="exp-role">Project Owner &amp; CS Manager</div>
           <div class="exp-desc">Led post-sale web development projects end-to-end, managing cross-functional teams while maintaining a direct reporting line to the CEO.</div>
           <ul class="exp-bullets">
             <li>Delivered dozens of client-facing web and digital projects end-to-end, including Wix-based websites, for a portfolio of e-commerce clients</li>
@@ -949,21 +539,10 @@ footer {
           <div class="exp-desc">Led the design and development of internal business applications using Zoho Suite, streamlining sales, finance, and project management operations company-wide.</div>
           <ul class="exp-bullets">
             <li>Led end-to-end system implementations: ERP integration, affiliate management platform, and centralized operations dashboard</li>
-            <li>Coordinated cross-functional resources across R&D, finance, and operations throughout each implementation lifecycle</li>
+            <li>Coordinated cross-functional resources across R&amp;D, finance, and operations throughout each implementation lifecycle</li>
             <li>Applied AI-assisted tools (Claude Code, Lovable) and Zoho Analytics to replace manual workflows with real-time, data-driven systems</li>
             <li>Owned full SDLC from intake and technical scoping through UAT, go-live, and post-launch stabilization</li>
           </ul>
-        </div>
-      </div>
-
-      <div class="exp-item fade-up">
-        <div class="exp-meta">
-          <div class="exp-period">2010 — Present</div>
-          <div class="exp-company">Self-Employed · Tel Aviv</div>
-        </div>
-        <div>
-          <div class="exp-role">Music Producer & DJ</div>
-          <div class="exp-desc">Independent creative work in music production and live performance — a long-running side pursuit outside my core professional track.</div>
         </div>
       </div>
 
@@ -971,22 +550,20 @@ footer {
   </div>
 </section>
 
-<!-- CASE STUDIES -->
-<section id="cases" class="dark-section">
+<!-- CASE FILES -->
+<section id="cases" class="surface2">
   <div class="container">
-    <p class="section-eyebrow">Selected work</p>
-    <h2 class="section-title">Product operations case studies</h2>
-    <p class="section-sub">Three internal tools built at OTW SRL that demonstrate full-lifecycle product thinking.</p>
+    <p class="section-eyebrow">Case files</p>
+    <h2 class="section-title">Three systems, one operator</h2>
+    <p class="section-sub">Internal tools built at OTW SRL — planned as a PM, shipped as a builder.</p>
     <hr class="section-divider">
     <div class="cases-grid">
 
       <div class="case-card fade-up">
         <div class="case-header">
-          <div class="case-header-left">
-            <div class="case-num">Case study 01</div>
-            <div class="case-title">End-to-end billing automation & ERP integration</div>
-            <div class="case-context">OTW SRL — Zoho + Teamleader</div>
-          </div>
+          <div class="case-num">Case LC-01</div>
+          <div class="case-title">End-to-end billing automation &amp; ERP integration</div>
+          <div class="case-context">OTW SRL — Zoho + Teamleader</div>
         </div>
         <div class="case-body">
           <div>
@@ -1008,13 +585,11 @@ footer {
         </div>
       </div>
 
-      <div class="case-card fade-up" style="transition-delay:0.1s">
+      <div class="case-card fade-up" style="transition-delay:0.08s">
         <div class="case-header">
-          <div class="case-header-left">
-            <div class="case-num">Case study 02</div>
-            <div class="case-title">Affiliate ecosystem: transparency & financial ops scaling</div>
-            <div class="case-context">OTW SRL — Affiliate Management Platform</div>
-          </div>
+          <div class="case-num">Case LC-02</div>
+          <div class="case-title">Affiliate ecosystem: transparency &amp; financial ops scaling</div>
+          <div class="case-context">OTW SRL — Affiliate Management Platform</div>
         </div>
         <div class="case-body">
           <div>
@@ -1036,13 +611,11 @@ footer {
         </div>
       </div>
 
-      <div class="case-card fade-up" style="transition-delay:0.2s">
+      <div class="case-card fade-up" style="transition-delay:0.16s">
         <div class="case-header">
-          <div class="case-header-left">
-            <div class="case-num">Case study 03</div>
-            <div class="case-title">Centralized project governance & hybrid resource dashboard</div>
-            <div class="case-context">OTW SRL — Cross-Project Command Center</div>
-          </div>
+          <div class="case-num">Case LC-03</div>
+          <div class="case-title">Centralized project governance &amp; hybrid resource dashboard</div>
+          <div class="case-context">OTW SRL — Cross-Project Command Center</div>
         </div>
         <div class="case-body">
           <div>
@@ -1076,80 +649,59 @@ footer {
     <hr class="section-divider">
     <div class="skills-grid">
 
-      <div class="skill-group fade-up">
-        <div class="skill-group-title">Operations & PM</div>
-        <div class="skill-item"><span class="skill-name">Zoho Suite</span><span class="skill-level level-expert">Expert</span></div>
-        <div class="skill-item"><span class="skill-name">Jira</span><span class="skill-level level-skillful">Skillful</span></div>
-        <div class="skill-item"><span class="skill-name">Monday.com</span><span class="skill-level level-experienced">Experienced</span></div>
-        <div class="skill-item"><span class="skill-name">Trello</span><span class="skill-level level-experienced">Experienced</span></div>
-        <div class="skill-item"><span class="skill-name">Asana</span><span class="skill-level level-experienced">Experienced</span></div>
-        <div class="skill-item"><span class="skill-name">Zoho Analytics</span><span class="skill-level level-skillful">Skillful</span></div>
+      <div class="fade-up">
+        <div class="skill-group-title">Operations &amp; PM</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Zoho Suite</span>
+          <span class="skill-tag">Jira</span>
+          <span class="skill-tag">Monday.com</span>
+          <span class="skill-tag">Trello</span>
+          <span class="skill-tag">Asana</span>
+          <span class="skill-tag">Zoho Analytics</span>
+        </div>
       </div>
 
-      <div class="skill-group fade-up" style="transition-delay:0.07s">
+      <div class="fade-up" style="transition-delay:0.05s">
         <div class="skill-group-title">Technical</div>
-        <div class="skill-item"><span class="skill-name">API Integrations</span><span class="skill-level level-skillful">Skillful</span></div>
-        <div class="skill-item"><span class="skill-name">ERP / CRM Systems</span><span class="skill-level level-skillful">Skillful</span></div>
-        <div class="skill-item"><span class="skill-name">Data Visualization</span><span class="skill-level level-skillful">Skillful</span></div>
-        <div class="skill-item"><span class="skill-name">SDLC / PMLC</span><span class="skill-level level-skillful">Skillful</span></div>
-        <div class="skill-item"><span class="skill-name">Python (Basic)</span><span class="skill-level level-basic">Basic</span></div>
+        <div class="skill-tags">
+          <span class="skill-tag">API Integrations</span>
+          <span class="skill-tag">ERP / CRM Systems</span>
+          <span class="skill-tag">Data Visualization</span>
+          <span class="skill-tag">SDLC / PMLC</span>
+          <span class="skill-tag">Python (basic)</span>
+        </div>
       </div>
 
-      <div class="skill-group fade-up" style="transition-delay:0.14s">
-        <div class="skill-group-title">Design & Digital</div>
-        <div class="skill-item"><span class="skill-name">Figma</span><span class="skill-level level-experienced">Experienced</span></div>
-        <div class="skill-item"><span class="skill-name">Miro</span><span class="skill-level level-experienced">Experienced</span></div>
-        <div class="skill-item"><span class="skill-name">Wix</span><span class="skill-level level-experienced">Experienced</span></div>
-        <div class="skill-item"><span class="skill-name">Wireframing</span><span class="skill-level level-experienced">Experienced</span></div>
+      <div class="fade-up" style="transition-delay:0.1s">
+        <div class="skill-group-title">Design &amp; Digital</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Miro</span>
+          <span class="skill-tag">Wix</span>
+          <span class="skill-tag">Wireframing</span>
+        </div>
       </div>
 
-      <div class="skill-group fade-up" style="transition-delay:0.21s">
-        <div class="skill-group-title">AI & Productivity</div>
-        <div class="skill-item"><span class="skill-name">Claude Code</span><span class="skill-level level-experienced">Experienced</span></div>
-        <div class="skill-item"><span class="skill-name">Lovable</span><span class="skill-level level-experienced">Experienced</span></div>
-        <div class="skill-item"><span class="skill-name">AI-assisted workflows</span><span class="skill-level level-expert">Expert</span></div>
+      <div class="fade-up" style="transition-delay:0.15s">
+        <div class="skill-group-title">AI &amp; Productivity</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Claude Code</span>
+          <span class="skill-tag">Lovable</span>
+          <span class="skill-tag">AI-assisted workflows</span>
+        </div>
       </div>
 
-      <div class="skill-group fade-up" style="transition-delay:0.28s">
+      <div class="fade-up" style="transition-delay:0.2s">
         <div class="skill-group-title">Methodologies</div>
-        <div class="skill-item"><span class="skill-name">Agile / Scrum</span><span class="skill-level level-skillful">Skillful</span></div>
-        <div class="skill-item"><span class="skill-name">Stakeholder Management</span><span class="skill-level level-expert">Expert</span></div>
-        <div class="skill-item"><span class="skill-name">Budget Management</span><span class="skill-level level-expert">Expert</span></div>
-        <div class="skill-item"><span class="skill-name">Matrix Team Coordination</span><span class="skill-level level-expert">Expert</span></div>
-        <div class="skill-item"><span class="skill-name">Risk Management</span><span class="skill-level level-skillful">Skillful</span></div>
+        <div class="skill-tags">
+          <span class="skill-tag">Agile / Scrum</span>
+          <span class="skill-tag">Stakeholder Management</span>
+          <span class="skill-tag">Budget Management</span>
+          <span class="skill-tag">Matrix Team Coordination</span>
+          <span class="skill-tag">Risk Management</span>
+        </div>
       </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- EDUCATION -->
-<section id="education">
-  <div class="container">
-    <p class="section-eyebrow">Background</p>
-    <h2 class="section-title">Education</h2>
-    <hr class="section-divider">
-    <div class="edu-list">
-      <div class="edu-item fade-up">
-        <div class="edu-icon">
-          <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-        </div>
-        <div>
-          <div class="edu-degree">Music Production</div>
-          <div class="edu-school">BPM College, Tel Aviv</div>
-          <div class="edu-period">Dec 2018 — Jul 2020</div>
-        </div>
-      </div>
-      <div class="edu-item fade-up" style="transition-delay:0.1s">
-        <div class="edu-icon">
-          <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        </div>
-        <div>
-          <div class="edu-degree">Sound Technician</div>
-          <div class="edu-school">Yoav Gera School of Sound, Tel Aviv</div>
-          <div class="edu-period">Sep 2010 — Oct 2011</div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -1158,15 +710,19 @@ footer {
 <section id="cta">
   <div class="container">
     <p class="cta-eyebrow">Let's work together</p>
-    <h2 class="cta-heading">Ready to ship<br>something that <span>works?</span></h2>
-    <p class="cta-sub">Open to freelance PM engagements, system implementations, and consulting — remote or Tel Aviv.</p>
+    <h2 class="cta-heading">Plan it. Build it. <em>Ship it.</em></h2>
+    <p class="cta-sub">Open to freelance PM/product engagements and AI-assisted systems builds — remote or Tel Aviv.</p>
     <div class="cta-buttons">
       <a href="mailto:liavch1@gmail.com" class="btn-primary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
         Send an email
       </a>
+      <a href="https://wa.me/972502197706" target="_blank" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2.003c-5.514 0-9.997 4.483-9.997 9.997 0 1.762.464 3.484 1.345 4.997L2 22l5.176-1.352a9.94 9.94 0 0 0 4.828 1.24h.004c5.514 0 9.997-4.483 9.997-9.997 0-2.67-1.04-5.181-2.929-7.07a9.935 9.935 0 0 0-7.072-2.918zm0 18.09h-.003a8.36 8.36 0 0 1-4.259-1.166l-.305-.181-3.176.831.848-3.096-.198-.317a8.375 8.375 0 0 1-1.284-4.467c0-4.632 3.769-8.401 8.401-8.401 2.245 0 4.353.874 5.94 2.462a8.34 8.34 0 0 1 2.46 5.938c-.001 4.633-3.77 8.397-8.424 8.397z"/></svg>
+        WhatsApp
+      </a>
       <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank" class="btn-secondary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
         LinkedIn
       </a>
     </div>
@@ -1180,17 +736,15 @@ footer {
       <div class="footer-name">Liav Chanoch</div>
       <div class="footer-links">
         <a href="mailto:liavch1@gmail.com">liavch1@gmail.com</a>
-        <a href="tel:0502197706">050-2197706</a>
+        <a href="https://wa.me/972502197706" target="_blank">WhatsApp</a>
         <a href="#">Tel Aviv, Israel</a>
         <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank">LinkedIn</a>
-        <a href="game.html">XOV ↗</a>
       </div>
     </div>
   </div>
 </footer>
 
 <script>
-/* ── Scroll reveal ── */
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -1200,38 +754,6 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-/* ── Waveform generator ── */
-(function () {
-  const container = document.getElementById('heroWaveform');
-  if (!container) return;
-
-  const heights = [
-    18, 28, 44, 36, 56, 42, 68, 52, 78, 60, 72, 48, 64, 80, 55, 70,
-    82, 65, 50, 74, 58, 84, 62, 46, 76, 40, 54, 66, 38, 72, 44, 60,
-    80, 52, 68, 36, 58, 76, 48, 64, 30, 56, 42, 70, 34, 62, 50, 78,
-    24, 44, 66, 32, 54, 40, 72, 28, 50, 38, 64, 46, 56, 34, 60, 42
-  ];
-
-  const delays = [
-    0, 0.3, 0.6, 0.1, 0.8, 0.4, 1.1, 0.7, 0.2, 0.9, 0.5, 1.3, 0.6, 0.2, 1.0, 0.4,
-    0.8, 0.1, 0.7, 0.3, 1.2, 0.5, 0.9, 0.2, 0.6, 1.1, 0.4, 0.8, 0.3, 0.7, 1.0, 0.5,
-    0.2, 0.9, 0.4, 1.2, 0.6, 0.1, 0.8, 0.3, 1.0, 0.5, 0.7, 0.2, 0.9, 0.4, 1.1, 0.6,
-    0.3, 0.8, 0.1, 1.0, 0.5, 0.7, 0.2, 0.9, 0.4, 1.2, 0.6, 0.3, 0.8, 1.0, 0.5, 0.7
-  ];
-
-  heights.forEach((h, i) => {
-    const bar = document.createElement('span');
-    const peak = (h / 84 * 1.6 + 0.4).toFixed(2);
-    bar.style.cssText = `
-      height: ${h}px;
-      --peak: ${peak};
-      animation-delay: ${delays[i % delays.length]}s;
-      animation-duration: ${(2.2 + (i % 7) * 0.3).toFixed(1)}s;
-    `;
-    container.appendChild(bar);
-  });
-})();
 </script>
 </body>
 </html>
