@@ -121,6 +121,15 @@ nav {
   line-height: 1.5;
 }
 
+.hero-fde-note {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--sub);
+  max-width: 460px;
+  line-height: 1.6;
+  margin-bottom: 2.25rem;
+}
+
 .hero-stamp {
   display: inline-flex;
   align-items: center;
@@ -231,7 +240,7 @@ section { padding: 4.5rem 0; }
 /* ── STRENGTHS ──────────────────────────────────── */
 .strengths-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
@@ -324,6 +333,62 @@ section { padding: 4.5rem 0; }
 .outcome-label { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; color: var(--stamp); }
 .outcome-text { font-size: 13px; color: var(--ink); line-height: 1.65; font-family: -apple-system, sans-serif; }
 
+/* ── GROUP LABEL (case-file cluster divider) ──────── */
+.group-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sub);
+  padding-top: 1.5rem;
+  margin-bottom: -0.25rem;
+}
+.group-label:first-child { padding-top: 0; }
+
+/* ── GENERIC STAMP (reused outside hero) ──────────── */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  border: 1.5px solid var(--stamp);
+  border-radius: 3px;
+  padding: 5px 11px;
+  transform: rotate(-1.5deg);
+}
+.stamp::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--stamp); }
+
+.callout {
+  border-left: 2px solid var(--stamp);
+  background: var(--stamp-dim);
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 2rem;
+}
+.callout .outcome-label { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; color: var(--stamp); }
+.callout p { font-size: 13.5px; color: var(--ink); line-height: 1.7; font-family: -apple-system, sans-serif; }
+
+/* ── FDE TRACK ──────────────────────────────────── */
+.fde-intro { font-size: 15px; color: var(--sub); max-width: 620px; line-height: 1.8; margin-bottom: 2rem; }
+.fde-intro em { font-style: normal; color: var(--ink); font-weight: 600; }
+
+.roadmap { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.roadmap-item {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 1.5rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.roadmap-week { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--sub); padding-top: 3px; }
+.roadmap-topic { font-family: 'Source Serif 4', serif; font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.roadmap-desc { font-size: 13px; color: var(--sub); line-height: 1.6; font-family: -apple-system, sans-serif; }
+
 /* ── SKILLS ─────────────────────────────────────── */
 .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem 2rem; }
 
@@ -347,6 +412,11 @@ section { padding: 4.5rem 0; }
   border: 1px solid var(--line-md);
   border-radius: 4px;
   padding: 5px 10px;
+}
+.skill-tag.progress {
+  color: var(--sub);
+  background: transparent;
+  border: 1px dashed var(--line-strong);
 }
 
 /* ── CTA ────────────────────────────────────────── */
@@ -402,7 +472,9 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
   section { padding: 3.5rem 0; }
   #cta { padding: 4rem 0; }
   .exp-item { grid-template-columns: 1fr; gap: 0.4rem; }
+  .strengths-grid { grid-template-columns: 1fr; }
   .case-body { grid-template-columns: 1fr; }
+  .roadmap-item { grid-template-columns: 1fr; gap: 0.3rem; }
   .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
 </style>
@@ -416,6 +488,7 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
     <a href="#strengths">Focus</a>
     <a href="#experience">Experience</a>
     <a href="#cases">Case files</a>
+    <a href="#fde-track">FDE track</a>
     <a href="#skills">Skills</a>
   </div>
 </nav>
@@ -426,11 +499,12 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
     <div class="folio">
       <span>Ref. LC-01</span>
       <span>Status: Active</span>
-      <span>Tel Aviv, Israel</span>
+      <span>Barcelona, Spain</span>
     </div>
 
     <h1 class="hero-name">Liav Chanoch</h1>
     <p class="hero-role">Product &amp; project management, with the systems built by hand.</p>
+    <p class="hero-fde-note mono">Building toward Forward Deployed Engineering — systems thinking backed by hands-on AI and automation work.</p>
 
     <div class="hero-stamp">Available for engagement</div>
 
@@ -441,7 +515,7 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
     <div class="hero-stats">
       <div class="hero-stat"><div class="hero-stat-num">5+</div><div class="hero-stat-label">Years in PM &amp; CS</div></div>
       <div class="hero-stat"><div class="hero-stat-num">30+</div><div class="hero-stat-label">Client projects delivered</div></div>
-      <div class="hero-stat"><div class="hero-stat-num">3</div><div class="hero-stat-label">Systems shipped end-to-end</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">7</div><div class="hero-stat-label">Systems &amp; products shipped end-to-end</div></div>
     </div>
 
     <div class="hero-contact">
@@ -459,7 +533,7 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
       </a>
       <a href="#">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        Tel Aviv, Israel
+        Barcelona, Spain
       </a>
     </div>
   </div>
@@ -554,10 +628,12 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
 <section id="cases" class="surface2">
   <div class="container">
     <p class="section-eyebrow">Case files</p>
-    <h2 class="section-title">Three systems, one operator</h2>
-    <p class="section-sub">Internal tools built at OTW SRL — planned as a PM, shipped as a builder.</p>
+    <h2 class="section-title">Seven systems, one operator</h2>
+    <p class="section-sub">Internal platforms, client builds, and independent products — planned as a PM, shipped as a builder.</p>
     <hr class="section-divider">
     <div class="cases-grid">
+
+      <div class="group-label fade-up">OTW SRL — Internal Systems</div>
 
       <div class="case-card fade-up">
         <div class="case-header">
@@ -637,6 +713,160 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
         </div>
       </div>
 
+      <div class="group-label fade-up">AI &amp; Automation</div>
+
+      <div class="case-card fade-up">
+        <div class="case-header">
+          <div class="case-num">Case LC-04</div>
+          <div class="case-title">LLM-powered scheduling tool, Hebrew RTL</div>
+          <div class="case-context">Client project — Firebase + Anthropic API</div>
+        </div>
+        <div class="case-body">
+          <div>
+            <div class="case-col-label">The challenge</div>
+            <p class="case-text">A client needed real-time appointment scheduling in Hebrew, with natural-language interaction — but calling an LLM directly from the browser would expose API keys and leave no control over cost or abuse.</p>
+          </div>
+          <div>
+            <div class="case-col-label">The solution</div>
+            <ul class="case-items">
+              <li>Designed and iterated prompts for a Hebrew RTL scheduling flow against the Anthropic API</li>
+              <li>Built a server-side proxy so API keys never reach the client, with request validation on every call</li>
+              <li>Added access gating and rate limiting to control cost and prevent abuse</li>
+            </ul>
+          </div>
+        </div>
+        <div class="case-outcome">
+          <div class="outcome-label">Outcome</div>
+          <p class="outcome-text">Live for a real client, handling Hebrew-language scheduling requests end-to-end without exposing credentials or uncontrolled API spend.</p>
+        </div>
+      </div>
+
+      <div class="case-card fade-up">
+        <div class="case-header">
+          <div class="case-num">Case LC-05</div>
+          <div class="case-title">Autonomous appointment-monitoring bot</div>
+          <div class="case-context">Personal project — Python + Playwright</div>
+        </div>
+        <div class="case-body">
+          <div>
+            <div class="case-col-label">The challenge</div>
+            <p class="case-text">A high-demand government appointment portal released slots unpredictably, with no notification system — manual checking meant missed windows.</p>
+          </div>
+          <div>
+            <div class="case-col-label">The solution</div>
+            <ul class="case-items">
+              <li>Built an unattended Python + Playwright agent that polls the portal and detects slot availability</li>
+              <li>Wired real-time alerting to Telegram so availability surfaces the moment it opens</li>
+              <li>Structured the project with proper version control and environment setup, not a one-off script</li>
+            </ul>
+          </div>
+        </div>
+        <div class="case-outcome">
+          <div class="outcome-label">Outcome</div>
+          <p class="outcome-text">Runs unattended, catching availability windows that manual checking would miss.</p>
+        </div>
+      </div>
+
+      <div class="group-label fade-up">Independent Products</div>
+
+      <div class="case-card fade-up">
+        <div class="case-header">
+          <div class="case-num">Case LC-06</div>
+          <div class="case-title">Visa Tracker — two-sided visa management platform</div>
+          <div class="case-context">Independent product — in active client use</div>
+        </div>
+        <div class="case-body">
+          <div>
+            <div class="case-col-label">The challenge</div>
+            <p class="case-text">Visa applicants and the service providers helping them had no shared system — status updates, documents, and next steps lived in scattered messages and spreadsheets.</p>
+          </div>
+          <div>
+            <div class="case-col-label">The solution</div>
+            <ul class="case-items">
+              <li>Designed and built a two-sided platform connecting applicants and service providers in one workflow</li>
+              <li>Owned the full product lifecycle — concept, design, build, and iteration — using AI-assisted development</li>
+              <li>Iterated on real usage and direct client feedback, not a one-time build</li>
+            </ul>
+          </div>
+        </div>
+        <div class="case-outcome">
+          <div class="outcome-label">Outcome</div>
+          <p class="outcome-text">In active use by paying clients, with the roadmap driven by what they actually run into.</p>
+        </div>
+      </div>
+
+      <div class="case-card fade-up">
+        <div class="case-header">
+          <div class="case-num">Case LC-07</div>
+          <div class="case-title">Pocket Budget — multi-user budgeting PWA</div>
+          <div class="case-context">Independent product — iterating on real usage</div>
+        </div>
+        <div class="case-body">
+          <div>
+            <div class="case-col-label">The challenge</div>
+            <p class="case-text">Simple budgeting tools assume single-user, single-balance thinking — they don't handle daily overdraft logic, shared visibility across a household, or a personal catalog of recurring items.</p>
+          </div>
+          <div>
+            <div class="case-col-label">The solution</div>
+            <ul class="case-items">
+              <li>Built a progressive web app with daily overdraft and rollover logic</li>
+              <li>Added multi-user group visibility so shared finances stay in sync</li>
+              <li>Included a personal product catalog, refined from real usage data</li>
+            </ul>
+          </div>
+        </div>
+        <div class="case-outcome">
+          <div class="outcome-label">Outcome</div>
+          <p class="outcome-text">Iterated directly against real usage patterns rather than a fixed initial spec.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FDE TRACK -->
+<section id="fde-track" class="surface2">
+  <div class="container">
+    <p class="section-eyebrow">In progress</p>
+    <h2 class="section-title">The FDE track</h2>
+    <div class="stamp fade-up" style="margin-bottom:2rem;">In progress — not yet shipped</div>
+
+    <p class="fde-intro fade-up">
+      Product and delivery experience translates cleanly to conversations with technical teams — but Forward Deployed Engineering means being able to build and debug alongside them, not just coordinate around them. <em>This is the track closing that gap:</em> hands-on depth in the LLM stack (RAG, evals, function calling), Python, and SQL. Not a certificate — a live lab.
+    </p>
+
+    <div class="callout fade-up">
+      <div class="outcome-label">The live lab</div>
+      <p>Every concept gets applied to a real, paying client project — the Visa Tracker platform above — not synthetic tutorials. If it doesn't hold up against an actual production system, it doesn't count as learned yet.</p>
+    </div>
+
+    <p class="section-eyebrow" style="margin-top:2.5rem;">Roadmap — six weeks</p>
+    <div class="roadmap">
+      <div class="roadmap-item fade-up">
+        <div class="roadmap-week">WK 01</div>
+        <div><div class="roadmap-topic">Python fundamentals</div><div class="roadmap-desc">Core language, tooling, and scripting patterns used in the rest of the track.</div></div>
+      </div>
+      <div class="roadmap-item fade-up" style="transition-delay:0.05s">
+        <div class="roadmap-week">WK 02</div>
+        <div><div class="roadmap-topic">SQL &amp; data modeling</div><div class="roadmap-desc">Querying, schema design, and the data layer underneath any real system.</div></div>
+      </div>
+      <div class="roadmap-item fade-up" style="transition-delay:0.1s">
+        <div class="roadmap-week">WK 03</div>
+        <div><div class="roadmap-topic">LLM stack: RAG &amp; function calling</div><div class="roadmap-desc">Retrieval-augmented generation and tool use against the Anthropic API.</div></div>
+      </div>
+      <div class="roadmap-item fade-up" style="transition-delay:0.15s">
+        <div class="roadmap-week">WK 04</div>
+        <div><div class="roadmap-topic">LLM stack: evaluation &amp; testing</div><div class="roadmap-desc">Building evals that catch regressions before a client does.</div></div>
+      </div>
+      <div class="roadmap-item fade-up" style="transition-delay:0.2s">
+        <div class="roadmap-week">WK 05</div>
+        <div><div class="roadmap-topic">Production deployment</div><div class="roadmap-desc">Shipping the lab work into the live Visa Tracker environment.</div></div>
+      </div>
+      <div class="roadmap-item fade-up" style="transition-delay:0.25s">
+        <div class="roadmap-week">WK 06</div>
+        <div><div class="roadmap-topic">Packaging &amp; portfolio</div><div class="roadmap-desc">Documenting what was built and what it took to get there.</div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -668,7 +898,20 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
           <span class="skill-tag">ERP / CRM Systems</span>
           <span class="skill-tag">Data Visualization</span>
           <span class="skill-tag">SDLC / PMLC</span>
-          <span class="skill-tag">Python (basic)</span>
+        </div>
+      </div>
+
+      <div class="fade-up" style="transition-delay:0.08s">
+        <div class="skill-group-title">AI Engineering (in progress)</div>
+        <div class="skill-tags">
+          <span class="skill-tag progress">Python</span>
+          <span class="skill-tag progress">SQL</span>
+          <span class="skill-tag progress">Anthropic API</span>
+          <span class="skill-tag progress">RAG</span>
+          <span class="skill-tag progress">Function Calling</span>
+          <span class="skill-tag progress">LLM Evaluation</span>
+          <span class="skill-tag progress">Playwright</span>
+          <span class="skill-tag progress">Firebase</span>
         </div>
       </div>
 
@@ -711,7 +954,7 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
   <div class="container">
     <p class="cta-eyebrow">Let's work together</p>
     <h2 class="cta-heading">Plan it. Build it. <em>Ship it.</em></h2>
-    <p class="cta-sub">Open to freelance PM/product engagements and AI-assisted systems builds — remote or Tel Aviv.</p>
+    <p class="cta-sub">Open to freelance PM/product engagements and AI-assisted systems builds — remote or Barcelona.</p>
     <div class="cta-buttons">
       <a href="mailto:liavch1@gmail.com" class="btn-primary">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
@@ -737,7 +980,7 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
       <div class="footer-links">
         <a href="mailto:liavch1@gmail.com">liavch1@gmail.com</a>
         <a href="https://wa.me/972502197706" target="_blank">WhatsApp</a>
-        <a href="#">Tel Aviv, Israel</a>
+        <a href="#">Barcelona, Spain</a>
         <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank">LinkedIn</a>
       </div>
     </div>
