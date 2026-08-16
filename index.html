@@ -515,7 +515,7 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
     <div class="hero-stats">
       <div class="hero-stat"><div class="hero-stat-num">5+</div><div class="hero-stat-label">Years in PM &amp; CS</div></div>
       <div class="hero-stat"><div class="hero-stat-num">30+</div><div class="hero-stat-label">Client projects delivered</div></div>
-      <div class="hero-stat"><div class="hero-stat-num">7</div><div class="hero-stat-label">Systems &amp; products shipped end-to-end</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">8</div><div class="hero-stat-label">Systems &amp; products shipped end-to-end</div></div>
     </div>
 
     <div class="hero-contact">
@@ -628,7 +628,7 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
 <section id="cases" class="surface2">
   <div class="container">
     <p class="section-eyebrow">Case files</p>
-    <h2 class="section-title">Seven systems, one operator</h2>
+    <h2 class="section-title">Eight systems, one operator</h2>
     <p class="section-sub">Internal platforms, client builds, and independent products — planned as a PM, shipped as a builder.</p>
     <hr class="section-divider">
     <div class="cases-grid">
@@ -767,11 +767,37 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
         </div>
       </div>
 
+      <div class="case-card fade-up">
+        <div class="case-header">
+          <div class="case-num">Case LC-06</div>
+          <div class="case-title">Content distribution &amp; document generation platform</div>
+          <div class="case-context">Client project — Firebase + Claude API</div>
+        </div>
+        <div class="case-body">
+          <div>
+            <div class="case-col-label">The challenge</div>
+            <p class="case-text">A social-media agency ran three disconnected manual workflows — transcribing performer schedules from screenshots, filling a client's content calendar by hand against a growing rulebook, and formatting client-facing documents — all slow, error-prone, and dependent on one person remembering the rules.</p>
+          </div>
+          <div>
+            <div class="case-col-label">The solution</div>
+            <ul class="case-items">
+              <li>Built a rule engine that auto-fills a real Google Sheet content calendar from a content pool — gap-fill, cross-platform reuse, monthly caps, and a priority pass that can displace already-placed content, all with full undo</li>
+              <li>Added Claude vision extraction so a pasted schedule screenshot becomes publish-ready text automatically</li>
+              <li>Shipped a document generator that turns free-form notes into branded PDFs via Claude, with a strict faithful-transcription mode so the model never invents content</li>
+            </ul>
+          </div>
+        </div>
+        <div class="case-outcome">
+          <div class="outcome-label">Outcome</div>
+          <p class="outcome-text">Live and in daily use, running three previously manual workflows end-to-end — with 89 automated tests covering the rule engine and document logic, and a write-manifest undo system so nothing is ever silently overwritten.</p>
+        </div>
+      </div>
+
       <div class="group-label fade-up">Independent Products</div>
 
       <div class="case-card fade-up">
         <div class="case-header">
-          <div class="case-num">Case LC-06</div>
+          <div class="case-num">Case LC-07</div>
           <div class="case-title">Visa Tracker — two-sided visa management platform</div>
           <div class="case-context">Independent product — in active client use</div>
         </div>
@@ -797,7 +823,7 @@ footer { border-top: 1px solid var(--line); padding: 1.75rem 0; }
 
       <div class="case-card fade-up">
         <div class="case-header">
-          <div class="case-num">Case LC-07</div>
+          <div class="case-num">Case LC-08</div>
           <div class="case-title">Pocket Budget — multi-user budgeting PWA</div>
           <div class="case-context">Independent product — iterating on real usage</div>
         </div>
