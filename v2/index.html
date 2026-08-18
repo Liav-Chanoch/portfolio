@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liav Chanoch — Forward Deployed Engineer</title>
+<meta name="description" content="Liav Chanoch — I scope it, I build it. Forward deployed engineer based in Barcelona.">
+
+<link rel="icon" href="assets/icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/icons/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Liav Chanoch — Forward Deployed Engineer">
+<meta property="og:description" content="I scope it. I build it. Forward deployed engineer based in Barcelona.">
+<meta property="og:image" content="https://liav-chanoch.com/v2/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://liav-chanoch.com/v2/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Liav Chanoch — Forward Deployed Engineer">
+<meta name="twitter:description" content="I scope it. I build it. Forward deployed engineer based in Barcelona.">
+<meta name="twitter:image" content="https://liav-chanoch.com/v2/assets/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:        #111112;
+  --pine:       #1d2b2a;
+  --bone:       #e9e3d6;
+  --paper:      #f7f4ed;
+  --signal:     #ff5a1f;
+  --signal-ink: #c23c0a;
+  --on-signal:  #3a1405;
+  --moss:       #2f6f63;
+  --muted:      #5b5750;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overscroll-behavior: none; }
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 500;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background: var(--ink);
+  color: #fff;
+}
+button { font-family: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+
+/* ── DECK ───────────────────────────────────────── */
+.deck {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+.panel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  transition: transform .62s cubic-bezier(.22,.78,.18,1);
+  box-shadow: 0 -26px 60px rgba(0,0,0,.42);
+  padding: 4rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.panel-01 { background: var(--ink); color: #fff; z-index: 1; }
+.panel-02 { background: var(--pine); color: #fff; z-index: 2; }
+.panel-03 { background: var(--bone); color: var(--ink); z-index: 3; }
+.panel-04 { background: var(--signal); color: var(--on-signal); z-index: 4; }
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  opacity: .7;
+}
+
+/* ── FADE-UP LOAD ANIM ─────────────────────────── */
+.fade-up { opacity: 0; transform: translateY(18px); animation: fadeUp .8s ease forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+/* ── PANEL 01 — INTRO ──────────────────────────── */
+.p1-content { max-width: 900px; }
+.p1-content .eyebrow { animation-delay: 0s; }
+.headline {
+  font-size: clamp(48px, 9vw, 104px);
+  font-weight: 700;
+  line-height: .96;
+  letter-spacing: -.04em;
+  margin: 1rem 0 1.5rem;
+  animation-delay: .07s;
+}
+.positioning {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 18px;
+  opacity: .8;
+  animation-delay: .14s;
+}
+.positioning .rule { width: 32px; height: 2px; background: var(--signal); display: inline-block; }
+.p1-cta { margin-top: 2.5rem; animation-delay: .2s; }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 999px;
+  padding: 11px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  transition: border-color .2s, background .2s;
+}
+.btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.06); }
+.pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--signal);
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,90,31,.5); }
+  50% { opacity: .5; box-shadow: 0 0 0 6px rgba(255,90,31,0); }
+}
+
+/* Shape mark */
+.shape-mark {
+  position: absolute;
+  right: 8vw;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(38vw, 420px);
+  height: min(38vw, 420px);
+  pointer-events: none;
+}
+.shape-mark .ring {
+  position: absolute; inset: 8%;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 50%;
+  animation: spin 40s linear infinite reverse;
+}
+.shape-mark .disc {
+  position: absolute; inset: 42%;
+  background: var(--bone);
+  border-radius: 50%;
+  animation: breathe 4.5s ease-in-out infinite;
+}
+.orbit { position: absolute; inset: 0; animation: spin 26s linear infinite; }
+.orbit .shape { position: absolute; top: 4%; left: 50%; animation: spin 26s linear infinite reverse; }
+.orbit-b { animation-delay: -8.6s; }
+.orbit-c { animation-delay: -17.3s; }
+.shape.circle { width: 30px; height: 30px; margin-left: -15px; background: var(--signal); border-radius: 50%; }
+.shape.square { width: 24px; height: 24px; margin-left: -12px; background: var(--moss); }
+.shape.triangle {
+  width: 0; height: 0; margin-left: -14px;
+  border-left: 14px solid transparent; border-right: 14px solid transparent;
+  border-bottom: 24px solid var(--signal);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+
+/* ── PANEL 02 — PROJECTS ───────────────────────── */
+.p2-content { max-width: 980px; width: 100%; margin: 0 auto; }
+.p2-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.p2-sub { font-size: 15px; font-weight: 500; opacity: .55; }
+.project-index {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(4, auto);
+  column-gap: 3rem;
+}
+.project-row {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  width: 100%;
+  text-align: left;
+  padding: 16px 4px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  font-size: 18px;
+  transition: color .2s, opacity .2s;
+}
+.project-row .row-num { font-size: 12px; opacity: .5; font-weight: 700; }
+.project-row:hover { color: var(--signal); }
+.p2-cta-line {
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 16px;
+  opacity: .85;
+}
+.btn-solid {
+  background: var(--signal);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 11px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: opacity .2s;
+}
+.btn-solid:hover { opacity: .85; }
+
+/* ── PANEL 03 — BACKGROUND ─────────────────────── */
+.p3-content.two-col { max-width: 1080px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 4rem; }
+.p3-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.p3-sub { font-size: 14px; font-weight: 500; color: var(--muted); }
+.role { padding: 1.4rem 0; border-top: 1px solid rgba(17,17,18,.14); }
+.role:last-child { border-bottom: 1px solid rgba(17,17,18,.14); }
+.role-title { font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+.role-meta { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.role-desc { font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+.p3-right .eyebrow { color: var(--muted); margin-bottom: .75rem; }
+.current-statement { font-size: 19px; font-weight: 700; line-height: 1.4; margin-bottom: 1.5rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2rem; }
+.chip { font-size: 12.5px; border: 1px solid rgba(17,17,18,.2); border-radius: 4px; padding: 5px 10px; }
+.btn-ink {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--bone);
+  border-radius: 999px;
+  padding: 11px 22px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.cv-note { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+.link-underline {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-size: 13.5px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--muted);
+}
+.link-underline:hover { color: var(--ink); }
+
+/* ── PANEL 04 — CONTACT ────────────────────────── */
+.p4-content.two-col { max-width: 1080px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.p4-left h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin-bottom: 1.25rem; }
+.p4-left p { font-size: 16px; max-width: 440px; margin-bottom: 1.75rem; }
+.p4-links { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 2.5rem; }
+.p4-links a, .p4-links button { font-size: 13.5px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.p4-photo-row { display: flex; align-items: center; gap: 14px; }
+.photo-placeholder {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(17,17,18,.15);
+  border: 1px dashed rgba(17,17,18,.4);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.photo-placeholder img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.p4-photo-row p { font-size: 13.5px; margin: 0; }
+
+.contact-card {
+  background: var(--bone);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 2.25rem;
+}
+.contact-card .eyebrow { color: var(--muted); margin-bottom: .6rem; }
+.contact-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -.01em; }
+#contact-form { display: flex; flex-direction: column; gap: 1.1rem; }
+#contact-form label { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+#contact-form input, #contact-form textarea {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid rgba(17,17,18,.25);
+  border-radius: 6px;
+  padding: 10px 12px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+#contact-form textarea { min-height: 90px; resize: vertical; }
+#contact-form input:focus, #contact-form textarea:focus { outline: 2px solid var(--ink); outline-offset: 1px; }
+.honeypot { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; overflow: hidden; }
+.form-actions { display: flex; align-items: center; gap: 16px; }
+.or-email { font-size: 13px; color: var(--muted); }
+.or-email a { text-decoration: underline; }
+.form-status { font-size: 13px; min-height: 18px; }
+.form-status.ok { color: var(--moss); }
+.form-status.err { color: var(--signal); }
+
+/* ── DOTS / LABEL ───────────────────────────────── */
+.deck-nav {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  mix-blend-mode: difference;
+}
+.deck-nav button { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.4); }
+.dot[aria-current="true"] { background: #fff; }
+.panel-label {
+  position: fixed;
+  left: 28px;
+  bottom: 24px;
+  z-index: 1000;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  color: #fff;
+  mix-blend-mode: difference;
+}
+
+/* ── WHATSAPP TAB ───────────────────────────────── */
+.wa-tab {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--signal);
+  color: var(--ink);
+  border-radius: 999px 0 0 999px;
+  padding: 14px 10px;
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: padding .2s;
+}
+.wa-tab:hover { padding-left: 16px; }
+.wa-tab .wa-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink); animation: pulseDot 2.4s ease-in-out infinite; }
+
+/* ── SLIDE-OVER ─────────────────────────────────── */
+.slideover {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(78vw, 980px);
+  background: var(--bone);
+  color: var(--ink);
+  z-index: 1500;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .48s cubic-bezier(.2,.75,.2,1), opacity .3s;
+  box-shadow: -30px 0 60px rgba(0,0,0,.35);
+  overflow-y: auto;
+}
+.slideover.open { transform: translateX(0); opacity: 1; pointer-events: auto; }
+.slideover-inner { display: grid; grid-template-columns: 1.1fr .9fr; gap: 3rem; padding: 5.5rem 3.5rem 3.5rem; min-height: 100%; }
+.slideover-back {
+  position: fixed;
+  top: 28px;
+  left: calc(100vw - min(78vw, 980px) + 28px);
+  z-index: 1600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--bone);
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  transform: translateX(calc(min(78vw, 980px) * -1));
+  opacity: 0;
+  transition: transform .48s cubic-bezier(.2,.75,.2,1), opacity .3s;
+}
+.slideover.open ~ .slideover-back,
+.slideover-back.open { transform: translateX(0); opacity: 1; }
+.slideover-meta { font-family: 'Space Grotesk'; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: .75rem; }
+.slideover-title { font-size: clamp(24px, 3vw, 34px); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin-bottom: 1rem; }
+.slideover-outcome { display: flex; gap: 12px; align-items: flex-start; font-size: 15.5px; font-weight: 500; margin-bottom: 1.75rem; }
+.slideover-outcome .rule { width: 2px; flex-shrink: 0; background: var(--signal); margin-top: 4px; align-self: stretch; }
+.slideover-bullets { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.75rem; }
+.slideover-bullets li { display: flex; gap: 10px; font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+.slideover-bullets li::before { content: ''; width: 6px; height: 6px; background: var(--moss); margin-top: 7px; flex-shrink: 0; }
+.slideover-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2rem; }
+.slideover-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 1.75rem; }
+.slideover-nav button { width: 32px; height: 32px; border: 1px solid rgba(17,17,18,.25); border-radius: 50%; font-size: 15px; }
+.slideover-nav .counter { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+.ask-btn { font-size: 13.5px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.slideover-media { display: flex; align-items: center; }
+.shot-placeholder {
+  width: 100%; aspect-ratio: 4/3;
+  border: 1px dashed rgba(17,17,18,.35);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 1.5rem;
+  font-size: 12.5px; color: var(--muted);
+  overflow: hidden;
+}
+.shot-placeholder.has-image { border: 1px solid rgba(17,17,18,.15); padding: 0; }
+.shot-placeholder.has-image img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.read-full-case {
+  display: inline-block;
+  margin-bottom: 1.75rem;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--signal-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── FULL-CASE DRAWER ───────────────────────────── */
+.drawer-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,.42);
+  z-index: 1550;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+.drawer-scrim.open { opacity: 1; pointer-events: auto; }
+.drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(470px, 92vw);
+  background: var(--paper);
+  color: var(--ink);
+  z-index: 1600;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .48s cubic-bezier(.2,.75,.2,1), opacity .3s;
+  box-shadow: -24px 0 50px rgba(0,0,0,.3);
+  overflow-y: auto;
+}
+.drawer.open { transform: translateX(0); opacity: 1; pointer-events: auto; }
+.drawer-inner { padding: 3.5rem 2.5rem 3rem; }
+.drawer-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.drawer-meta { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--signal-ink); }
+.drawer-close {
+  width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(17,17,18,.25);
+  display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+}
+.drawer-title { font-size: 24px; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; margin-bottom: 6px; }
+.drawer-sub { font-size: 13px; color: var(--muted); margin-bottom: 2rem; }
+.drawer-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--signal-ink); margin-bottom: .6rem; }
+.drawer-challenge { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin-bottom: 1.75rem; }
+.drawer-solution { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.75rem; }
+.drawer-solution li { padding-left: 16px; position: relative; font-size: 14px; line-height: 1.6; color: var(--ink); }
+.drawer-solution li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+.drawer-outcome {
+  background: rgba(255,90,31,.1);
+  border-left: 3px solid var(--signal);
+  padding: .9rem 1.1rem;
+  font-size: 14px;
+  line-height: 1.65;
+  margin-bottom: 1.75rem;
+}
+.drawer-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.75rem; }
+
+/* ── REDUCED MOTION ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .orbit, .shape-mark .ring, .shape-mark .disc, .pulse-dot, .wa-tab .wa-dot { animation: none !important; }
+  .panel { transition: opacity .3s ease !important; }
+  .fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .slideover, .slideover-back { transition: opacity .3s ease !important; }
+  .drawer, .drawer-scrim { transition: opacity .3s ease !important; }
+}
+
+/* ── MOBILE ─────────────────────────────────────── */
+@media (max-width: 780px) {
+  .panel { padding: 2.5rem 1.5rem; }
+  .headline { font-size: clamp(48px, 12vw, 104px); }
+  .shape-mark { display: none; }
+  .project-index { grid-template-columns: 1fr; grid-auto-flow: row; grid-template-rows: none; }
+  .p3-content.two-col, .p4-content.two-col { grid-template-columns: 1fr; gap: 2.5rem; }
+  .deck-nav { right: 14px; }
+  .panel-label { left: 14px; bottom: 14px; }
+
+  .wa-tab {
+    left: auto; right: 16px; top: auto; bottom: 16px; transform: none;
+    writing-mode: initial; rotate: 0deg;
+    width: 52px; height: 52px; min-width: 44px; min-height: 44px;
+    border-radius: 50%;
+    justify-content: center; padding: 0;
+  }
+  .wa-tab .wa-label { display: none; }
+  .wa-tab:hover { padding: 0; }
+
+  .slideover { width: 100vw; }
+  .slideover-inner { grid-template-columns: 1fr; padding: 5.5rem 1.5rem 2.5rem; }
+  .slideover-back { left: 14px; transform: translateX(0) !important; }
+  .slideover:not(.open) ~ .slideover-back { opacity: 0; pointer-events: none; }
+  .drawer { width: 100vw; }
+  .drawer-inner { padding: 2.5rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<a class="wa-tab" href="https://wa.me/972502197706" target="_blank" rel="noopener" aria-label="Message on WhatsApp">
+  <span class="wa-label">WhatsApp</span>
+  <span class="wa-dot" aria-hidden="true"></span>
+</a>
+
+<nav class="deck-nav" aria-label="Panel navigation">
+  <button id="navUp" aria-label="Previous panel">▲</button>
+  <button class="dot" data-i="0" aria-label="Go to Intro"></button>
+  <button class="dot" data-i="1" aria-label="Go to Selected projects"></button>
+  <button class="dot" data-i="2" aria-label="Go to Background"></button>
+  <button class="dot" data-i="3" aria-label="Go to Contact"></button>
+  <button id="navDown" aria-label="Next panel">▼</button>
+</nav>
+<div class="panel-label" id="panelLabel" aria-hidden="true">01 — INTRO</div>
+
+<main class="deck" id="deck">
+
+  <section class="panel panel-01" data-panel="0" aria-label="Intro">
+    <div class="shape-mark" aria-hidden="true">
+      <div class="ring"></div>
+      <div class="orbit orbit-a"><div class="shape circle"></div></div>
+      <div class="orbit orbit-b"><div class="shape square"></div></div>
+      <div class="orbit orbit-c"><div class="shape triangle"></div></div>
+      <div class="disc"></div>
+    </div>
+    <div class="p1-content">
+      <p class="eyebrow fade-up">Liav Chanoch</p>
+      <h1 class="headline fade-up">I scope it.<br>I build it.</h1>
+      <p class="positioning fade-up"><span class="rule" aria-hidden="true"></span>Forward deployed engineer · Barcelona</p>
+      <div class="p1-cta fade-up">
+        <button class="btn-outline js-goto-contact">Get in touch <span class="pulse-dot" aria-hidden="true"></span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel panel-02" data-panel="1" aria-label="Selected projects">
+    <div class="p2-content">
+      <h2 class="p2-title">Selected projects <span class="p2-sub">Pick one.</span></h2>
+      <div class="project-index" id="projectIndex"></div>
+      <p class="p2-cta-line">Any of these worth twenty minutes? <button class="btn-solid js-goto-contact">Get in touch →</button></p>
+    </div>
+  </section>
+
+  <section class="panel panel-03" data-panel="2" aria-label="Background">
+    <div class="p3-content two-col">
+      <div class="p3-left">
+        <h2 class="p3-title">Background <span class="p3-sub">Five years, one company, two roles.</span></h2>
+        <div class="role">
+          <div class="role-title">Project Owner &amp; CS Manager</div>
+          <div class="role-meta">2020 — now · OTW SRL · Tel Aviv · reporting to the CEO</div>
+          <p class="role-desc">Dozens of client web projects delivered end-to-end, cross-functional teams across design, UX and development, primary stakeholder contact throughout.</p>
+        </div>
+        <div class="role">
+          <div class="role-title">Internal App Development Lead</div>
+          <div class="role-meta">2020 — now · OTW SRL · Zoho Suite, ERP, analytics</div>
+          <p class="role-desc">Owned the full SDLC on internal systems — intake and scoping through UAT, go-live and stabilization — replacing manual workflows with live ones.</p>
+        </div>
+      </div>
+      <div class="p3-right">
+        <p class="eyebrow">Currently</p>
+        <p class="current-statement">Python, SQL, RAG and evals — learned against Visa Tracker, not tutorials.</p>
+        <div class="chips">
+          <span class="chip">Anthropic API</span>
+          <span class="chip">Python</span>
+          <span class="chip">SQL</span>
+          <span class="chip">Playwright</span>
+          <span class="chip">Zoho Suite</span>
+          <span class="chip">Claude Code</span>
+        </div>
+        <a class="btn-ink js-download-cv" href="cv/liav-chanoch-cv.pdf" download>Download CV</a>
+        <p class="cv-note">PDF · one page</p>
+        <button class="link-underline js-goto-contact">Or get in touch</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel panel-04" data-panel="3" aria-label="Contact">
+    <div class="p4-content two-col">
+      <div class="p4-left">
+        <h2>Scope it with the customer. Ship it myself.</h2>
+        <p>Five years of client delivery, two years writing the software. Currently deepening Python, SQL, RAG and evals against a live product with paying users.</p>
+        <div class="p4-links">
+          <a class="js-download-cv" href="cv/liav-chanoch-cv.pdf" download>Download CV</a>
+          <a href="https://wa.me/972502197706" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/Liav-Chanoch" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="p4-photo-row">
+          <div class="photo-placeholder"><img src="assets/headshot.jpg" alt="Liav Chanoch" width="56" height="56" loading="lazy"></div>
+          <p>Liav Chanoch · liavch1@gmail.com · Barcelona</p>
+        </div>
+      </div>
+      <div class="p4-right contact-card">
+        <p class="eyebrow">Get in touch</p>
+        <h3>Tell me what you want to built.</h3>
+        <form id="contact-form" novalidate>
+          <label>Name<input type="text" name="name" required autocomplete="name"></label>
+          <label>Email<input type="email" name="email" required autocomplete="email"></label>
+          <label>What's the problem you need shipped?<textarea name="message" required></textarea></label>
+          <input class="honeypot" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="form-actions">
+            <button type="submit" class="btn-ink">Send</button>
+            <p class="or-email">Or email <a href="mailto:liavch1@gmail.com">liavch1@gmail.com</a></p>
+          </div>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<button class="slideover-back" id="slideoverBack">← Selected projects</button>
+<aside class="slideover" id="slideover" role="dialog" aria-modal="true" aria-label="Project detail" aria-hidden="true">
+  <div class="slideover-inner">
+    <div class="slideover-body">
+      <div class="slideover-meta" id="soMeta"></div>
+      <h2 class="slideover-title" id="soTitle"></h2>
+      <p class="slideover-outcome"><span class="rule" aria-hidden="true"></span><span id="soOutcome"></span></p>
+      <ul class="slideover-bullets" id="soBullets"></ul>
+      <div class="slideover-stack" id="soStack"></div>
+      <button class="read-full-case" id="soReadFull">Read the full case →</button>
+      <div class="slideover-nav">
+        <button id="soPrev" aria-label="Previous project">‹</button>
+        <span class="counter" id="soCounter">01 / 08</span>
+        <button id="soNext" aria-label="Next project">›</button>
+      </div>
+      <button class="ask-btn" id="soAsk"></button>
+    </div>
+    <div class="slideover-media">
+      <div class="shot-placeholder" id="soShot"></div>
+    </div>
+  </div>
+</aside>
+
+<div class="drawer-scrim" id="drawerScrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Full case detail" aria-hidden="true">
+  <div class="drawer-inner">
+    <div class="drawer-top">
+      <div class="drawer-meta" id="drMeta"></div>
+      <button class="drawer-close" id="drClose" aria-label="Close full case">✕</button>
+    </div>
+    <h2 class="drawer-title" id="drTitle"></h2>
+    <p class="drawer-sub" id="drSub"></p>
+
+    <div class="drawer-label">The challenge</div>
+    <p class="drawer-challenge" id="drChallenge"></p>
+
+    <div class="drawer-label">The solution</div>
+    <ul class="drawer-solution" id="drSolution"></ul>
+
+    <div class="drawer-label">Outcome</div>
+    <div class="drawer-outcome" id="drOutcome"></div>
+
+    <div class="drawer-stack" id="drStack"></div>
+    <button class="ask-btn" id="drAsk"></button>
+  </div>
+</aside>
+
+<script>
+/* ── DATA ───────────────────────────────────────── */
+const PROJECTS = [
+  { id: 'LC-07', kind: 'PRODUCT', title: 'Visa Tracker — two-sided visa platform', context: 'Independent product · paying clients',
+    shot: 'assets/shots/visa-tracker-redacted.png',
+    built: ['Two-sided platform connecting applicants and providers in one workflow', 'Full product lifecycle owned solo: concept, design, build, iteration', 'Iterated on real usage and direct client feedback'],
+    outcome: 'In active use by paying clients, with the roadmap driven by what they actually run into.',
+    stack: ['AI-assisted build', 'two-sided', 'live'],
+    longChallenge: 'Visa applicants and the service providers helping them had no shared system — status updates, documents, and next steps lived in scattered messages and spreadsheets.',
+    longSolution: ['Designed and built a two-sided platform connecting applicants and service providers in one workflow', 'Owned the full product lifecycle — concept, design, build, and iteration — using AI-assisted development', 'Iterated on real usage and direct client feedback, not a one-time build'],
+    longOutcome: 'In active use by paying clients, with the roadmap driven by what they actually run into.' },
+
+  { id: 'LC-08', kind: 'PRODUCT', title: 'Pocket Budget — multi-user budgeting PWA', context: 'Independent product · iterating on real usage',
+    shot: 'assets/shots/pocket-budget.png',
+    built: ['PWA with daily overdraft and rollover logic', 'Multi-user group visibility so shared finances stay in sync', 'Personal product catalog refined from real usage data'],
+    outcome: 'Iterated directly against real usage patterns rather than a fixed initial spec.',
+    stack: ['PWA', 'multi-user', 'offline'],
+    longChallenge: 'Simple budgeting tools assume single-user, single-balance thinking — they don’t handle daily overdraft logic, shared visibility across a household, or a personal catalog of recurring items.',
+    longSolution: ['Built a progressive web app with daily overdraft and rollover logic', 'Added multi-user group visibility so shared finances stay in sync', 'Included a personal product catalog, refined from real usage data'],
+    longOutcome: 'Iterated directly against real usage patterns rather than a fixed initial spec.' },
+
+  { id: 'LC-05', kind: 'AI', title: 'NIE Line — appointment-monitoring bot', context: 'Personal project · Python + Playwright',
+    built: ['Unattended Python + Playwright agent polling the portal', 'Real-time Telegram alerts the moment a slot opens', 'Version-controlled project, not a one-off script'],
+    outcome: 'Runs unattended, catching availability windows that manual checking would miss.',
+    stack: ['Python', 'Playwright', 'Telegram API'],
+    longChallenge: 'A high-demand government appointment portal released slots unpredictably, with no notification system — manual checking meant missed windows.',
+    longSolution: ['Built an unattended Python + Playwright agent that polls the portal and detects slot availability', 'Wired real-time alerting to Telegram so availability surfaces the moment it opens', 'Structured the project with proper version control and environment setup, not a one-off script'],
+    longOutcome: 'Runs unattended, catching availability windows that manual checking would miss.' },
+
+  { id: 'LC-06', kind: 'AI', title: 'Social Gantt — content & document automation', context: 'Client project · Firebase + Claude API',
+    shot: 'assets/shots/social-gantt-redacted.png',
+    built: ['Rule engine auto-fills a live Google Sheet calendar, with full undo', 'Claude vision turns a pasted schedule screenshot into text', 'Document generator: free-form notes to branded PDFs'],
+    outcome: 'Live and in daily use, with 89 automated tests over the rule engine.',
+    stack: ['Claude API', 'vision', '89 tests', 'Sheets API'],
+    longChallenge: 'A social-media agency ran three disconnected manual workflows — transcribing performer schedules from screenshots, filling a client’s content calendar by hand against a growing rulebook, and formatting client-facing documents — all slow, error-prone, and dependent on one person remembering the rules.',
+    longSolution: ['Built a rule engine that auto-fills a real Google Sheet content calendar from a content pool — gap-fill, cross-platform reuse, monthly caps, and a priority pass that can displace already-placed content, all with full undo', 'Added Claude vision extraction so a pasted schedule screenshot becomes publish-ready text automatically', 'Shipped a document generator that turns free-form notes into branded PDFs via Claude, with a strict faithful-transcription mode so the model never invents content'],
+    longOutcome: 'Live and in daily use, running three previously manual workflows end-to-end — with 89 automated tests covering the rule engine and document logic, and a write-manifest undo system so nothing is ever silently overwritten.' },
+
+  { id: 'LC-09', kind: 'PRODUCT', title: 'XOV — real-time multiplayer game', context: 'Independent product · PWA + iOS/Android',
+    shot: 'assets/shots/xov.png',
+    built: ['Live match state over Firebase Realtime Database with room codes', 'Guest play on anonymous auth; Google sign-in via redirect for native WebViews', 'Installable PWA with a cache-first service worker, wrapped with Capacitor 6'],
+    outcome: 'Playable offline-capable PWA; store submission is the only step left.',
+    stack: ['Firebase RTDB', 'Firestore', 'Capacitor 6', 'PWA'],
+    longChallenge: 'I wanted a product that had to survive real players, not a demo: strangers joining a live match in seconds, no account required, state synced between two devices, and the whole thing packaged for the App Store and Play Store.',
+    longSolution: [
+      'Live match state over Firebase Realtime Database keyed by room code, with player profiles and head-to-head records in Firestore.',
+      'Guest play runs on anonymous Firebase auth so guests still get a real UID, and Google sign-in was moved to signInWithRedirect because signInWithPopup is blocked inside WKWebView and Android WebView.',
+      'Realtime Database and Firestore rules were taken out of test mode and locked so a user can only write their own document.',
+      'Shipped as an installable PWA with a cache-first service worker, then wrapped with Capacitor 6 (appId com.liav.xov) into iOS and Android projects with generated icon and splash sets.'
+    ],
+    longOutcome: 'Playable offline-capable PWA, native builds generating from one codebase, and store submission is the only step left.' },
+
+  { id: 'LC-02', kind: 'INTERNAL', title: 'Affiliate platform & financial ops', context: 'OTW SRL · affiliate management platform',
+    built: ['Multi-sided platform automating the full tracking and payout lifecycle', 'Real-time partner portal for transparent earnings and invoice status', 'Finance module for single-click payouts driven by validated data'],
+    outcome: 'Partner trust increased, referral volume grew, and internal accounting workload dropped sharply.',
+    stack: ['Zoho', 'payouts', 'partner portal'],
+    longChallenge: 'Managing a growing affiliate network relied on manual end-of-month audits — creating opacity, delayed payments, and eroding partner trust.',
+    longSolution: ['Designed a multi-sided affiliate platform automating the full tracking and payout lifecycle', 'Built a real-time partner portal for transparent earnings and invoice status visibility', 'Created a dedicated finance module for single-click payouts driven by validated data'],
+    longOutcome: 'Transformed a reactive process into a scalable, proactive system. Partner trust increased, referral volume grew, and internal accounting workload was drastically reduced.' },
+
+  { id: 'LC-03', kind: 'INTERNAL', title: 'Cross-project command center', context: 'OTW SRL · governance dashboard',
+    built: ['External dashboard pulling live data from Zoho Projects via API', 'Unified KPIs: milestones, deadlines, budget utilization', 'Filtering that separates project work from retainers'],
+    outcome: 'A command center for every active project — allocation, burn rate and deadline risk in one view.',
+    stack: ['Zoho API', 'analytics', 'dashboards'],
+    longChallenge: 'Zoho Projects lacked native visibility across hybrid workstreams — milestone-based projects vs. ongoing maintenance — requiring manual, time-consuming reporting.',
+    longSolution: ['Characterized and managed the build of an external dashboard pulling real-time data from Zoho Projects via API', 'Unified KPIs: milestones, deadlines, and budget utilization in a single view', 'Implemented categorized filtering to separate project-based work from ongoing retainers'],
+    longOutcome: 'Established a "Command Center" for all active projects — enabling data-driven resource allocation and precise tracking of budget burn rates and deadline risks across the entire portfolio.' },
+
+  { id: 'LC-01', kind: 'INTERNAL', title: 'End-to-end billing automation & ERP integration', context: 'OTW SRL · Zoho + Teamleader',
+    built: ['Custom Zoho module aggregating CRM and PM data, built by a team I led', 'Automations written to the business logic on Zoho natives', 'Teamleader ERP integration over API for one-click invoices'],
+    outcome: 'Single source of truth in the CRM; invoicing cycle time and error rates cut sharply.',
+    stack: ['Zoho', 'REST API', 'ERP'],
+    longChallenge: 'Invoicing was a fragmented, manual process spanning three disconnected systems — causing significant time loss and high error rates in financial reporting.',
+    longSolution: ['Led a dedicated team to architect a custom Zoho module aggregating CRM and PM data', 'Built custom automations tailored to specific business logic using Zoho’s native capabilities', 'Integrated with Teamleader (3rd-party ERP) via API for one-click invoice generation'],
+    longOutcome: 'Eliminated manual data entry and established a single source of truth in the CRM — drastically reducing invoicing cycle time, error rates, and improving financial transparency.' },
+];
+const PANEL_LABELS = ['01 — INTRO', '02 — PROJECTS', '03 — BACKGROUND', '04 — CONTACT'];
+
+/* ── DECK STATE ─────────────────────────────────── */
+const deck = document.getElementById('deck');
+const panels = [...document.querySelectorAll('.panel')];
+const dots = [...document.querySelectorAll('.dot')];
+const panelLabel = document.getElementById('panelLabel');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let current = 0;
+let locked = false;
+let hoveringDeck = false;
+
+function render() {
+  panels.forEach((p, i) => {
+    if (reduceMotion) {
+      p.style.opacity = i === current ? '1' : (i < current ? '1' : '0');
+      p.style.pointerEvents = i === current ? 'auto' : 'none';
+      p.style.visibility = (i <= current) ? 'visible' : 'hidden';
+    } else {
+      p.style.transform = i <= current ? 'translateY(0)' : 'translateY(100%)';
+    }
+  });
+  dots.forEach((d, i) => d.setAttribute('aria-current', i === current ? 'true' : 'false'));
+  panelLabel.textContent = PANEL_LABELS[current];
+}
+
+function goTo(i) {
+  i = Math.max(0, Math.min(panels.length - 1, i));
+  if (i === current) return;
+  current = i;
+  render();
+}
+function next() { goTo(current + 1); }
+function prev() { goTo(current - 1); }
+
+/* Wheel — capture phase, non-passive, on window and document */
+const COOLDOWN = 640;
+function handleWheel(ev) {
+  if (slideoverOpen) return;
+  if (!deck.contains(ev.target)) return;
+  if (!ev.cancelable) return;
+  if (locked) { ev.preventDefault(); ev.stopPropagation(); return; }
+  if (Math.abs(ev.deltaY) < 6) return;
+  ev.preventDefault();
+  ev.stopPropagation();
+  if (ev.deltaY > 0) next(); else prev();
+  locked = true;
+  setTimeout(() => { locked = false; }, COOLDOWN);
+}
+window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
+document.addEventListener('wheel', handleWheel, { passive: false, capture: true });
+
+/* Touch */
+let touchStartY = null;
+deck.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+deck.addEventListener('touchend', e => {
+  if (touchStartY === null || slideoverOpen) return;
+  const dy = touchStartY - e.changedTouches[0].clientY;
+  touchStartY = null;
+  if (Math.abs(dy) < 40) return;
+  if (dy > 0) next(); else prev();
+}, { passive: true });
+
+/* Keyboard */
+deck.addEventListener('mouseenter', () => hoveringDeck = true);
+deck.addEventListener('mouseleave', () => hoveringDeck = false);
+window.addEventListener('keydown', e => {
+  if (drawerOpen) {
+    if (e.key === 'Escape') { closeDrawer(); return; }
+    return;
+  }
+  if (slideoverOpen) {
+    if (e.key === 'Escape') { closeSlideover(); return; }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); stepProject(-1); return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); stepProject(1); return; }
+    return;
+  }
+  const focusedInDeck = deck.contains(document.activeElement);
+  if (!hoveringDeck && !focusedInDeck) return;
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+});
+
+/* Dots + arrows */
+dots.forEach(d => d.addEventListener('click', () => {
+  if (drawerOpen) closeDrawer();
+  if (slideoverOpen) closeSlideover();
+  goTo(parseInt(d.dataset.i, 10));
+}));
+document.getElementById('navUp').addEventListener('click', () => { if (drawerOpen) closeDrawer(); if (slideoverOpen) closeSlideover(); prev(); });
+document.getElementById('navDown').addEventListener('click', () => { if (drawerOpen) closeDrawer(); if (slideoverOpen) closeSlideover(); next(); });
+
+/* Get-in-touch CTAs everywhere */
+document.querySelectorAll('.js-goto-contact').forEach(btn => btn.addEventListener('click', () => {
+  if (drawerOpen) closeDrawer();
+  if (slideoverOpen) closeSlideover();
+  goTo(3);
+}));
+
+render();
+
+/* ── PROJECT INDEX ──────────────────────────────── */
+const indexEl = document.getElementById('projectIndex');
+PROJECTS.forEach((p, i) => {
+  const row = document.createElement('button');
+  row.className = 'project-row';
+  row.dataset.i = i;
+  row.innerHTML = `<span class="row-num">${String(i + 1).padStart(2, '0')}</span><span class="row-title">${p.title}</span>`;
+  row.addEventListener('click', () => openSlideover(i, row));
+  indexEl.appendChild(row);
+});
+
+/* ── SLIDE-OVER ─────────────────────────────────── */
+const slideover = document.getElementById('slideover');
+const slideoverBack = document.getElementById('slideoverBack');
+let slideoverOpen = false;
+let soIndex = 0;
+let lastFocusedRow = null;
+
+function paintProject(i) {
+  const p = PROJECTS[i];
+  document.getElementById('soMeta').textContent = `${p.id} · ${p.kind}`;
+  document.getElementById('soTitle').textContent = p.title;
+  document.getElementById('soOutcome').textContent = p.outcome;
+  const bullets = document.getElementById('soBullets');
+  bullets.innerHTML = '';
+  p.built.forEach(b => { const li = document.createElement('li'); li.textContent = b; bullets.appendChild(li); });
+  const stack = document.getElementById('soStack');
+  stack.innerHTML = '';
+  p.stack.forEach(s => { const c = document.createElement('span'); c.className = 'chip'; c.textContent = s; stack.appendChild(c); });
+  document.getElementById('soCounter').textContent = `${String(i + 1).padStart(2, '0')} / ${String(PROJECTS.length).padStart(2, '0')}`;
+  document.getElementById('soAsk').textContent = `Ask me about ${p.id} →`;
+  const shot = document.getElementById('soShot');
+  if (p.shot) {
+    shot.innerHTML = '';
+    shot.classList.add('has-image');
+    const img = document.createElement('img');
+    img.src = p.shot;
+    img.alt = `${p.title} — product screenshot`;
+    img.loading = 'lazy';
+    img.width = 1200;
+    img.height = 900;
+    shot.appendChild(img);
+  } else {
+    shot.classList.remove('has-image');
+    shot.textContent = `[ screenshot placeholder for ${p.id} — 1200×900, ask Liav for the image ]`;
+  }
+}
+
+function openSlideover(i, triggerEl) {
+  soIndex = i;
+  lastFocusedRow = triggerEl || document.activeElement;
+  paintProject(soIndex);
+  slideover.classList.add('open');
+  slideoverBack.classList.add('open');
+  slideover.setAttribute('aria-hidden', 'false');
+  slideoverOpen = true;
+  slideoverBack.focus();
+}
+function closeSlideover() {
+  if (drawerOpen) closeDrawer();
+  slideover.classList.remove('open');
+  slideoverBack.classList.remove('open');
+  slideover.setAttribute('aria-hidden', 'true');
+  slideoverOpen = false;
+  if (lastFocusedRow) lastFocusedRow.focus();
+}
+function stepProject(delta) {
+  if (drawerOpen) closeDrawer();
+  soIndex = (soIndex + delta + PROJECTS.length) % PROJECTS.length;
+  paintProject(soIndex);
+}
+function askAbout(id, title) {
+  closeDrawer();
+  closeSlideover();
+  goTo(3);
+  const msg = document.querySelector('#contact-form textarea[name="message"]');
+  msg.value = `About ${id} (${title}):\n`;
+  setTimeout(() => msg.focus(), 500);
+}
+slideoverBack.addEventListener('click', closeSlideover);
+document.getElementById('soPrev').addEventListener('click', () => stepProject(-1));
+document.getElementById('soNext').addEventListener('click', () => stepProject(1));
+document.getElementById('soAsk').addEventListener('click', () => {
+  const p = PROJECTS[soIndex];
+  askAbout(p.id, p.title);
+});
+
+/* ── FULL-CASE DRAWER ───────────────────────────── */
+const drawer = document.getElementById('drawer');
+const drawerScrim = document.getElementById('drawerScrim');
+let drawerOpen = false;
+let lastFocusedBeforeDrawer = null;
+
+function paintDrawer(i) {
+  const p = PROJECTS[i];
+  document.getElementById('drMeta').textContent = `${p.id} · FULL CASE`;
+  document.getElementById('drTitle').textContent = p.title;
+  document.getElementById('drSub').textContent = p.context;
+  document.getElementById('drChallenge').textContent = p.longChallenge;
+  const sol = document.getElementById('drSolution');
+  sol.innerHTML = '';
+  p.longSolution.forEach(s => { const li = document.createElement('li'); li.textContent = s; sol.appendChild(li); });
+  document.getElementById('drOutcome').textContent = p.longOutcome;
+  const stack = document.getElementById('drStack');
+  stack.innerHTML = '';
+  p.stack.forEach(s => { const c = document.createElement('span'); c.className = 'chip'; c.textContent = s; stack.appendChild(c); });
+  document.getElementById('drAsk').textContent = `Ask me about ${p.id} →`;
+}
+function openDrawer() {
+  paintDrawer(soIndex);
+  lastFocusedBeforeDrawer = document.activeElement;
+  drawer.classList.add('open');
+  drawerScrim.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
+  drawerOpen = true;
+  document.getElementById('drClose').focus();
+}
+function closeDrawer() {
+  drawer.classList.remove('open');
+  drawerScrim.classList.remove('open');
+  drawer.setAttribute('aria-hidden', 'true');
+  drawerOpen = false;
+  if (lastFocusedBeforeDrawer) lastFocusedBeforeDrawer.focus();
+}
+document.getElementById('soReadFull').addEventListener('click', openDrawer);
+document.getElementById('drClose').addEventListener('click', closeDrawer);
+drawerScrim.addEventListener('click', closeDrawer);
+document.getElementById('drAsk').addEventListener('click', () => {
+  const p = PROJECTS[soIndex];
+  askAbout(p.id, p.title);
+});
+drawer.addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return;
+  const focusables = [...drawer.querySelectorAll('button, a[href], input, textarea, [tabindex]:not([tabindex="-1"])')];
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+/* Focus trap inside slide-over */
+slideover.addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return;
+  const focusables = [slideoverBack, ...slideover.querySelectorAll('button, a[href], input, textarea, [tabindex]:not([tabindex="-1"])')];
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+/* ── CONTACT FORM ───────────────────────────────── */
+/* Web3Forms — public access key, safe in client-side code per their docs.
+   Falls back to a mailto: draft if the request fails. */
+const WEB3FORMS_KEY = '7b26363e-ad26-45bf-b252-83871d36c023';
+const form = document.getElementById('contact-form');
+const status = document.getElementById('formStatus');
+const submitBtn = form.querySelector('button[type="submit"]');
+
+function mailtoFallback(name, email, message) {
+  const subject = encodeURIComponent(`Portfolio contact — ${name}`);
+  const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+  window.location.href = `mailto:liavch1@gmail.com?subject=${subject}&body=${body}`;
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  status.className = 'form-status';
+  if (form.botcheck.checked) return; // honeypot tripped, silently drop
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const message = form.message.value.trim();
+  if (!name || !email || !message) {
+    status.textContent = 'Fill in every field before sending.';
+    status.classList.add('err');
+    return;
+  }
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!emailOk) {
+    status.textContent = 'That email address doesn\'t look right.';
+    status.classList.add('err');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  status.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        name, email, message,
+        subject: `Portfolio contact — ${name}`
+      })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Send failed');
+    status.textContent = 'Sent — I\'ll get back to you soon.';
+    status.classList.add('ok');
+    form.reset();
+  } catch (err) {
+    mailtoFallback(name, email, message);
+    status.textContent = 'Couldn\'t send directly — opening your email client instead.';
+    status.classList.add('err');
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
