@@ -860,37 +860,42 @@ function next() { goTo(current + 1); }
 function prev() { goTo(current - 1); }
 
 /* Wheel — capture phase, non-passive, on window and document.
-   Fire-fast-then-lock, not debounce-then-act: a "wait for the burst to go
-   fully quiet" debounce (earlier version of this code) is technically correct
-   but feels laggy in practice — macOS trackpad inertia can keep trickling tiny
-   wheel events for 1-2+ seconds after a single flick, so waiting for true
-   silence means waiting out the whole inertia tail before the page responds.
-   Instead: accumulate deltaY within a short rolling window and act the moment
-   it crosses FIRE_THRESHOLD (usually the very first event or two — near-
-   instant), then lock for COOLDOWN to swallow the rest of that same gesture's
-   tail so it can't also trigger a second step. */
-const COOLDOWN = 800;
+   A fixed COOLDOWN duration (previous version of this code) means guessing how
+   long a trackpad flick's inertia tail can run — and real macOS momentum
+   scrolling can genuinely outlast any reasonable fixed guess (800ms wasn't
+   enough), so the tail re-triggers a second step right after the lock expires.
+   Instead of guessing a duration, track the actual signal: "are wheel events
+   still arriving." Fire fast the instant accumulated deltaY crosses
+   FIRE_THRESHOLD, then stay locked for as long as wheel events keep arriving
+   within GESTURE_GAP of each other (i.e. the same gesture is still producing
+   events, however long that takes) — only unlock once there's a genuine pause,
+   which is what actually marks a gesture as over. No fixed-duration guess. */
 const FIRE_THRESHOLD = 12;
-const ACCUM_RESET_GAP = 150;
+const GESTURE_GAP = 200;
 let wheelAccum = 0;
-let lastWheelTime = 0;
+let wheelGapTimer = null;
+function armGestureGapTimer() {
+  clearTimeout(wheelGapTimer);
+  wheelGapTimer = setTimeout(() => {
+    locked = false;
+    wheelAccum = 0;
+  }, GESTURE_GAP);
+}
 function handleWheel(ev) {
   if (slideoverOpen) return;
   if (!deck.contains(ev.target)) return;
   if (!ev.cancelable) return;
   ev.preventDefault();
   ev.stopPropagation();
-  if (locked) return;
-  const now = performance.now();
-  if (now - lastWheelTime > ACCUM_RESET_GAP) wheelAccum = 0;
-  lastWheelTime = now;
+  if (locked) { armGestureGapTimer(); return; }
   wheelAccum += ev.deltaY;
+  armGestureGapTimer();
   if (Math.abs(wheelAccum) < FIRE_THRESHOLD) return;
   const dir = wheelAccum;
   wheelAccum = 0;
   if (dir > 0) next(); else prev();
   locked = true;
-  setTimeout(() => { locked = false; }, COOLDOWN);
+  armGestureGapTimer();
 }
 window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
 document.addEventListener('wheel', handleWheel, { passive: false, capture: true });
