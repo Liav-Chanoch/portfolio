@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111112">
 <title>Liav Chanoch — Forward Deployed Engineer</title>
 <meta name="description" content="Liav Chanoch — I scope it, I build it. Forward deployed engineer based in Barcelona.">
 
@@ -551,10 +552,19 @@ a { color: inherit; }
 
 /* ── MOBILE ─────────────────────────────────────────────────────────────
    Below 768px. Two stacked layers, no overlap: a scrollable content band
-   (calc(100dvh - 68px)) and an opaque 68px chrome bar pinned to the floor.
+   (calc(100svh - 68px)) and an opaque 68px chrome bar pinned to the floor.
    The old floating orange FAB, ▲▼ arrows and free-floating label are gone
    on mobile — their content moves into the bar. Desktop rules above are
-   untouched; everything here is scoped to this query only. ── */
+   untouched; everything here is scoped to this query only.
+   Uses svh (small viewport height — the size when the browser's toolbar
+   is fully expanded), not dvh. dvh adapts live with the toolbar, but
+   mobile Safari can re-expand the toolbar right after a scroll gesture
+   settles — the content band, already sized off the taller pre-toolbar
+   dvh, ends up genuinely too tall for the space now available, and the
+   scroll's max position stops short of the true bottom, clipping the
+   last element behind the bar. Sizing off svh's worst-case-chrome height
+   instead means the band is never taller than what's actually always
+   available, so nothing can end up stranded past the scrollable range. */
 @media (max-width: 767.98px) {
 
   /* — desktop chrome removed on mobile, replaced by the bar — */
@@ -562,7 +572,7 @@ a { color: inherit; }
 
   /* — shared content band (used by every panel except the intro) — */
   .panel {
-    height: calc(100dvh - 68px);
+    height: calc(100svh - 68px);
     inset: auto; top: 0; left: 0; right: 0; bottom: auto;
     display: block;
     padding: 56px 24px 24px;
