@@ -534,39 +534,200 @@ a { color: inherit; }
 }
 .drawer-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.75rem; }
 
+/* ── MOBILE-ONLY ELEMENTS — hidden on desktop by default, shown in the
+   mobile media query below. Kept as a base (non-media) rule so nothing
+   leaks onto desktop regardless of stylesheet order. ── */
+.m-bar, .m-intro { display: none; }
+
 /* ── REDUCED MOTION ─────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .orbit-ring, .orbit-hair, .orbit-core, .pulse-dot, .wa-tab .wa-dot { animation: none !important; }
+  .orbit-ring, .orbit-hair, .orbit-core, .pulse-dot, .wa-tab .wa-dot,
+  .m-orbit-ring, .m-orbit-hair, .m-orbit-core, .m-bar-wa-dot { animation: none !important; }
   .panel { transition: opacity .3s ease !important; }
   .fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
   .slideover, .slideover-back { transition: opacity .3s ease !important; }
   .drawer, .drawer-scrim { transition: opacity .3s ease !important; }
 }
 
-/* ── MOBILE ─────────────────────────────────────── */
-@media (max-width: 780px) {
-  .panel { padding: 0 1.5rem; }
-  .headline { font-size: clamp(48px, 12vw, 104px); }
-  .p1-content { grid-template-columns: 1fr; }
-  .orbit-wrap { display: none; }
-  .project-index { grid-template-columns: 1fr; grid-auto-flow: row; grid-template-rows: none; }
-  .p3-content.two-col, .p4-content.two-col { grid-template-columns: 1fr; gap: 2.5rem; }
-  .deck-nav { right: 14px; }
-  .panel-label { left: 14px; bottom: 14px; }
+/* ── MOBILE ─────────────────────────────────────────────────────────────
+   Below 768px. Two stacked layers, no overlap: a scrollable content band
+   (calc(100dvh - 68px)) and an opaque 68px chrome bar pinned to the floor.
+   The old floating orange FAB, ▲▼ arrows and free-floating label are gone
+   on mobile — their content moves into the bar. Desktop rules above are
+   untouched; everything here is scoped to this query only. ── */
+@media (max-width: 767.98px) {
 
-  .wa-tab {
-    left: auto; right: 16px; top: auto; bottom: 16px; transform: none;
-    writing-mode: initial; rotate: 0deg;
-    width: 52px; height: 52px; min-width: 44px; min-height: 44px;
-    border-radius: 50%;
-    justify-content: center; padding: 0;
+  /* — desktop chrome removed on mobile, replaced by the bar — */
+  .deck-nav, .panel-label, .wa-tab { display: none; }
+
+  /* — shared content band (used by every panel except the intro) — */
+  .panel {
+    height: calc(100dvh - 68px);
+    inset: auto; top: 0; left: 0; right: 0; bottom: auto;
+    display: block;
+    padding: 56px 24px 24px;
+    box-shadow: none;
   }
-  .wa-tab .wa-label { display: none; }
-  .wa-tab:hover { padding: 0; }
+  .panel-inner { max-width: none; margin: 0; }
 
-  .slideover-inner { grid-template-columns: 1fr; padding: 5.5rem 1.5rem 2.5rem; }
-  .slideover-back { left: 14px; }
-  .drawer-inner { padding: 2.5rem 1.5rem; }
+  /* — chrome bar — */
+  .m-bar {
+    display: flex;
+    position: fixed; left: 0; right: 0; bottom: 0;
+    height: 68px;
+    align-items: center; justify-content: space-between; gap: 12px;
+    padding: 0 20px;
+    z-index: 1800;
+    background: var(--bar-bg, #111112);
+    border-top: 1px solid var(--bar-hair, rgba(244,244,242,.14));
+  }
+  .m-bar-label {
+    font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+    font-weight: 700; white-space: nowrap;
+    color: var(--bar-label, #8a8a86);
+  }
+  .m-bar-back {
+    display: none; align-items: center; gap: 8px;
+    height: 44px; padding: 0 18px 0 14px;
+    border: 1px solid rgba(10,10,10,.28); border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    color: var(--bar-label, #111112);
+    flex: none;
+  }
+  .m-bar.case-mode .m-bar-label { display: none; }
+  .m-bar.case-mode .m-bar-back { display: inline-flex; }
+  .m-bar.case-mode .m-bar-dots { display: none; }
+  .m-bar-dots { display: flex; gap: 10px; }
+  .m-bar-dots .dot {
+    width: 8px; height: 8px; flex: none;
+    background: transparent; mix-blend-mode: normal;
+    border: 1px solid var(--dot-border, rgba(244,244,242,.5));
+  }
+  .m-bar-dots .dot[aria-current="true"] {
+    background: var(--dot-active, #f4f4f2);
+    border-color: var(--dot-active, #f4f4f2);
+  }
+  .m-bar-wa {
+    display: inline-flex; align-items: center; gap: 6px; flex: none;
+    height: 44px; padding: 0 16px;
+    border-radius: 999px;
+    font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+    white-space: nowrap; text-decoration: none;
+    background: var(--wa-bg, #ff5a1f); color: var(--wa-fg, #111112);
+  }
+  .m-bar-wa-dot {
+    width: 6px; height: 6px; border-radius: 50%; flex: none;
+    background: var(--wa-dot, #111112);
+    animation: breathe 2.4s ease-in-out infinite;
+  }
+
+  /* — 01 intro: two full-bleed bands, no shared content band — */
+  .panel-01 { padding: 0; overflow-y: auto; }
+  .p1-content { display: none; }
+  .m-intro { display: flex; flex-direction: column; height: 100%; }
+  .m-intro-ink {
+    flex: 1 1 50%;
+    background: #111112; color: #f4f4f2;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 24px;
+  }
+  .m-intro-bone {
+    flex: 1 1 50%;
+    background: #e9e3d6; color: #111112;
+    display: flex; flex-direction: column; justify-content: center; gap: 18px;
+    padding: 0 24px;
+  }
+  .m-headline { font-size: 52px; font-weight: 700; line-height: .96; letter-spacing: -.035em; margin: 16px 0 0; }
+  .m-positioning { margin-top: 24px; display: flex; align-items: flex-start; gap: 11px; font-size: 14px; line-height: 1.4; color: #a3a39e; text-wrap: balance; }
+  .m-positioning .rule { width: 28px; height: 3px; background: #ff5a1f; margin-top: 8px; flex: none; }
+  .m-cta { margin-top: 26px; }
+  .m-cta .btn-outline { height: 48px; padding: 0 22px; font-size: 14px; }
+
+  .m-orbit-wrap { position: relative; width: 168px; height: 168px; flex: none; }
+  .m-orbit-ring { position: absolute; inset: 0; animation: orbitspin 26s linear infinite; }
+  .m-o-circle { position: absolute; top: 0; left: 50%; margin-left: -19px; width: 38px; height: 38px; border-radius: 50%; background: #ff5a1f; }
+  .m-o-square { position: absolute; bottom: 3px; left: 8px; width: 35px; height: 35px; background: #2f6f63; }
+  .m-o-tri { position: absolute; bottom: 3px; right: 8px; width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 31px solid #ff5a1f; }
+  .m-orbit-hair { position: absolute; inset: 31px; border: 1px solid rgba(17,17,18,.2); border-radius: 50%; animation: spinrev 40s linear infinite; }
+  .m-orbit-core { position: absolute; inset: 63px; background: #111112; border-radius: 50%; animation: breathe 4.5s ease-in-out infinite; }
+
+  .m-hats-label { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #5b5750; }
+  .m-hats-rows { display: flex; flex-direction: column; gap: 9px; margin-top: 11px; }
+  .m-hat-row { display: grid; grid-template-columns: 8px 1fr; gap: 10px; align-items: baseline; }
+  .m-hat-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .m-hat-title { font-size: 16px; line-height: 1.25; letter-spacing: -.015em; }
+  .m-hat-desc { font-size: 12px; color: #5b5750; margin-top: 2px; }
+  .m-hats-contact { font-size: 12px; line-height: 1.5; color: #5b5750; margin-top: 11px; }
+
+  /* — 02 projects — */
+  .p2-title { flex-direction: column; align-items: flex-start; gap: 0; font-size: 30px; }
+  .p2-sub { margin-top: 6px; font-size: 13px; }
+  .project-index { grid-template-columns: 1fr; grid-auto-flow: row; grid-template-rows: none; margin-top: 18px; }
+  .project-row { grid-template-columns: 20px 1fr 8px; gap: 12px; min-height: 46px; padding: 12px 0; }
+  .project-row .row-num { font-size: 11px; }
+  .project-row .row-title { font-size: 15px; line-height: 1.3; letter-spacing: -.015em; }
+  .project-row .row-dot { width: 8px; height: 8px; background: rgba(244,244,242,.25); }
+  .p2-cta-line { margin-top: 24px; font-size: 13px; }
+  .btn-solid { height: 46px; padding: 0 20px; display: inline-flex; align-items: center; }
+
+  /* — 03 background — */
+  .p3-content.two-col { grid-template-columns: 1fr; gap: 0; }
+  .p3-title { font-size: 28px; }
+  .role { margin-top: 20px; padding-top: 15px; }
+  .role:first-of-type { margin-top: 24px; }
+  .role-title { font-size: 18px; font-weight: 500; }
+  .role-date { font-size: 10px; letter-spacing: .14em; }
+  .role-meta { font-size: 13px; }
+  .role-desc { font-size: 14px; line-height: 1.6; color: #3a3833; }
+  .p3-right { border-left: none; border-top: 1px solid rgba(17,17,18,.16); margin-top: 26px; padding-top: 18px; padding-left: 0; }
+  .p3-right .eyebrow { font-size: 10px; letter-spacing: .2em; }
+  .current-statement { font-size: 19px; line-height: 1.28; letter-spacing: -.02em; }
+  .chip { font-size: 11px; padding: 5px 10px; border-color: rgba(17,17,18,.2); }
+  .btn-ink { height: 46px; padding: 0 24px; display: inline-flex; align-items: center; }
+  .cv-note { font-size: 12px; }
+
+  /* — 04 contact — */
+  .p4-content.two-col { grid-template-columns: 1fr; gap: 0; }
+  /* .p4-left becomes a passthrough so its children can be reordered against
+     the card via `order`, without touching the desktop grid or DOM. */
+  .p4-left { display: contents; }
+  .p4-left h2 { order: 1; font-size: 30px; line-height: 1.06; letter-spacing: -.03em; }
+  .p4-left p { order: 1; font-size: 15px; line-height: 1.6; margin-top: 14px; max-width: none; color: #3a1405; }
+  .p4-right { order: 2; }
+  .p4-links { order: 3; margin-top: 24px; }
+  .p4-links a { font-size: 13px; font-weight: 500; }
+  #p4WaLink { display: none; }
+  .p4-photo-row { order: 4; }
+  .photo-placeholder { width: 46px; height: 46px; }
+  .p4-photo-row p { font-size: 13px; line-height: 1.5; color: #3a1405; }
+
+  .contact-card { padding: 22px 20px; border-radius: 2px; margin-top: 22px; }
+  .contact-card .eyebrow { font-size: 10px; letter-spacing: .2em; }
+  .contact-card h3 { font-size: 20px; font-weight: 500; }
+  #contact-form { gap: 11px; margin-top: 18px; }
+  #contact-form label { font-size: 10px; letter-spacing: .2em; }
+  #contact-form input, #contact-form textarea { height: 48px; padding: 0 14px; font-size: 16px; border-radius: 2px; }
+  #contact-form textarea { height: auto; padding: 13px 14px; resize: none; }
+  .form-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+  #contact-form button[type="submit"] { width: 100%; height: 50px; display: flex; align-items: center; justify-content: center; }
+  .or-email { font-size: 12px; }
+
+  /* — 05 case slide-over — */
+  .slideover-back { display: none; }
+  .slideover-inner { grid-template-columns: 1fr; gap: 0; padding: 24px 24px calc(68px + 24px); }
+  .slideover-meta { font-size: 10px; letter-spacing: .18em; }
+  .slideover-title { font-size: 26px; line-height: 1.12; letter-spacing: -.025em; margin: 11px 0 0; }
+  .slideover-outcome { margin-top: 18px; margin-bottom: 0; gap: 12px; font-size: 18px; line-height: 1.35; letter-spacing: -.015em; }
+  .slideover-outcome .rule { width: 22px; height: 3px; margin-top: 9px; }
+  .slideover-bullets { margin-top: 22px; margin-bottom: 0; gap: 9px; }
+  .slideover-bullets li { grid-template-columns: 7px 1fr; gap: 11px; font-size: 14.5px; line-height: 1.5; color: #4a4a46; }
+  .slideover-bullets li::before { width: 7px; height: 7px; background: #2f6f63; margin-top: 6px; }
+  .slideover-stack { margin-top: 18px; margin-bottom: 0; }
+  .slideover-nav-controls { display: none; }
+  .slideover-nav { margin-top: 22px; margin-bottom: 0; justify-content: flex-start; }
+  .ask-btn { height: 46px; padding: 0 20px; }
+
+  .drawer-inner { padding: 2.5rem 1.5rem calc(68px + 2.5rem); }
 }
 </style>
 </head>
@@ -589,6 +750,20 @@ a { color: inherit; }
 </nav>
 <div class="panel-label" id="panelLabel" aria-hidden="true">01 — INTRO</div>
 
+<nav class="m-bar" id="mBar" aria-label="Mobile panel navigation">
+  <div class="m-bar-label" id="mBarLabel">01 — Intro</div>
+  <button class="m-bar-back" id="mBarBack" aria-label="Back to selected projects">← <span>Selected projects</span></button>
+  <div class="m-bar-dots" id="mBarDots">
+    <button class="dot" data-i="0" aria-label="Go to Intro"></button>
+    <button class="dot" data-i="1" aria-label="Go to Selected projects"></button>
+    <button class="dot" data-i="2" aria-label="Go to Background"></button>
+    <button class="dot" data-i="3" aria-label="Go to Contact"></button>
+  </div>
+  <a class="m-bar-wa" href="https://wa.me/972502197706" target="_blank" rel="noopener" aria-label="Message on WhatsApp">
+    <span class="m-bar-wa-dot" aria-hidden="true"></span>WhatsApp
+  </a>
+</nav>
+
 <main class="deck" id="deck">
 
   <section class="panel panel-01" data-panel="0" aria-label="Intro">
@@ -596,7 +771,7 @@ a { color: inherit; }
       <div>
         <p class="eyebrow fade-up">Liav Chanoch</p>
         <h1 class="headline fade-up">I scope it.<br>I build it.</h1>
-        <p class="positioning fade-up"><span class="rule" aria-hidden="true"></span>Forward deployed engineer · Barcelona</p>
+        <p class="positioning fade-up"><span class="rule" aria-hidden="true"></span>From the customer call to the shipped feature</p>
         <div class="p1-cta fade-up">
           <button class="btn-outline js-goto-contact"><span class="pulse-dot" aria-hidden="true"></span>Get in touch</button>
         </div>
@@ -609,6 +784,48 @@ a { color: inherit; }
         </div>
         <div class="orbit-hair"></div>
         <div class="orbit-core"></div>
+      </div>
+    </div>
+
+    <div class="m-intro">
+      <div class="m-intro-ink">
+        <p class="eyebrow">Liav Chanoch</p>
+        <h1 class="m-headline">I scope it.<br>I build it.</h1>
+        <p class="m-positioning"><span class="rule" aria-hidden="true"></span>From the customer call to the shipped feature</p>
+        <div class="m-cta">
+          <button class="btn-outline js-goto-contact"><span class="pulse-dot" aria-hidden="true"></span>Get in touch</button>
+        </div>
+      </div>
+      <div class="m-intro-bone">
+        <div class="m-orbit-wrap" aria-hidden="true">
+          <div class="m-orbit-ring">
+            <i class="m-o-circle"></i>
+            <i class="m-o-square"></i>
+            <i class="m-o-tri"></i>
+          </div>
+          <div class="m-orbit-hair"></div>
+          <div class="m-orbit-core"></div>
+        </div>
+        <div class="m-hats">
+          <p class="m-hats-label">Open to, either hat</p>
+          <div class="m-hats-rows">
+            <div class="m-hat-row">
+              <span class="m-hat-dot" style="background:#ff5a1f" aria-hidden="true"></span>
+              <div>
+                <div class="m-hat-title">Product &amp; project management</div>
+                <div class="m-hat-desc">Dozens of client projects, end to end</div>
+              </div>
+            </div>
+            <div class="m-hat-row">
+              <span class="m-hat-dot" style="background:#2f6f63" aria-hidden="true"></span>
+              <div>
+                <div class="m-hat-title">Forward deployed engineering</div>
+                <div class="m-hat-desc">From specs to production, tailor made</div>
+              </div>
+            </div>
+          </div>
+          <p class="m-hats-contact">Remote or Barcelona · liavch1@gmail.com</p>
+        </div>
       </div>
     </div>
   </section>
@@ -669,7 +886,7 @@ a { color: inherit; }
         <p>Five years of client delivery, two years writing the software. Currently deepening Python, SQL, RAG and evals against a live product with paying users.</p>
         <div class="p4-links">
           <a class="js-download-cv" href="cv/liav-chanoch-cv.pdf" download>Download CV</a>
-          <a href="https://wa.me/972502197706" target="_blank" rel="noopener">WhatsApp</a>
+          <a id="p4WaLink" href="https://wa.me/972502197706" target="_blank" rel="noopener">WhatsApp</a>
           <a href="https://www.linkedin.com/in/liav-chanoch/" target="_blank" rel="noopener">LinkedIn</a>
           <a href="https://github.com/Liav-Chanoch" target="_blank" rel="noopener">GitHub</a>
         </div>
@@ -684,7 +901,7 @@ a { color: inherit; }
         <form id="contact-form" novalidate>
           <label>Name<input type="text" name="name" required autocomplete="name"></label>
           <label>Email<input type="email" name="email" required autocomplete="email"></label>
-          <label>What's the problem you need shipped?<textarea name="message" required></textarea></label>
+          <label>What's the problem you need shipped?<textarea name="message" rows="3" required></textarea></label>
           <input class="honeypot" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="form-actions">
             <button type="submit" class="btn-ink">Send</button>
@@ -825,16 +1042,45 @@ const PROJECTS = [
     longOutcome: 'Eliminated manual data entry and established a single source of truth in the CRM — drastically reducing invoicing cycle time, error rates, and improving financial transparency.' },
 ];
 const PANEL_LABELS = ['01 — INTRO', '02 — PROJECTS', '03 — BACKGROUND', '04 — CONTACT'];
+const MOBILE_PANEL_LABELS = ['01 — Intro', '02 — Projects', '03 — Background', '04 — Contact'];
+/* Mobile chrome-bar theme per panel — bg/label/hairline/dot colours read
+   straight off the mobile spec's per-panel table. Panel 2 (paper) doubles
+   as the case slide-over's theme, since the case shares its bg colour. */
+const BAR_THEMES = [
+  { bg: '#111112', label: '#8a8a86', hair: 'rgba(244,244,242,.14)', dotBorder: 'rgba(244,244,242,.5)', dotActive: '#f4f4f2' },
+  { bg: '#1d2b2a', label: '#8a8a86', hair: 'rgba(244,244,242,.14)', dotBorder: 'rgba(244,244,242,.5)', dotActive: '#f4f4f2' },
+  { bg: '#e9e3d6', label: '#5b5750', hair: 'rgba(17,17,18,.16)',    dotBorder: 'rgba(17,17,18,.4)',    dotActive: '#111112' },
+  { bg: '#ff5a1f', label: '#3a1405', hair: 'rgba(17,17,18,.28)',    dotBorder: 'rgba(17,17,18,.4)',    dotActive: '#111112' },
+];
 
 /* ── DECK STATE ─────────────────────────────────── */
 const deck = document.getElementById('deck');
 const panels = [...document.querySelectorAll('.panel')];
 const dots = [...document.querySelectorAll('.dot')];
 const panelLabel = document.getElementById('panelLabel');
+const mBar = document.getElementById('mBar');
+const mBarLabel = document.getElementById('mBarLabel');
+const mBarBack = document.getElementById('mBarBack');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let current = 0;
 let locked = false;
 let hoveringDeck = false;
+let slideoverOpen = false;
+
+function updateMobileBar() {
+  const theme = slideoverOpen ? BAR_THEMES[2] : BAR_THEMES[current];
+  mBar.style.setProperty('--bar-bg', theme.bg);
+  mBar.style.setProperty('--bar-label', theme.label);
+  mBar.style.setProperty('--bar-hair', theme.hair);
+  mBar.style.setProperty('--dot-border', theme.dotBorder);
+  mBar.style.setProperty('--dot-active', theme.dotActive);
+  const waInverted = !slideoverOpen && current === 3;
+  mBar.style.setProperty('--wa-bg', waInverted ? '#111112' : '#ff5a1f');
+  mBar.style.setProperty('--wa-fg', waInverted ? '#e9e3d6' : '#111112');
+  mBar.style.setProperty('--wa-dot', waInverted ? '#ff5a1f' : '#111112');
+  mBar.classList.toggle('case-mode', slideoverOpen);
+  mBarLabel.textContent = MOBILE_PANEL_LABELS[current];
+}
 
 function render() {
   panels.forEach((p, i) => {
@@ -846,8 +1092,9 @@ function render() {
       p.style.transform = i <= current ? 'translateY(0)' : 'translateY(100%)';
     }
   });
-  dots.forEach((d, i) => d.setAttribute('aria-current', i === current ? 'true' : 'false'));
+  dots.forEach(d => d.setAttribute('aria-current', parseInt(d.dataset.i, 10) === current ? 'true' : 'false'));
   panelLabel.textContent = PANEL_LABELS[current];
+  updateMobileBar();
 }
 
 function goTo(i) {
@@ -891,6 +1138,7 @@ function armLockGap() {
 }
 function handleWheel(ev) {
   if (slideoverOpen) return;
+  if (window.innerWidth < 768) return; // mobile navigates by swipe/tap only
   if (!deck.contains(ev.target)) return;
   if (!ev.cancelable) return;
   ev.preventDefault();
@@ -949,6 +1197,7 @@ dots.forEach(d => d.addEventListener('click', () => {
 }));
 document.getElementById('navUp').addEventListener('click', () => { if (drawerOpen) closeDrawer(); if (slideoverOpen) closeSlideover(); prev(); });
 document.getElementById('navDown').addEventListener('click', () => { if (drawerOpen) closeDrawer(); if (slideoverOpen) closeSlideover(); next(); });
+mBarBack.addEventListener('click', closeSlideover);
 
 /* Get-in-touch CTAs everywhere */
 document.querySelectorAll('.js-goto-contact').forEach(btn => btn.addEventListener('click', () => {
@@ -984,7 +1233,6 @@ PROJECTS.forEach((p, i) => {
 /* ── SLIDE-OVER ─────────────────────────────────── */
 const slideover = document.getElementById('slideover');
 const slideoverBack = document.getElementById('slideoverBack');
-let slideoverOpen = false;
 let soIndex = 0;
 let lastFocusedRow = null;
 
@@ -1027,13 +1275,15 @@ function openSlideover(i, triggerEl) {
   slideover.classList.add('open');
   slideover.setAttribute('aria-hidden', 'false');
   slideoverOpen = true;
-  slideoverBack.focus();
+  updateMobileBar();
+  (window.innerWidth < 768 ? mBarBack : slideoverBack).focus();
 }
 function closeSlideover() {
   if (drawerOpen) closeDrawer();
   slideover.classList.remove('open');
   slideover.setAttribute('aria-hidden', 'true');
   slideoverOpen = false;
+  updateMobileBar();
   if (lastFocusedRow) lastFocusedRow.focus();
 }
 function stepProject(delta) {
