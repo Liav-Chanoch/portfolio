@@ -260,6 +260,7 @@ a { color: inherit; }
   gap: 6px;
 }
 .p3-sub { font-size: 14px; font-weight: 500; color: var(--muted); }
+.p3-name { font-size: 14px; font-weight: 600; color: var(--muted); }
 .role { border-top: 1px solid var(--hair3); padding-top: 18px; margin-top: 26px; }
 .role:first-of-type { margin-top: 0; }
 .role-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 6px; }
@@ -851,7 +852,7 @@ a { color: inherit; }
   <section class="panel panel-03" data-panel="2" aria-label="Background">
     <div class="p3-content two-col panel-inner">
       <div class="p3-left">
-        <h2 class="p3-title">Background <span class="p3-sub">Five years, one company, two roles.</span></h2>
+        <h2 class="p3-title">Background <span class="p3-name">Liav Chanoch</span><span class="p3-sub">Five years, one company, two roles.</span></h2>
         <div class="role">
           <div class="role-head">
             <div class="role-title">Project Owner &amp; CS Manager</div>
@@ -892,7 +893,7 @@ a { color: inherit; }
   <section class="panel panel-04" data-panel="3" aria-label="Contact">
     <div class="p4-content two-col panel-inner">
       <div class="p4-left">
-        <h2>Scope it with the customer. Ship it myself.</h2>
+        <h2>Scope it with the customer. Ship it end-to-end.</h2>
         <p>Five years of client delivery, two years writing the software. Currently deepening Python, SQL, RAG and evals against a live product with paying users.</p>
         <div class="p4-links">
           <a class="js-download-cv" href="cv/liav-chanoch-cv.pdf" download>Download CV</a>
@@ -991,7 +992,7 @@ const PROJECTS = [
     shot: 'assets/shots/pocket-budget.png',
     built: ['PWA with daily overdraft and rollover logic', 'Multi-user group visibility so shared finances stay in sync', 'Personal product catalog refined from real usage data'],
     outcome: 'Iterated directly against real usage patterns rather than a fixed initial spec.',
-    stack: ['PWA', 'multi-user', 'offline'],
+    stack: ['AI-assisted build', 'PWA', 'multi-user', 'offline'],
     longChallenge: 'Simple budgeting tools assume single-user, single-balance thinking — they don’t handle daily overdraft logic, shared visibility across a household, or a personal catalog of recurring items.',
     longSolution: ['Built a progressive web app with daily overdraft and rollover logic', 'Added multi-user group visibility so shared finances stay in sync', 'Included a personal product catalog, refined from real usage data'],
     longOutcome: 'Iterated directly against real usage patterns rather than a fixed initial spec.' },
@@ -999,7 +1000,7 @@ const PROJECTS = [
   { id: 'LC-05', kind: 'AI', title: 'NIE Line — appointment-monitoring bot', context: 'Personal project · Python + Playwright',
     built: ['Unattended Python + Playwright agent polling the portal', 'Real-time Telegram alerts the moment a slot opens', 'Version-controlled project, not a one-off script'],
     outcome: 'Runs unattended, catching availability windows that manual checking would miss.',
-    stack: ['Python', 'Playwright', 'Telegram API'],
+    stack: ['AI-assisted build', 'Python', 'Playwright', 'Telegram API'],
     longChallenge: 'A high-demand government appointment portal released slots unpredictably, with no notification system — manual checking meant missed windows.',
     longSolution: ['Built an unattended Python + Playwright agent that polls the portal and detects slot availability', 'Wired real-time alerting to Telegram so availability surfaces the moment it opens', 'Structured the project with proper version control and environment setup, not a one-off script'],
     longOutcome: 'Runs unattended, catching availability windows that manual checking would miss.' },
@@ -1017,7 +1018,7 @@ const PROJECTS = [
     shot: 'assets/shots/xov.png',
     built: ['Live match state over Firebase Realtime Database with room codes', 'Guest play on anonymous auth; Google sign-in via redirect for native WebViews', 'Installable PWA with a cache-first service worker, wrapped with Capacitor 6'],
     outcome: 'Playable offline-capable PWA; store submission is the only step left.',
-    stack: ['Firebase RTDB', 'Firestore', 'Capacitor 6', 'PWA'],
+    stack: ['AI-assisted build', 'Firebase RTDB', 'Firestore', 'Capacitor 6', 'PWA'],
     longChallenge: 'I wanted a product that had to survive real players, not a demo: strangers joining a live match in seconds, no account required, state synced between two devices, and the whole thing packaged for the App Store and Play Store.',
     longSolution: [
       'Live match state over Firebase Realtime Database keyed by room code, with player profiles and head-to-head records in Firestore.',
