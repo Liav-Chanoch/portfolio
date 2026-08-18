@@ -424,8 +424,14 @@ a { color: inherit; }
   font-size: 12.5px; color: var(--muted);
   overflow: hidden;
 }
-.shot-placeholder.has-image { border: 1px solid rgba(17,17,18,.15); padding: 0; }
-.shot-placeholder.has-image img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.shot-placeholder.has-image {
+  border: 1px solid rgba(17,17,18,.15);
+  padding: 0;
+  aspect-ratio: auto;
+  align-items: flex-start;
+  max-height: min(80vh, 900px);
+}
+.shot-placeholder.has-image img { width: 100%; height: auto; max-height: min(80vh, 900px); object-fit: contain; display: block; }
 .read-full-case {
   display: inline-block;
   margin-bottom: 1.75rem;
@@ -803,7 +809,7 @@ function handleWheel(ev) {
   if (!deck.contains(ev.target)) return;
   if (!ev.cancelable) return;
   if (locked) { ev.preventDefault(); ev.stopPropagation(); return; }
-  if (Math.abs(ev.deltaY) < 6) return;
+  if (Math.abs(ev.deltaY) < 2) return;
   ev.preventDefault();
   ev.stopPropagation();
   if (ev.deltaY > 0) next(); else prev();
