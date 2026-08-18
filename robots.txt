@@ -2,3 +2,5 @@ User-agent: *
 Disallow: /v2/
 Disallow: /v3/
 Allow: /
+
+Sitemap: https://liav-chanoch.com/sitemap.xml
