@@ -1136,27 +1136,32 @@ function prev() { goTo(current - 1); }
 
 /* Wheel — capture phase, non-passive, single listener on window only.
    Fire fast on threshold, then lock for a window that NOTHING occurring
-   after the fire can extend (still true — re-arming on later events was
-   the earlier "stuck" bug and stays fixed). What changed: the window is
-   no longer one fixed guess for every gesture.
+   after the fire can extend (re-arming on later events was the earlier
+   "stuck" bug and stays fixed — not touching that part again).
 
-   A single constant can't work: a light nudge and a hard fling produce
-   wildly different momentum tails, and 950ms managed to be simultaneously
-   too long (laggy on gentle input) and too short (double-fired on a
-   strong one) — proof no fixed number sits in a safe zone for both. So
-   the lock now scales with how hard THIS gesture actually was, measured
-   by the firing event's own |deltaY| (a real-time read of current input
-   speed, not a guess): gentle input unlocks fast, a hard flick gets a
-   longer lock to actually cover its longer tail. MIN_LOCK is floored at
-   the CSS panel transition (.62s) — never worth unlocking before the
-   animation itself is done regardless of how light the input was. */
+   Scaling the lock to the FIRING event's own |deltaY| (previous version)
+   still double-fired: because we fire the instant accumulated deltaY
+   crosses FIRE_THRESHOLD, the firing event is very often near the START
+   of a gesture — sometimes just the small increment that tipped a
+   trickle over 12 — not its peak. A single event's magnitude at that
+   moment isn't a reliable read of how strong the overall flick is, by
+   construction of firing early.
+
+   What IS available at fire time without adding delay: how FAST the
+   accumulation reached threshold. A hard flick delivers a big deltaY in
+   one or two ticks (threshold crossed in a few ms); a gentle nudge
+   trickles several small events before crossing it (tens of ms). That's
+   velocity, not a magnitude snapshot — a real proxy for gesture strength.
+   Fast accumulation -> long lock (strong flick, long expected tail).
+   Slow accumulation -> short lock (gentle input, short/no tail).
+   MIN_LOCK stays floored at the CSS panel transition (.62s) regardless. */
 const FIRE_THRESHOLD = 12;
 const ACCUM_RESET_GAP = 150;
 const MIN_LOCK = 650;
 const MAX_LOCK = 2200;
-const LOCK_PER_DELTA = 14;
 let wheelAccum = 0;
 let lastWheelTime = 0;
+let accumStartTime = 0;
 let lockTimer = null;
 function handleWheel(ev) {
   if (slideoverOpen) return;
@@ -1167,15 +1172,17 @@ function handleWheel(ev) {
   ev.stopPropagation();
   if (locked) return;
   const now = performance.now();
-  if (now - lastWheelTime > ACCUM_RESET_GAP) wheelAccum = 0;
+  if (now - lastWheelTime > ACCUM_RESET_GAP || wheelAccum === 0) accumStartTime = now;
   lastWheelTime = now;
   wheelAccum += ev.deltaY;
   if (Math.abs(wheelAccum) < FIRE_THRESHOLD) return;
   const dir = wheelAccum;
+  const timeToThreshold = now - accumStartTime;
   wheelAccum = 0;
   if (dir > 0) next(); else prev();
   locked = true;
-  const lockDuration = Math.min(MAX_LOCK, MIN_LOCK + Math.abs(ev.deltaY) * LOCK_PER_DELTA);
+  const speed = 1 - Math.min(1, timeToThreshold / ACCUM_RESET_GAP); // 1 = instant/hard, 0 = slow trickle
+  const lockDuration = MIN_LOCK + speed * (MAX_LOCK - MIN_LOCK);
   clearTimeout(lockTimer);
   lockTimer = setTimeout(() => { locked = false; }, lockDuration);
 }
