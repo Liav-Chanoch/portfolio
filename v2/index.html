@@ -137,11 +137,11 @@ a { color: inherit; }
 /* Shape mark */
 .shape-mark {
   position: absolute;
-  right: 8vw;
+  right: 6vw;
   top: 50%;
   transform: translateY(-50%);
-  width: min(38vw, 420px);
-  height: min(38vw, 420px);
+  width: min(44vw, 520px);
+  height: min(44vw, 520px);
   pointer-events: none;
 }
 .shape-mark .ring {
@@ -151,7 +151,7 @@ a { color: inherit; }
   animation: spin 40s linear infinite reverse;
 }
 .shape-mark .disc {
-  position: absolute; inset: 42%;
+  position: absolute; inset: 32%;
   background: var(--bone);
   border-radius: 50%;
   animation: breathe 4.5s ease-in-out infinite;
@@ -160,12 +160,14 @@ a { color: inherit; }
 .orbit .shape { position: absolute; top: 4%; left: 50%; animation: spin 26s linear infinite reverse; }
 .orbit-b { animation-delay: -8.6s; }
 .orbit-c { animation-delay: -17.3s; }
-.shape.circle { width: 30px; height: 30px; margin-left: -15px; background: var(--signal); border-radius: 50%; }
-.shape.square { width: 24px; height: 24px; margin-left: -12px; background: var(--moss); }
+.orbit-b .shape { animation-delay: -8.6s; }
+.orbit-c .shape { animation-delay: -17.3s; }
+.shape.circle { width: 58px; height: 58px; margin-left: -29px; background: var(--signal); border-radius: 50%; }
+.shape.square { width: 48px; height: 48px; margin-left: -24px; background: var(--moss); }
 .shape.triangle {
-  width: 0; height: 0; margin-left: -14px;
-  border-left: 14px solid transparent; border-right: 14px solid transparent;
-  border-bottom: 24px solid var(--signal);
+  width: 0; height: 0; margin-left: -26px;
+  border-left: 26px solid transparent; border-right: 26px solid transparent;
+  border-bottom: 46px solid var(--signal);
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
