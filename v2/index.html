@@ -159,12 +159,14 @@ a { color: inherit; }
   animation-delay: .26s;
 }
 .orbit-ring { position: absolute; inset: 0; animation: orbitspin 26s linear infinite; }
-/* Shapes sit ON the 188px orbit-hair ring's circumference (radius 94 from a 150,150 centre),
-   not the outer 300px box's edges — positions are trig'd onto the ring, not eyeballed. */
-.o-circle { position: absolute; top: 18.667%; left: 50%; margin: -34px 0 0 -34px; width: 68px; height: 68px; border-radius: 50%; background: var(--signal); }
-.o-square { position: absolute; top: 65.667%; left: 22.867%; margin: -31px 0 0 -31px; width: 62px; height: 62px; background: var(--moss); }
+/* Positions measured directly from the 01-intro.png design export (pixel-analysed via
+   connected-component detection, not eyeballed) — the three shapes sit at irregular
+   angles/radii around the 94px ring, not evenly spaced at 120°. Ring radius measured
+   at exactly 94px, confirming the ring's own size is already correct. */
+.o-circle { position: absolute; top: 40.733%; left: 12.4%; margin: -34px 0 0 -34px; width: 68px; height: 68px; border-radius: 50%; background: var(--signal); }
+.o-square { position: absolute; top: 93%; left: 78.167%; margin: -31px 0 0 -31px; width: 62px; height: 62px; background: var(--moss); }
 .o-tri {
-  position: absolute; top: 65.667%; left: 77.133%; margin: -28px 0 0 -32px; width: 0; height: 0;
+  position: absolute; top: 27.833%; left: 97.167%; margin: -28px 0 0 -32px; width: 0; height: 0;
   border-left: 32px solid transparent; border-right: 32px solid transparent;
   border-bottom: 56px solid var(--signal);
 }
@@ -215,6 +217,7 @@ a { color: inherit; }
 .project-row .row-num { font-size: 12px; color: rgba(244,244,242,.55); font-weight: 700; }
 .project-row .row-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(244,244,242,.4); justify-self: end; }
 .project-row:hover { color: var(--signal); }
+.project-row:hover .row-dot { background: var(--signal); }
 .p2-cta-line {
   margin-top: 3rem;
   display: flex;
@@ -249,7 +252,9 @@ a { color: inherit; }
 .p3-sub { font-size: 14px; font-weight: 500; color: var(--muted); }
 .role { border-top: 1px solid var(--hair3); padding-top: 18px; margin-top: 26px; }
 .role:first-of-type { margin-top: 0; }
-.role-title { font-size: 22px; font-weight: 500; margin-bottom: 6px; }
+.role-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 6px; }
+.role-title { font-size: 22px; font-weight: 500; }
+.role-date { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
 .role-meta { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
 .role-desc { font-size: 15.5px; color: var(--body-fg); line-height: 1.6; }
 .p3-right { border-left: 1px solid var(--hair3); padding-left: 34px; }
@@ -266,10 +271,10 @@ a { color: inherit; }
   font-size: 13px;
   font-weight: 700;
 }
+.cv-row { display: flex; align-items: center; gap: 18px; }
 .cv-note { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
 .link-underline {
   display: inline-block;
-  margin-top: 1.5rem;
   font-size: 13.5px;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -426,11 +431,19 @@ a { color: inherit; }
 .slideover-bullets { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 1.75rem; }
 .slideover-bullets li { display: grid; grid-template-columns: 8px 1fr; gap: 12px; font-size: 15.5px; color: var(--body-fg); line-height: 1.5; }
 .slideover-bullets li::before { content: ''; width: 8px; height: 8px; background: var(--moss); margin-top: 6px; }
-.slideover-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2rem; }
-.slideover-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 1.75rem; }
-.slideover-nav button { width: 32px; height: 32px; border: 1px solid rgba(17,17,18,.25); border-radius: 50%; font-size: 15px; }
+.slideover-stack { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 2rem; }
+.slideover-nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 1.75rem; }
+.slideover-nav-controls { display: flex; align-items: center; gap: 14px; }
+.slideover-nav-controls button { width: 32px; height: 32px; border: 1px solid rgba(17,17,18,.25); border-radius: 50%; font-size: 15px; }
 .slideover-nav .counter { font-size: 12.5px; color: var(--muted); font-weight: 700; }
-.ask-btn { font-size: 13.5px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.ask-btn {
+  display: inline-flex; align-items: center;
+  background: var(--signal); color: var(--ink);
+  border-radius: 999px; padding: 11px 20px;
+  font-size: 14px; font-weight: 500;
+  transition: opacity .2s;
+}
+.ask-btn:hover { opacity: .85; }
 .slideover-media { display: flex; align-items: center; }
 .shot-placeholder {
   width: 100%; aspect-ratio: 4/3;
@@ -602,13 +615,19 @@ a { color: inherit; }
       <div class="p3-left">
         <h2 class="p3-title">Background <span class="p3-sub">Five years, one company, two roles.</span></h2>
         <div class="role">
-          <div class="role-title">Project Owner &amp; CS Manager</div>
-          <div class="role-meta">2020 — now · OTW SRL · Tel Aviv · reporting to the CEO</div>
+          <div class="role-head">
+            <div class="role-title">Project Owner &amp; CS Manager</div>
+            <div class="role-date">2020 — Now</div>
+          </div>
+          <div class="role-meta">OTW SRL · Tel Aviv · reporting to the CEO</div>
           <p class="role-desc">Dozens of client web projects delivered end-to-end, cross-functional teams across design, UX and development, primary stakeholder contact throughout.</p>
         </div>
         <div class="role">
-          <div class="role-title">Internal App Development Lead</div>
-          <div class="role-meta">2020 — now · OTW SRL · Zoho Suite, ERP, analytics</div>
+          <div class="role-head">
+            <div class="role-title">Internal App Development Lead</div>
+            <div class="role-date">2020 — Now</div>
+          </div>
+          <div class="role-meta">OTW SRL · Zoho Suite, ERP, analytics</div>
           <p class="role-desc">Owned the full SDLC on internal systems — intake and scoping through UAT, go-live and stabilization — replacing manual workflows with live ones.</p>
         </div>
       </div>
@@ -623,9 +642,11 @@ a { color: inherit; }
           <span class="chip">Zoho Suite</span>
           <span class="chip">Claude Code</span>
         </div>
-        <a class="btn-ink js-download-cv" href="cv/liav-chanoch-cv.pdf" download>Download CV</a>
+        <div class="cv-row">
+          <a class="btn-ink js-download-cv" href="cv/liav-chanoch-cv.pdf" download>Download CV</a>
+          <button class="link-underline js-goto-contact">Or get in touch</button>
+        </div>
         <p class="cv-note">PDF · one page</p>
-        <button class="link-underline js-goto-contact">Or get in touch</button>
       </div>
     </div>
   </section>
@@ -674,14 +695,17 @@ a { color: inherit; }
       <h2 class="slideover-title" id="soTitle"></h2>
       <p class="slideover-outcome"><span class="rule" aria-hidden="true"></span><span id="soOutcome"></span></p>
       <ul class="slideover-bullets" id="soBullets"></ul>
-      <div class="slideover-stack" id="soStack"></div>
-      <button class="read-full-case" id="soReadFull">Read the full case →</button>
-      <div class="slideover-nav">
-        <button id="soPrev" aria-label="Previous project">‹</button>
-        <span class="counter" id="soCounter">01 / 08</span>
-        <button id="soNext" aria-label="Next project">›</button>
+      <div class="slideover-stack" id="soStack">
+        <button class="read-full-case" id="soReadFull">Read the full case →</button>
       </div>
-      <button class="ask-btn" id="soAsk"></button>
+      <div class="slideover-nav">
+        <div class="slideover-nav-controls">
+          <button id="soPrev" aria-label="Previous project">‹</button>
+          <span class="counter" id="soCounter">01 / 08</span>
+          <button id="soNext" aria-label="Next project">›</button>
+        </div>
+        <button class="ask-btn" id="soAsk"></button>
+      </div>
     </div>
     <div class="slideover-media">
       <div class="shot-placeholder" id="soShot"></div>
@@ -917,8 +941,9 @@ function paintProject(i) {
   bullets.innerHTML = '';
   p.built.forEach(b => { const li = document.createElement('li'); li.textContent = b; bullets.appendChild(li); });
   const stack = document.getElementById('soStack');
-  stack.innerHTML = '';
-  p.stack.forEach(s => { const c = document.createElement('span'); c.className = 'chip'; c.textContent = s; stack.appendChild(c); });
+  stack.querySelectorAll('.chip').forEach(c => c.remove());
+  const readFullBtn = document.getElementById('soReadFull');
+  p.stack.forEach(s => { const c = document.createElement('span'); c.className = 'chip'; c.textContent = s; stack.insertBefore(c, readFullBtn); });
   document.getElementById('soCounter').textContent = `${String(i + 1).padStart(2, '0')} / ${String(PROJECTS.length).padStart(2, '0')}`;
   document.getElementById('soAsk').textContent = `Ask me about ${p.id} →`;
   const shot = document.getElementById('soShot');
