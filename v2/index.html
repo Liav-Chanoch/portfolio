@@ -405,8 +405,8 @@ a { color: inherit; }
 /* ── SLIDE-OVER ─────────────────────────────────── */
 .slideover {
   position: fixed;
-  inset: 0 0 0 auto;
-  width: min(78vw, 980px);
+  inset: 0;
+  width: 100vw;
   background: var(--paper);
   color: var(--ink);
   z-index: 1500;
@@ -418,7 +418,7 @@ a { color: inherit; }
   overflow-y: auto;
 }
 .slideover.open { transform: translateX(0); opacity: 1; pointer-events: auto; }
-.slideover-inner { display: grid; grid-template-columns: 1fr 400px; gap: 56px; padding: 112px 64px 44px; min-height: 100%; }
+.slideover-inner { display: grid; grid-template-columns: 1fr 400px; gap: 56px; padding: 112px 64px 44px; min-height: 100%; max-width: 1180px; margin: 0 auto; }
 .slideover-back {
   position: absolute;
   top: 28px;
@@ -496,8 +496,8 @@ a { color: inherit; }
 .drawer-scrim.open { opacity: 1; pointer-events: auto; }
 .drawer {
   position: fixed;
-  inset: 0 0 0 auto;
-  width: min(470px, 92vw);
+  inset: 0;
+  width: 100vw;
   background: var(--paper);
   color: var(--ink);
   z-index: 1600;
@@ -509,7 +509,7 @@ a { color: inherit; }
   overflow-y: auto;
 }
 .drawer.open { transform: translateX(0); opacity: 1; pointer-events: auto; }
-.drawer-inner { padding: 3.5rem 2.5rem 3rem; }
+.drawer-inner { padding: 3.5rem 2.5rem 3rem; max-width: 720px; margin: 0 auto; }
 .drawer-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
 .drawer-meta { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--signal-ink); }
 .drawer-close {
@@ -563,10 +563,8 @@ a { color: inherit; }
   .wa-tab .wa-label { display: none; }
   .wa-tab:hover { padding: 0; }
 
-  .slideover { width: 100vw; }
   .slideover-inner { grid-template-columns: 1fr; padding: 5.5rem 1.5rem 2.5rem; }
   .slideover-back { left: 14px; }
-  .drawer { width: 100vw; }
   .drawer-inner { padding: 2.5rem 1.5rem; }
 }
 </style>
