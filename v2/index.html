@@ -360,16 +360,20 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: calc(14px * var(--osf, 1));
 }
 /* mix-blend-mode lives on the arrows and inactive dots only (so they invert for
    legibility on any panel) — NOT on the whole nav, because difference-blend isn't
    colour-preserving: it would turn the active dot's true yellow blue-ish on light
-   panels instead of staying yellow. */
-.deck-nav .nav-arrow { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; color: rgba(244,244,242,.75); font-size: 15px; line-height: 1; transition: color .2s; mix-blend-mode: difference; }
+   panels instead of staying yellow.
+   Sized with --osf, same as the headline/orbit — the mockup this was measured
+   against is authored at the same 1060px baseline, and without this scaling
+   the nav is the one piece of chrome that stays pixel-fixed while everything
+   around it grows on wider screens, so it reads as undersized. */
+.deck-nav .nav-arrow { width: calc(22px * var(--osf, 1)); height: calc(22px * var(--osf, 1)); display: flex; align-items: center; justify-content: center; color: rgba(244,244,242,.75); font-size: calc(15px * var(--osf, 1)); line-height: 1; transition: color .2s; mix-blend-mode: difference; }
 .deck-nav .nav-arrow:hover { color: var(--fg); }
-.dots-group { display: flex; flex-direction: column; gap: 12px; }
-.dot { width: 9px; height: 9px; border-radius: 50%; background: transparent; border: 1px solid rgba(244,244,242,.5); mix-blend-mode: difference; }
+.dots-group { display: flex; flex-direction: column; gap: calc(12px * var(--osf, 1)); }
+.dot { width: calc(9px * var(--osf, 1)); height: calc(9px * var(--osf, 1)); border-radius: 50%; background: transparent; border: 1px solid rgba(244,244,242,.5); mix-blend-mode: difference; }
 .dot[aria-current="true"] { background: var(--active-dot); border-color: var(--active-dot); mix-blend-mode: normal; }
 .panel-label {
   position: fixed;
