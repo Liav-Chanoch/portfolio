@@ -1135,46 +1135,24 @@ function next() { goTo(current + 1); }
 function prev() { goTo(current - 1); }
 
 /* Wheel — capture phase, non-passive, single listener on window only.
-   (A second identical listener used to also sit on document as belt-and-
-   suspenders; stopPropagation() should make it a no-op, but two capture-
-   phase listeners for the same event is unnecessary surface area for a
-   browser edge case to double-invoke — removed rather than trusted.)
-
-   A silence-based unlock alone still double-fires: real macOS momentum
-   scrolling isn't a steady drip, it has lulls — brief real gaps between
-   events, especially around the drag-to-momentum handoff — that can
-   exceed a short gap threshold on their own. Unlocking on any such lull
-   lets the still-ongoing tail get treated as a brand-new gesture and
-   re-fire. Fix: pair the silence check with a MIN_LOCK floor. The lock
-   can only lift once BOTH real silence (GESTURE_GAP) has passed AND at
-   least MIN_LOCK has elapsed since the fire.
-
-   GESTURE_GAP/MIN_LOCK were previously 250/400ms — sound architecture,
-   but too tight for the actual range of real trackpad momentum (multi-
-   second tails with widening gaps between trailing events as momentum
-   decays), which this environment has no way to simulate with real
-   hardware. Widened substantially: the cost is a slower "next flick
-   after this one" ceiling, which is a far smaller UX cost than the
-   recurring double-fire. */
+   Fire fast on threshold, then lock for a FIXED window that nothing can
+   extend — this is the load-bearing property. Earlier versions re-armed
+   the unlock timer on every wheel event received *while locked*, on the
+   theory that ongoing events meant "the same gesture is still going, keep
+   waiting." In practice that created a feedback loop: once locked, any
+   further scroll attempt — including the user trying again because
+   nothing seems to be happening — reset the countdown, so repeated
+   attempts made it MORE stuck, not less. That's what "needs several
+   interactions to move" was: each interaction was extending its own lock.
+   A fixed, non-renewable window can't spiral like that — worst case is an
+   occasional double-fire on an extreme flick, which is a far smaller cost
+   than the deck becoming unresponsive to input. */
 const FIRE_THRESHOLD = 12;
-const GESTURE_GAP = 450;
-const MIN_LOCK = 900;
+const LOCK_DURATION = 1100;
+const ACCUM_RESET_GAP = 150;
 let wheelAccum = 0;
-let wheelGapTimer = null;
-let lockStartTime = 0;
-function checkUnlock() {
-  const elapsed = performance.now() - lockStartTime;
-  if (elapsed < MIN_LOCK) {
-    wheelGapTimer = setTimeout(checkUnlock, MIN_LOCK - elapsed);
-    return;
-  }
-  locked = false;
-  wheelAccum = 0;
-}
-function armLockGap() {
-  clearTimeout(wheelGapTimer);
-  wheelGapTimer = setTimeout(checkUnlock, GESTURE_GAP);
-}
+let lastWheelTime = 0;
+let lockTimer = null;
 function handleWheel(ev) {
   if (slideoverOpen) return;
   if (window.innerWidth < 768) return; // mobile navigates by swipe/tap only
@@ -1182,17 +1160,18 @@ function handleWheel(ev) {
   if (!ev.cancelable) return;
   ev.preventDefault();
   ev.stopPropagation();
-  if (locked) { armLockGap(); return; }
+  if (locked) return;
+  const now = performance.now();
+  if (now - lastWheelTime > ACCUM_RESET_GAP) wheelAccum = 0;
+  lastWheelTime = now;
   wheelAccum += ev.deltaY;
-  clearTimeout(wheelGapTimer);
-  wheelGapTimer = setTimeout(() => { wheelAccum = 0; }, GESTURE_GAP);
   if (Math.abs(wheelAccum) < FIRE_THRESHOLD) return;
   const dir = wheelAccum;
   wheelAccum = 0;
   if (dir > 0) next(); else prev();
   locked = true;
-  lockStartTime = performance.now();
-  armLockGap();
+  clearTimeout(lockTimer);
+  lockTimer = setTimeout(() => { locked = false; }, LOCK_DURATION);
 }
 window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
 
