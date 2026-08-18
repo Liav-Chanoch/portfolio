@@ -82,9 +82,15 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   justify-content: center;
+  /* Default hidden (matches JS's render() state for current=0) so panels
+     2-4 are never visible before the deck script runs. Without this, the
+     highest z-index panel (04, orange) briefly paints on top of the stack
+     during the gap between first paint and JS execution — long enough for
+     some mobile browsers' status-bar color sampling to catch it. */
+  transform: translateY(100%);
 }
 .panel-inner { max-width: 1180px; width: 100%; margin: 0 auto; }
-.panel-01 { background: var(--ink); color: var(--fg); z-index: 1; }
+.panel-01 { background: var(--ink); color: var(--fg); z-index: 1; transform: translateY(0); }
 .panel-02 { background: var(--pine); color: var(--fg); z-index: 2; }
 .panel-03 { background: var(--paper); color: var(--ink); z-index: 3; }
 .panel-04 { background: var(--signal); color: var(--on-signal); z-index: 4; }
