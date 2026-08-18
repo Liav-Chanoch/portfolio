@@ -1072,6 +1072,7 @@ const panelLabel = document.getElementById('panelLabel');
 const mBar = document.getElementById('mBar');
 const mBarLabel = document.getElementById('mBarLabel');
 const mBarBack = document.getElementById('mBarBack');
+const themeColorMeta = document.querySelector('meta[name="theme-color"]');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let current = 0;
 let locked = false;
@@ -1091,6 +1092,11 @@ function updateMobileBar() {
   mBar.style.setProperty('--wa-dot', waInverted ? '#ff5a1f' : '#111112');
   mBar.classList.toggle('case-mode', slideoverOpen);
   mBarLabel.textContent = MOBILE_PANEL_LABELS[current];
+  /* Explicit, JS-driven — some mobile browsers tint the status bar from
+     sampled page content instead of trusting a static <meta theme-color>,
+     which is why it could flip on its own. Setting it on every navigation
+     forces the intended colour regardless of what the browser would guess. */
+  themeColorMeta.setAttribute('content', (current === 0 && !slideoverOpen) ? '#111112' : '#ff5a1f');
 }
 
 function render() {
