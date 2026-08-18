@@ -473,6 +473,7 @@ a { color: inherit; }
   max-height: min(80vh, 900px);
 }
 .shot-placeholder.has-image img { width: 100%; height: auto; max-height: min(80vh, 900px); object-fit: contain; display: block; }
+.shot-placeholder.is-empty { border: none; padding: 0; }
 .read-full-case {
   display: inline-block;
   line-height: 1;
@@ -858,19 +859,35 @@ function goTo(i) {
 function next() { goTo(current + 1); }
 function prev() { goTo(current - 1); }
 
-/* Wheel — capture phase, non-passive, on window and document */
-const COOLDOWN = 640;
+/* Wheel — capture phase, non-passive, on window and document.
+   Debounce-then-act, not threshold-tuning: accumulate deltaY across a burst of
+   events and only step once the burst actually pauses (WHEEL_SETTLE ms of
+   silence), then lock for COOLDOWN. A fixed per-event deltaY threshold either
+   swallows real trackpad input (too high) or double-steps because one cooldown
+   window doesn't span a whole physical gesture (too low, was 640ms/<2px) —
+   waiting for silence is what actually coalesces one gesture into one step,
+   regardless of how many small events it's made of or how long it runs. */
+const COOLDOWN = 700;
+const WHEEL_SETTLE = 60;
+let wheelAccum = 0;
+let wheelSettleTimer = null;
 function handleWheel(ev) {
   if (slideoverOpen) return;
   if (!deck.contains(ev.target)) return;
   if (!ev.cancelable) return;
-  if (locked) { ev.preventDefault(); ev.stopPropagation(); return; }
-  if (Math.abs(ev.deltaY) < 2) return;
   ev.preventDefault();
   ev.stopPropagation();
-  if (ev.deltaY > 0) next(); else prev();
-  locked = true;
-  setTimeout(() => { locked = false; }, COOLDOWN);
+  if (locked) return;
+  wheelAccum += ev.deltaY;
+  clearTimeout(wheelSettleTimer);
+  wheelSettleTimer = setTimeout(() => {
+    const total = wheelAccum;
+    wheelAccum = 0;
+    if (Math.abs(total) < 8) return;
+    if (total > 0) next(); else prev();
+    locked = true;
+    setTimeout(() => { locked = false; }, COOLDOWN);
+  }, WHEEL_SETTLE);
 }
 window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
 document.addEventListener('wheel', handleWheel, { passive: false, capture: true });
@@ -980,7 +997,8 @@ function paintProject(i) {
     shot.appendChild(img);
   } else {
     shot.classList.remove('has-image');
-    shot.textContent = `[ screenshot placeholder for ${p.id} — 1200×900, ask Liav for the image ]`;
+    shot.classList.add('is-empty');
+    shot.textContent = '';
   }
 }
 
