@@ -1135,21 +1135,26 @@ function next() { goTo(current + 1); }
 function prev() { goTo(current - 1); }
 
 /* Wheel — capture phase, non-passive, single listener on window only.
-   Fire fast on threshold, then lock for a FIXED window that nothing can
-   extend — this is the load-bearing property. Earlier versions re-armed
-   the unlock timer on every wheel event received *while locked*, on the
-   theory that ongoing events meant "the same gesture is still going, keep
-   waiting." In practice that created a feedback loop: once locked, any
-   further scroll attempt — including the user trying again because
-   nothing seems to be happening — reset the countdown, so repeated
-   attempts made it MORE stuck, not less. That's what "needs several
-   interactions to move" was: each interaction was extending its own lock.
-   A fixed, non-renewable window can't spiral like that — worst case is an
-   occasional double-fire on an extreme flick, which is a far smaller cost
-   than the deck becoming unresponsive to input. */
+   Fire fast on threshold, then lock for a window that NOTHING occurring
+   after the fire can extend (still true — re-arming on later events was
+   the earlier "stuck" bug and stays fixed). What changed: the window is
+   no longer one fixed guess for every gesture.
+
+   A single constant can't work: a light nudge and a hard fling produce
+   wildly different momentum tails, and 950ms managed to be simultaneously
+   too long (laggy on gentle input) and too short (double-fired on a
+   strong one) — proof no fixed number sits in a safe zone for both. So
+   the lock now scales with how hard THIS gesture actually was, measured
+   by the firing event's own |deltaY| (a real-time read of current input
+   speed, not a guess): gentle input unlocks fast, a hard flick gets a
+   longer lock to actually cover its longer tail. MIN_LOCK is floored at
+   the CSS panel transition (.62s) — never worth unlocking before the
+   animation itself is done regardless of how light the input was. */
 const FIRE_THRESHOLD = 12;
-const LOCK_DURATION = 950;
 const ACCUM_RESET_GAP = 150;
+const MIN_LOCK = 650;
+const MAX_LOCK = 2200;
+const LOCK_PER_DELTA = 14;
 let wheelAccum = 0;
 let lastWheelTime = 0;
 let lockTimer = null;
@@ -1170,8 +1175,9 @@ function handleWheel(ev) {
   wheelAccum = 0;
   if (dir > 0) next(); else prev();
   locked = true;
+  const lockDuration = Math.min(MAX_LOCK, MIN_LOCK + Math.abs(ev.deltaY) * LOCK_PER_DELTA);
   clearTimeout(lockTimer);
-  lockTimer = setTimeout(() => { locked = false; }, LOCK_DURATION);
+  lockTimer = setTimeout(() => { locked = false; }, lockDuration);
 }
 window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
 
