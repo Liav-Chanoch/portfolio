@@ -46,6 +46,7 @@
   --body-fg:    #4a4a46;
   --hair3:      rgba(17,17,18,.35);
   --hair4:      rgba(17,17,18,.45);
+  --osf:        1;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overscroll-behavior: none; }
@@ -104,13 +105,14 @@ a { color: inherit; }
 /* ── PANEL 01 — INTRO ──────────────────────────── */
 .p1-content {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: 1fr auto;
   gap: 48px;
   align-items: center;
+  max-width: calc(1180px * var(--osf, 1));
 }
 .p1-content .eyebrow { animation-duration: .7s; animation-delay: 0s; }
 .headline {
-  font-size: 104px;
+  font-size: calc(104px * var(--osf, 1));
   font-weight: 700;
   line-height: .96;
   letter-spacing: -.04em;
@@ -149,11 +151,12 @@ a { color: inherit; }
   animation: breathe 2.4s ease-in-out infinite;
 }
 
-/* Orbit signature mark — fixed 300×300, not scaled */
+/* Orbit signature mark — 300×300 base, scaled by --osf (JS-driven, matches the
+   mockup's actual 300:1060 ratio to the viewport instead of staying pixel-fixed). */
 .orbit-wrap {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: calc(300px * var(--osf, 1));
+  height: calc(300px * var(--osf, 1));
   justify-self: center;
   pointer-events: none;
   animation-delay: .26s;
@@ -162,22 +165,26 @@ a { color: inherit; }
 /* Positions measured directly from the 01-intro.png design export (pixel-analysed via
    connected-component detection, not eyeballed) — the three shapes sit at irregular
    angles/radii around the 94px ring, not evenly spaced at 120°. Ring radius measured
-   at exactly 94px, confirming the ring's own size is already correct. */
-.o-circle { position: absolute; top: 40.733%; left: 12.4%; margin: -34px 0 0 -34px; width: 68px; height: 68px; border-radius: 50%; background: var(--signal); }
-.o-square { position: absolute; top: 93%; left: 78.167%; margin: -31px 0 0 -31px; width: 62px; height: 62px; background: var(--moss); }
+   at exactly 94px, confirming the ring's own size is already correct. Top/left are
+   percentages (scale-invariant); size/margin use --osf since border-triangles can't
+   be sized with percentages. */
+.o-circle { position: absolute; top: 40.733%; left: 12.4%; margin: calc(-34px * var(--osf, 1)) 0 0 calc(-34px * var(--osf, 1)); width: calc(68px * var(--osf, 1)); height: calc(68px * var(--osf, 1)); border-radius: 50%; background: var(--signal); }
+.o-square { position: absolute; top: 93%; left: 78.167%; margin: calc(-31px * var(--osf, 1)) 0 0 calc(-31px * var(--osf, 1)); width: calc(62px * var(--osf, 1)); height: calc(62px * var(--osf, 1)); background: var(--moss); }
 .o-tri {
-  position: absolute; top: 27.833%; left: 97.167%; margin: -28px 0 0 -32px; width: 0; height: 0;
-  border-left: 32px solid transparent; border-right: 32px solid transparent;
-  border-bottom: 56px solid var(--signal);
+  position: absolute; top: 27.833%; left: 97.167%;
+  margin: calc(-28px * var(--osf, 1)) 0 0 calc(-32px * var(--osf, 1)); width: 0; height: 0;
+  border-left: calc(32px * var(--osf, 1)) solid transparent;
+  border-right: calc(32px * var(--osf, 1)) solid transparent;
+  border-bottom: calc(56px * var(--osf, 1)) solid var(--signal);
 }
 .orbit-hair {
-  position: absolute; inset: 56px;
+  position: absolute; inset: 18.667%;
   border: 1px solid rgba(244,244,242,.18);
   border-radius: 50%;
   animation: spinrev 40s linear infinite;
 }
 .orbit-core {
-  position: absolute; inset: 112px;
+  position: absolute; inset: 37.333%;
   background: var(--fg);
   border-radius: 50%;
   animation: breathe 4.5s ease-in-out infinite;
@@ -913,6 +920,17 @@ document.querySelectorAll('.js-goto-contact').forEach(btn => btn.addEventListene
 }));
 
 render();
+
+/* Orbit/headline scale factor — mockup was authored at 1060px wide with a 300px
+   orbit and 104px headline (ratio ~0.283 / ~0.098). Scaling proportionally to
+   viewport width (clamped) makes it read at the same relative size on any screen,
+   rather than staying pixel-fixed and shrinking-by-comparison on wide monitors. */
+function updateOrbitScale() {
+  const s = Math.min(1.75, Math.max(0.85, window.innerWidth / 1060));
+  document.documentElement.style.setProperty('--osf', s.toFixed(3));
+}
+updateOrbitScale();
+window.addEventListener('resize', updateOrbitScale);
 
 /* ── PROJECT INDEX ──────────────────────────────── */
 const indexEl = document.getElementById('projectIndex');
