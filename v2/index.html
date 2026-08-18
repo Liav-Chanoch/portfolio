@@ -1130,20 +1130,31 @@ function goTo(i) {
 function next() { goTo(current + 1); }
 function prev() { goTo(current - 1); }
 
-/* Wheel — capture phase, non-passive, on window and document.
-   A silence-based unlock alone (previous version) still double-fires: real
-   macOS momentum scrolling isn't a steady drip, it has lulls — brief real
-   gaps between events, especially around the drag-to-momentum handoff — that
-   can exceed a short gap threshold on their own. Unlocking on any such lull
-   lets the still-ongoing tail get treated as a brand-new gesture and re-fire.
-   Fix: pair the silence check with a MIN_LOCK floor. The lock can only lift
-   once BOTH real silence (GESTURE_GAP) has passed AND at least MIN_LOCK has
-   elapsed since the fire — so a mid-gesture lull shorter than MIN_LOCK can't
-   prematurely end the lock, while a genuinely finished gesture still unlocks
-   as soon as those two conditions are met, not after a long fixed guess. */
+/* Wheel — capture phase, non-passive, single listener on window only.
+   (A second identical listener used to also sit on document as belt-and-
+   suspenders; stopPropagation() should make it a no-op, but two capture-
+   phase listeners for the same event is unnecessary surface area for a
+   browser edge case to double-invoke — removed rather than trusted.)
+
+   A silence-based unlock alone still double-fires: real macOS momentum
+   scrolling isn't a steady drip, it has lulls — brief real gaps between
+   events, especially around the drag-to-momentum handoff — that can
+   exceed a short gap threshold on their own. Unlocking on any such lull
+   lets the still-ongoing tail get treated as a brand-new gesture and
+   re-fire. Fix: pair the silence check with a MIN_LOCK floor. The lock
+   can only lift once BOTH real silence (GESTURE_GAP) has passed AND at
+   least MIN_LOCK has elapsed since the fire.
+
+   GESTURE_GAP/MIN_LOCK were previously 250/400ms — sound architecture,
+   but too tight for the actual range of real trackpad momentum (multi-
+   second tails with widening gaps between trailing events as momentum
+   decays), which this environment has no way to simulate with real
+   hardware. Widened substantially: the cost is a slower "next flick
+   after this one" ceiling, which is a far smaller UX cost than the
+   recurring double-fire. */
 const FIRE_THRESHOLD = 12;
-const GESTURE_GAP = 250;
-const MIN_LOCK = 400;
+const GESTURE_GAP = 450;
+const MIN_LOCK = 900;
 let wheelAccum = 0;
 let wheelGapTimer = null;
 let lockStartTime = 0;
@@ -1180,7 +1191,6 @@ function handleWheel(ev) {
   armLockGap();
 }
 window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
-document.addEventListener('wheel', handleWheel, { passive: false, capture: true });
 
 /* Touch */
 let touchStartY = null;
