@@ -490,24 +490,46 @@ a { color: inherit; }
   transition: opacity .2s;
 }
 .ask-btn:hover { opacity: .85; }
-.slideover-media { display: flex; align-items: center; }
-.shot-placeholder {
-  width: 100%; aspect-ratio: 4/3;
-  border: 1px dashed rgba(17,17,18,.35);
-  display: flex; align-items: center; justify-content: center;
-  text-align: center; padding: 1.5rem;
-  font-size: 12.5px; color: var(--muted);
+.slideover-media { display: flex; align-items: flex-start; justify-content: center; }
+
+/* Device-frame pass around the existing project screenshots — CSS-drawn,
+   the <img> itself is never re-exported/cropped. `.shot--phone` gets a
+   real bezel; `.shot--web` is deliberately bezel-less (border + shadow
+   only) for shots that already have browser/window chrome baked in, so
+   framing never doubles up. */
+.shot { margin: 0; }
+.shot-well {
+  background: rgba(17,17,18,.05);
+  border: 1px solid rgba(17,17,18,.1);
+  display: flex;
+  justify-content: center;
+}
+.shot img { display: block; width: 100%; height: auto; }
+
+.shot--phone .shot-well { padding: 34px 34px 0; }
+.shot--phone .shot-device {
+  width: 268px;
+  background: #111112;
+  border-radius: 34px 34px 0 0;
+  padding: 9px 9px 0;
+  box-shadow: 0 18px 40px rgba(17,17,18,.28);
+}
+.shot--phone .shot-screen { border-radius: 26px 26px 0 0; overflow: hidden; }
+
+.shot--web { width: 100%; }
+.shot--web .shot-well { padding: 30px; }
+.shot--web .shot-screen {
+  border: 1px solid rgba(17,17,18,.14);
+  border-radius: 3px;
+  box-shadow: 0 14px 34px rgba(17,17,18,.2);
   overflow: hidden;
 }
-.shot-placeholder.has-image {
-  border: 1px solid rgba(17,17,18,.15);
-  padding: 0;
-  aspect-ratio: auto;
-  align-items: flex-start;
-  max-height: min(80vh, 900px);
+
+.shot--pending { width: 100%; }
+.shot--pending .shot-well { padding: 48px 24px; }
+.shot-pending-label {
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: #5b5750;
 }
-.shot-placeholder.has-image img { width: 100%; height: auto; max-height: min(80vh, 900px); object-fit: contain; display: block; }
-.shot-placeholder.is-empty { border: none; padding: 0; }
 .read-full-case {
   display: inline-block;
   line-height: 1;
@@ -758,18 +780,26 @@ a { color: inherit; }
   /* — 05 case slide-over — */
   .slideover-back { display: none; }
   .slideover-inner { grid-template-columns: 1fr; gap: 0; padding: 24px 24px calc(68px + 24px); }
-  .slideover-media { margin-top: 24px; }
-  .slideover-meta { font-size: 10px; letter-spacing: .18em; }
-  .slideover-title { font-size: 26px; line-height: 1.12; letter-spacing: -.025em; margin: 11px 0 0; }
-  .slideover-outcome { margin-top: 18px; margin-bottom: 0; gap: 12px; font-size: 18px; line-height: 1.35; letter-spacing: -.015em; }
+  /* .slideover-body becomes a passthrough so the figure (a separate grid
+     sibling) can be ordered between the lede and the build bullets,
+     without touching the desktop DOM/grid or moving markup around. */
+  .slideover-body { display: contents; }
+  .slideover-meta { order: 1; font-size: 10px; letter-spacing: .18em; }
+  .slideover-title { order: 1; font-size: 26px; line-height: 1.12; letter-spacing: -.025em; margin: 11px 0 0; }
+  .slideover-outcome { order: 1; margin-top: 18px; margin-bottom: 0; gap: 12px; font-size: 18px; line-height: 1.35; letter-spacing: -.015em; }
   .slideover-outcome .rule { width: 22px; height: 3px; margin-top: 9px; }
-  .slideover-bullets { margin-top: 22px; margin-bottom: 0; gap: 9px; }
+  .slideover-media { order: 2; margin-top: 24px; width: 100%; }
+  .slideover-bullets { order: 3; margin-top: 22px; margin-bottom: 0; gap: 9px; }
   .slideover-bullets li { grid-template-columns: 7px 1fr; gap: 11px; font-size: 14.5px; line-height: 1.5; color: #4a4a46; }
   .slideover-bullets li::before { width: 7px; height: 7px; background: #2f6f63; margin-top: 6px; }
-  .slideover-stack { margin-top: 18px; margin-bottom: 0; }
+  .slideover-stack { order: 4; margin-top: 18px; margin-bottom: 0; }
   .slideover-nav-controls { display: none; }
-  .slideover-nav { margin-top: 22px; margin-bottom: 0; justify-content: flex-start; }
+  .slideover-nav { order: 5; margin-top: 22px; margin-bottom: 0; justify-content: flex-start; }
   .ask-btn { height: 46px; padding: 0 20px; }
+
+  .shot--phone .shot-well { padding: 24px 24px 0; }
+  .shot--phone .shot-device { width: 216px; border-radius: 28px 28px 0 0; }
+  .shot--phone .shot-screen { border-radius: 21px 21px 0 0; }
 
   .drawer-inner { padding: 2.5rem 1.5rem calc(68px + 2.5rem); }
 }
@@ -980,7 +1010,7 @@ a { color: inherit; }
       </div>
     </div>
     <div class="slideover-media">
-      <div class="shot-placeholder" id="soShot"></div>
+      <figure class="shot" id="soShot"></figure>
     </div>
   </div>
 </aside>
@@ -1013,7 +1043,7 @@ a { color: inherit; }
 /* ── DATA ───────────────────────────────────────── */
 const PROJECTS = [
   { id: 'LC-07', kind: 'PRODUCT', title: 'Visa Tracker — two-sided visa platform', context: 'Independent product · paying clients',
-    shot: 'assets/shots/visa-tracker-redacted.png',
+    shot: 'assets/shots/visa-tracker-redacted.png', shotVariant: 'web', shotW: 2940, shotH: 1476,
     built: ['Two-sided platform connecting applicants and providers in one workflow', 'Full product lifecycle owned solo: concept, design, build, iteration', 'Iterated on real usage and direct client feedback'],
     outcome: 'In active use by paying clients, with the roadmap driven by what they actually run into.',
     stack: ['AI-assisted build', 'two-sided', 'live'],
@@ -1022,7 +1052,7 @@ const PROJECTS = [
     longOutcome: 'In active use by paying clients, with the roadmap driven by what they actually run into.' },
 
   { id: 'LC-08', kind: 'PRODUCT', title: 'Pocket Budget — multi-user budgeting PWA', context: 'Independent product · iterating on real usage',
-    shot: 'assets/shots/pocket-budget.png',
+    shot: 'assets/shots/pocket-budget.png', shotVariant: 'phone', shotW: 1206, shotH: 2622,
     built: ['PWA with daily overdraft and rollover logic', 'Multi-user group visibility so shared finances stay in sync', 'Personal product catalog refined from real usage data'],
     outcome: 'Iterated directly against real usage patterns rather than a fixed initial spec.',
     stack: ['AI-assisted build', 'PWA', 'multi-user', 'offline'],
@@ -1039,7 +1069,7 @@ const PROJECTS = [
     longOutcome: 'Runs unattended, catching availability windows that manual checking would miss.' },
 
   { id: 'LC-06', kind: 'AI', title: 'Social Gantt — content & document automation', context: 'Client project · Firebase + Claude API',
-    shot: 'assets/shots/social-gantt-redacted.png',
+    shot: 'assets/shots/social-gantt-redacted.png', shotVariant: 'web', shotW: 2932, shotH: 1480,
     built: ['Rule engine auto-fills a live Google Sheet calendar, with full undo', 'Claude vision turns a pasted schedule screenshot into text', 'Document generator: free-form notes to branded PDFs'],
     outcome: 'Live and in daily use, with 89 automated tests over the rule engine.',
     stack: ['Claude API', 'vision', '89 tests', 'Sheets API'],
@@ -1048,7 +1078,7 @@ const PROJECTS = [
     longOutcome: 'Live and in daily use, running three previously manual workflows end-to-end — with 89 automated tests covering the rule engine and document logic, and a write-manifest undo system so nothing is ever silently overwritten.' },
 
   { id: 'LC-09', kind: 'PRODUCT', title: 'XOV — real-time multiplayer game', context: 'Independent product · PWA + iOS/Android',
-    shot: 'assets/shots/xov.png',
+    shot: 'assets/shots/xov.png', shotVariant: 'phone', shotW: 1206, shotH: 2622,
     built: ['Live match state over Firebase Realtime Database with room codes', 'Guest play on anonymous auth; Google sign-in via redirect for native WebViews', 'Installable PWA with a cache-first service worker, wrapped with Capacitor 6'],
     outcome: 'Playable offline-capable PWA; store submission is the only step left.',
     stack: ['AI-assisted build', 'Firebase RTDB', 'Firestore', 'Capacitor 6', 'PWA'],
@@ -1315,20 +1345,42 @@ function paintProject(i) {
   document.getElementById('soCounter').textContent = `${String(i + 1).padStart(2, '0')} / ${String(PROJECTS.length).padStart(2, '0')}`;
   document.getElementById('soAsk').textContent = `Ask me about ${p.id} →`;
   const shot = document.getElementById('soShot');
+  shot.className = 'shot';
+  shot.innerHTML = '';
   if (p.shot) {
-    shot.innerHTML = '';
-    shot.classList.add('has-image');
+    shot.classList.add(`shot--${p.shotVariant}`);
+    const well = document.createElement('div');
+    well.className = 'shot-well';
     const img = document.createElement('img');
     img.src = p.shot;
     img.alt = `${p.title} — product screenshot`;
     img.loading = 'lazy';
-    img.width = 1200;
-    img.height = 900;
-    shot.appendChild(img);
+    img.width = p.shotW;
+    img.height = p.shotH;
+    if (p.shotVariant === 'phone') {
+      const device = document.createElement('div');
+      device.className = 'shot-device';
+      const screen = document.createElement('div');
+      screen.className = 'shot-screen';
+      screen.appendChild(img);
+      device.appendChild(screen);
+      well.appendChild(device);
+    } else {
+      const screen = document.createElement('div');
+      screen.className = 'shot-screen';
+      screen.appendChild(img);
+      well.appendChild(screen);
+    }
+    shot.appendChild(well);
   } else {
-    shot.classList.remove('has-image');
-    shot.classList.add('is-empty');
-    shot.textContent = '';
+    shot.classList.add('shot--pending');
+    const well = document.createElement('div');
+    well.className = 'shot-well';
+    const label = document.createElement('span');
+    label.className = 'shot-pending-label';
+    label.textContent = 'Shot pending';
+    well.appendChild(label);
+    shot.appendChild(well);
   }
 }
 
