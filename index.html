@@ -1210,7 +1210,12 @@ function handleWheel(ev) {
 }
 window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
 
-/* Touch */
+/* Touch — only advances panels once the CURRENT panel's own scrollable
+   content (mobile panels 02-04 have their own overflow-y:auto band) is
+   already exhausted in that direction. Without this, the smallest swipe
+   anywhere on a panel that doesn't fully fit on screen (Background, for
+   one) advanced to the next panel instead of just scrolling its content —
+   there was no way to read the rest of it by swiping. */
 let touchStartY = null;
 deck.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
 deck.addEventListener('touchend', e => {
@@ -1218,7 +1223,14 @@ deck.addEventListener('touchend', e => {
   const dy = touchStartY - e.changedTouches[0].clientY;
   touchStartY = null;
   if (Math.abs(dy) < 40) return;
-  if (dy > 0) next(); else prev();
+  const panel = panels[current];
+  if (dy > 0) {
+    const atBottom = panel.scrollHeight - panel.clientHeight - panel.scrollTop <= 2;
+    if (atBottom) next();
+  } else {
+    const atTop = panel.scrollTop <= 2;
+    if (atTop) prev();
+  }
 }, { passive: true });
 
 /* Keyboard */
