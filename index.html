@@ -660,7 +660,7 @@ a { color: inherit; }
   .m-bar.case-mode .m-bar-label { display: none; }
   .m-bar.case-mode .m-bar-back { display: inline-flex; }
   .m-bar.case-mode .m-bar-dots { display: none; }
-  .m-bar-dots { display: flex; gap: 10px; }
+  .m-bar-dots { display: flex; flex-direction: column; gap: 8px; }
   .m-bar-dots .dot {
     width: 8px; height: 8px; flex: none;
     background: transparent; mix-blend-mode: normal;
@@ -815,7 +815,7 @@ a { color: inherit; }
 
 <nav class="m-bar" id="mBar" aria-label="Mobile panel navigation">
   <div class="m-bar-label" id="mBarLabel">01 - Intro</div>
-  <button class="m-bar-back" id="mBarBack" aria-label="Back to selected projects">← <span>Selected projects</span></button>
+  <button class="m-bar-back" id="mBarBack" aria-label="Back to selected projects">← <span>Selected Projects</span></button>
   <div class="m-bar-dots" id="mBarDots">
     <button class="dot" data-i="0" aria-label="Go to Intro"></button>
     <button class="dot" data-i="1" aria-label="Go to Selected projects"></button>
@@ -875,9 +875,9 @@ a { color: inherit; }
 
   <section class="panel panel-02" data-panel="1" aria-label="Selected projects">
     <div class="p2-content panel-inner">
-      <h2 class="p2-title">Selected projects <span class="p2-sub">Pick one.</span></h2>
+      <h2 class="p2-title">Selected Projects <span class="p2-sub">Pick one.</span></h2>
       <div class="project-index" id="projectIndex"></div>
-      <p class="p2-cta-line">Any of these worth twenty minutes? <button class="btn-solid js-goto-contact">Get in touch →</button></p>
+      <p class="p2-cta-line"><button class="btn-solid js-goto-contact">Get in touch →</button></p>
     </div>
   </section>
 
@@ -887,7 +887,7 @@ a { color: inherit; }
         <h2 class="p3-title">Background <span class="p3-name">Liav Chanoch</span><span class="p3-sub">Five years, one company, two roles.</span></h2>
         <div class="role">
           <div class="role-head">
-            <div class="role-title">Project Owner &amp; CS Manager</div>
+            <div class="role-title">Project Manager &amp; CS Manager</div>
             <div class="role-date">2020 - Now</div>
           </div>
           <div class="role-meta">OTW SRL · Tel Aviv · reporting to the CEO</div>
@@ -959,7 +959,7 @@ a { color: inherit; }
 </main>
 
 <aside class="slideover" id="slideover" role="dialog" aria-modal="true" aria-label="Project detail" aria-hidden="true">
-  <button class="slideover-back" id="slideoverBack">← Selected projects</button>
+  <button class="slideover-back" id="slideoverBack">← Selected Projects</button>
   <div class="slideover-inner">
     <div class="slideover-body">
       <div class="slideover-meta" id="soMeta"></div>
@@ -1011,7 +1011,7 @@ a { color: inherit; }
 <script>
 /* ── DATA ───────────────────────────────────────── */
 const PROJECTS = [
-  { id: 'LC-07', kind: 'PRODUCT', title: 'Visa Tracker: two-sided visa platform', context: 'Independent product · paying clients',
+  { id: 'LC-07', kind: 'PRODUCT', title: 'Visa Tracker: Two-Sided Visa Platform', context: 'Independent product · paying clients',
     shot: 'assets/shots/visa-tracker-redacted.png', shotVariant: 'web', shotW: 2940, shotH: 1476,
     built: ['Two-sided platform connecting applicants and providers in one workflow', 'Full product lifecycle owned solo: concept, design, build, iteration', 'Iterated on real usage and direct client feedback'],
     outcome: 'In active use by paying clients, with the roadmap driven by what they actually run into.',
@@ -1020,7 +1020,7 @@ const PROJECTS = [
     longSolution: ['Designed and built a two-sided platform connecting applicants and service providers in one workflow', 'Owned the full product lifecycle (concept, design, build, and iteration) using AI-assisted development', 'Iterated on real usage and direct client feedback, not a one-time build'],
     longOutcome: 'In active use by paying clients, with the roadmap driven by what they actually run into.' },
 
-  { id: 'LC-08', kind: 'PRODUCT', title: 'Pocket Budget: multi-user budgeting PWA', context: 'Independent product · iterating on real usage',
+  { id: 'LC-08', kind: 'PRODUCT', title: 'Pocket Budget: Multi-User Budgeting PWA', context: 'Independent product · iterating on real usage',
     shot: 'assets/shots/pocket-budget.png', shotVariant: 'phone', shotW: 1206, shotH: 2622,
     built: ['PWA with daily overdraft and rollover logic', 'Multi-user group visibility so shared finances stay in sync', 'Personal product catalog refined from real usage data'],
     outcome: 'Iterated directly against real usage patterns rather than a fixed initial spec.',
@@ -1029,7 +1029,7 @@ const PROJECTS = [
     longSolution: ['Built a progressive web app with daily overdraft and rollover logic', 'Added multi-user group visibility so shared finances stay in sync', 'Included a personal product catalog, refined from real usage data'],
     longOutcome: 'Iterated directly against real usage patterns rather than a fixed initial spec.' },
 
-  { id: 'LC-05', kind: 'AI', title: 'NIE Line: appointment-monitoring bot', context: 'Personal project · Python + Playwright',
+  { id: 'LC-05', kind: 'AI', title: 'NIE Line: Appointment-Monitoring Bot', context: 'Personal project · Python + Playwright',
     built: ['Unattended Python + Playwright agent polling the portal', 'Real-time Telegram alerts the moment a slot opens', 'Version-controlled project, not a one-off script'],
     outcome: 'Runs unattended, catching availability windows that manual checking would miss.',
     stack: ['AI-assisted build', 'Python', 'Playwright', 'Telegram API'],
@@ -1037,7 +1037,7 @@ const PROJECTS = [
     longSolution: ['Built an unattended Python + Playwright agent that polls the portal and detects slot availability', 'Wired real-time alerting to Telegram so availability surfaces the moment it opens', 'Structured the project with proper version control and environment setup, not a one-off script'],
     longOutcome: 'Runs unattended, catching availability windows that manual checking would miss.' },
 
-  { id: 'LC-06', kind: 'AI', title: 'Social Gantt: content & document automation', context: 'Client project · Firebase + Claude API',
+  { id: 'LC-06', kind: 'AI', title: 'Social Gantt: Content & Document Automation', context: 'Client project · Firebase + Claude API',
     shot: 'assets/shots/social-gantt-redacted.png', shotVariant: 'web', shotW: 2932, shotH: 1480,
     built: ['Rule engine auto-fills a live Google Sheet calendar, with full undo', 'Claude vision turns a pasted schedule screenshot into text', 'Document generator: free-form notes to branded PDFs'],
     outcome: 'Live and in daily use, with 89 automated tests over the rule engine.',
@@ -1046,7 +1046,7 @@ const PROJECTS = [
     longSolution: ['Built a rule engine that auto-fills a real Google Sheet content calendar from a content pool: gap-fill, cross-platform reuse, monthly caps, and a priority pass that can displace already-placed content, all with full undo', 'Added Claude vision extraction so a pasted schedule screenshot becomes publish-ready text automatically', 'Shipped a document generator that turns free-form notes into branded PDFs via Claude, with a strict faithful-transcription mode so the model never invents content'],
     longOutcome: 'Live and in daily use, running three previously manual workflows end-to-end, with 89 automated tests covering the rule engine and document logic, and a write-manifest undo system so nothing is ever silently overwritten.' },
 
-  { id: 'LC-09', kind: 'PRODUCT', title: 'XOV: real-time multiplayer game', context: 'Independent product · PWA + iOS/Android',
+  { id: 'LC-09', kind: 'PRODUCT', title: 'XOV: Real-Time Multiplayer Game', context: 'Independent product · PWA + iOS/Android',
     shot: 'assets/shots/xov.png', shotVariant: 'phone', shotW: 1206, shotH: 2622,
     built: ['Live match state over Firebase Realtime Database with room codes', 'Guest play on anonymous auth; Google sign-in via redirect for native WebViews', 'Installable PWA with a cache-first service worker, wrapped with Capacitor 6'],
     outcome: 'Playable offline-capable PWA; store submission is the only step left.',
@@ -1060,7 +1060,7 @@ const PROJECTS = [
     ],
     longOutcome: 'Playable offline-capable PWA, native builds generating from one codebase, and store submission is the only step left.' },
 
-  { id: 'LC-02', kind: 'INTERNAL', title: 'Affiliate platform & financial ops', context: 'OTW SRL · affiliate management platform',
+  { id: 'LC-02', kind: 'INTERNAL', title: 'Affiliate Platform & Financial Ops', context: 'OTW SRL · affiliate management platform',
     built: ['Multi-sided platform automating the full tracking and payout lifecycle', 'Real-time partner portal for transparent earnings and invoice status', 'Finance module for single-click payouts driven by validated data'],
     outcome: 'Partner trust increased, referral volume grew, and internal accounting workload dropped sharply.',
     stack: ['Zoho', 'payouts', 'partner portal'],
@@ -1068,7 +1068,7 @@ const PROJECTS = [
     longSolution: ['Designed a multi-sided affiliate platform automating the full tracking and payout lifecycle', 'Built a real-time partner portal for transparent earnings and invoice status visibility', 'Created a dedicated finance module for single-click payouts driven by validated data'],
     longOutcome: 'Transformed a reactive process into a scalable, proactive system. Partner trust increased, referral volume grew, and internal accounting workload was drastically reduced.' },
 
-  { id: 'LC-03', kind: 'INTERNAL', title: 'Cross-project command center', context: 'OTW SRL · governance dashboard',
+  { id: 'LC-03', kind: 'INTERNAL', title: 'Cross-Project Command Center', context: 'OTW SRL · governance dashboard',
     built: ['External dashboard pulling live data from Zoho Projects via API', 'Unified KPIs: milestones, deadlines, budget utilization', 'Filtering that separates project work from retainers'],
     outcome: 'A command center for every active project: allocation, burn rate and deadline risk in one view.',
     stack: ['Zoho API', 'analytics', 'dashboards'],
@@ -1076,7 +1076,7 @@ const PROJECTS = [
     longSolution: ['Characterized and managed the build of an external dashboard pulling real-time data from Zoho Projects via API', 'Unified KPIs: milestones, deadlines, and budget utilization in a single view', 'Implemented categorized filtering to separate project-based work from ongoing retainers'],
     longOutcome: 'Established a "Command Center" for all active projects, enabling data-driven resource allocation and precise tracking of budget burn rates and deadline risks across the entire portfolio.' },
 
-  { id: 'LC-01', kind: 'INTERNAL', title: 'End-to-end billing automation & ERP integration', context: 'OTW SRL · Zoho + Teamleader',
+  { id: 'LC-01', kind: 'INTERNAL', title: 'End-To-End Billing Automation & ERP Integration', context: 'OTW SRL · Zoho + Teamleader',
     built: ['Custom Zoho module aggregating CRM and PM data, built by a team I led', 'Automations written to the business logic on Zoho natives', 'Teamleader ERP integration over API for one-click invoices'],
     outcome: 'Single source of truth in the CRM; invoicing cycle time and error rates cut sharply.',
     stack: ['Zoho', 'REST API', 'ERP'],
