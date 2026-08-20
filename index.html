@@ -158,7 +158,6 @@ a { color: inherit; }
   margin-top: 30px;
   animation-delay: .18s;
 }
-.positioning .rule { width: 36px; height: 4px; background: var(--signal); display: inline-block; flex-shrink: 0; }
 .p1-cta { margin-top: 28px; animation-delay: .24s; }
 
 .btn-outline {
@@ -703,7 +702,6 @@ a { color: inherit; }
   }
   .m-headline { font-size: 52px; font-weight: 700; line-height: .96; letter-spacing: -.035em; margin: 16px 0 0; }
   .m-positioning { margin-top: 24px; display: flex; align-items: flex-start; gap: 11px; font-size: 14px; line-height: 1.4; color: #a3a39e; text-wrap: balance; }
-  .m-positioning .rule { width: 28px; height: 3px; background: #ff5a1f; margin-top: 8px; flex: none; }
   .m-cta { margin-top: 26px; }
   .m-cta .btn-outline { height: 48px; padding: 0 22px; font-size: 14px; }
 
@@ -714,14 +712,6 @@ a { color: inherit; }
   .m-o-tri { position: absolute; bottom: 3px; right: 8px; width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 31px solid #ff5a1f; }
   .m-orbit-hair { position: absolute; inset: 31px; border: 1px solid rgba(17,17,18,.2); border-radius: 50%; animation: spinrev 40s linear infinite; }
   .m-orbit-core { position: absolute; inset: 63px; background: #111112; border-radius: 50%; animation: breathe 4.5s ease-in-out infinite; }
-
-  .m-hats-label { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #5b5750; }
-  .m-hats-rows { display: flex; flex-direction: column; gap: 9px; margin-top: 11px; }
-  .m-hat-row { display: grid; grid-template-columns: 8px 1fr; gap: 10px; align-items: baseline; }
-  .m-hat-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .m-hat-title { font-size: 16px; line-height: 1.25; letter-spacing: -.015em; }
-  .m-hat-desc { font-size: 12px; color: #5b5750; margin-top: 2px; }
-  .m-hats-contact { font-size: 12px; line-height: 1.5; color: #5b5750; margin-top: 11px; }
 
   /* — 02 projects — */
   .p2-title { flex-direction: column; align-items: flex-start; gap: 0; font-size: 30px; }
@@ -844,7 +834,7 @@ a { color: inherit; }
       <div>
         <p class="eyebrow fade-up">Liav Chanoch</p>
         <h1 class="headline fade-up">I scope it.<br>I build it.</h1>
-        <p class="positioning fade-up"><span class="rule" aria-hidden="true"></span>From the customer call to the shipped feature</p>
+        <p class="positioning fade-up">From the customer call to the shipped feature</p>
         <div class="p1-cta fade-up">
           <button class="btn-outline js-goto-contact"><span class="pulse-dot" aria-hidden="true"></span>Get in touch</button>
         </div>
@@ -864,7 +854,7 @@ a { color: inherit; }
       <div class="m-intro-ink">
         <p class="eyebrow">Liav Chanoch</p>
         <h1 class="m-headline">I scope it.<br>I build it.</h1>
-        <p class="m-positioning"><span class="rule" aria-hidden="true"></span>From the customer call to the shipped feature</p>
+        <p class="m-positioning">From the customer call to the shipped feature</p>
         <div class="m-cta">
           <button class="btn-outline js-goto-contact"><span class="pulse-dot" aria-hidden="true"></span>Get in touch</button>
         </div>
@@ -878,26 +868,6 @@ a { color: inherit; }
           </div>
           <div class="m-orbit-hair"></div>
           <div class="m-orbit-core"></div>
-        </div>
-        <div class="m-hats">
-          <p class="m-hats-label">Open to, either hat</p>
-          <div class="m-hats-rows">
-            <div class="m-hat-row">
-              <span class="m-hat-dot" style="background:#ff5a1f" aria-hidden="true"></span>
-              <div>
-                <div class="m-hat-title">Product &amp; project management</div>
-                <div class="m-hat-desc">Dozens of client projects, end to end</div>
-              </div>
-            </div>
-            <div class="m-hat-row">
-              <span class="m-hat-dot" style="background:#2f6f63" aria-hidden="true"></span>
-              <div>
-                <div class="m-hat-title">Forward deployed engineering</div>
-                <div class="m-hat-desc">From specs to production, tailor made</div>
-              </div>
-            </div>
-          </div>
-          <p class="m-hats-contact">Remote or Barcelona · liavch1@gmail.com</p>
         </div>
       </div>
     </div>
