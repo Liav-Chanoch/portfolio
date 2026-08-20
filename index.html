@@ -525,11 +525,10 @@ a { color: inherit; }
   overflow: hidden;
 }
 
-.shot--pending { width: 100%; }
-.shot--pending .shot-well { padding: 48px 24px; }
-.shot-pending-label {
-  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: #5b5750;
-}
+/* No shot: the media column is hidden entirely and the case goes
+   single-column, rather than reserving space for an empty well. */
+.slideover-inner.no-shot { grid-template-columns: 1fr; }
+.slideover-inner.no-shot .slideover-media { display: none; }
 .read-full-case {
   display: inline-block;
   line-height: 1;
@@ -1347,6 +1346,7 @@ function paintProject(i) {
   const shot = document.getElementById('soShot');
   shot.className = 'shot';
   shot.innerHTML = '';
+  document.querySelector('.slideover-inner').classList.toggle('no-shot', !p.shot);
   if (p.shot) {
     shot.classList.add(`shot--${p.shotVariant}`);
     const well = document.createElement('div');
@@ -1371,15 +1371,6 @@ function paintProject(i) {
       screen.appendChild(img);
       well.appendChild(screen);
     }
-    shot.appendChild(well);
-  } else {
-    shot.classList.add('shot--pending');
-    const well = document.createElement('div');
-    well.className = 'shot-well';
-    const label = document.createElement('span');
-    label.className = 'shot-pending-label';
-    label.textContent = 'Shot pending';
-    well.appendChild(label);
     shot.appendChild(well);
   }
 }
