@@ -1,6 +1,7 @@
 User-agent: *
 Disallow: /v2/
 Disallow: /v3/
+Disallow: /dj/
 Allow: /
 
 Sitemap: https://liav-chanoch.com/sitemap.xml

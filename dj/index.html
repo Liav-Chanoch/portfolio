@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Liav: DJ for Hire</title>
+<meta name="description" content="DJ for weddings, private parties and corporate events. Barcelona and beyond.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* --- palette: swap these in Claude Design, nothing else needs to change --- */
+  --bg:        #08070b;
+  --surface:   #131019;
+  --line:      #2a2434;
+  --fg:        #f6f4fb;
+  --muted:     #9d95ae;
+  --accent:    #b8ff2e;
+  --on-accent: #0d1400;
+  --wa:        #25d366;
+  --on-wa:     #04240f;
+
+  /* --- rhythm: one scale drives all vertical spacing --- */
+  --s1: 8px;
+  --s2: 14px;
+  --s3: 22px;
+  --s4: 34px;
+  --s5: 52px;
+
+  --radius: 14px;
+  --col: 460px;          /* single content column, everything aligns to this */
+  --gutter: 22px;
+  --vmax: 64svh;         /* desktop only: tallest the 9:16 video is allowed to get */
+}
+
+/* On desktop the video would otherwise be height-capped and end up narrower
+   than the text column, so the column is derived from the video instead: both
+   land on exactly the same left and right edge at every viewport height. */
+@media (min-width:768px){
+  :root{ --col: min(460px, calc(var(--vmax) * 9 / 16 + var(--gutter) * 2)) }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-weight:500;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* One column. Every direct child of .wrap shares the same left/right edge. */
+.wrap{
+  width:100%;
+  max-width:var(--col);
+  margin-inline:auto;
+  padding:var(--s5) var(--gutter) calc(var(--s5) + env(safe-area-inset-bottom));
+  display:flex;
+  flex-direction:column;
+  gap:var(--s4);
+}
+
+/* ---------- header ---------- */
+.head{display:flex;flex-direction:column;gap:var(--s2);text-align:center}
+.eyebrow{
+  margin:0;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+}
+h1{
+  margin:0;
+  font-size:clamp(30px,8vw,42px);
+  font-weight:700;
+  line-height:1.08;
+  letter-spacing:-.02em;
+  text-wrap:balance;
+}
+.sub{
+  margin:0;
+  font-size:16px;
+  color:var(--muted);
+  text-wrap:balance;
+}
+
+/* ---------- video ---------- */
+/* Full column width so its edges line up with the header, buttons and footer.
+   Height follows from the 9:16 source; it is only capped on screens tall
+   enough that the cap doesn't pull the video narrower than the column. */
+.video{
+  position:relative;
+  width:100%;
+  aspect-ratio:9/16;
+  margin-inline:auto;
+  border-radius:var(--radius);
+  overflow:hidden;
+  background:var(--surface);
+  border:1px solid var(--line);
+}
+@media (min-width:768px){
+  /* svh, not dvh: dvh tracks the mobile toolbar and reflows mid-scroll */
+  .video{max-height:var(--vmax)}
+}
+.video video,
+.video iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border:0;
+  display:block;
+}
+
+/* ---------- buttons ---------- */
+/* Desktop: the two CTAs sit in normal flow under the video, inside the column.
+   Mobile: the same element is pinned as a fixed bottom bar, matching the bottom
+   chrome the main site already uses below 768px, so Call and WhatsApp are
+   reachable from first paint without duplicating the buttons into a second bar. */
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:var(--s2);
+}
+@media (max-width:767px){
+  /* tighter vertical rhythm on phones: buys back ~34px of video that would
+     otherwise sit behind the fixed bar on first paint */
+  .wrap{padding-top:28px;gap:var(--s3)}
+  .head{gap:var(--s1)}
+  .actions{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:20;
+    padding:var(--s2) var(--gutter) calc(var(--s2) + env(safe-area-inset-bottom));
+    background:var(--bg);
+    border-top:1px solid var(--line);
+  }
+  /* the fixed bar overlays the page, so reserve its height at the end of the column */
+  .wrap{padding-bottom:calc(var(--s5) + 84px + env(safe-area-inset-bottom))}
+  /* keep the bar's buttons on the same left/right edge as every other block */
+  .actions>.btn{max-width:none}
+}
+.btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--s1);
+  min-height:54px;
+  padding:0 var(--s3);
+  border:1px solid transparent;
+  border-radius:var(--radius);
+  font:inherit;
+  font-weight:700;
+  font-size:16px;
+  letter-spacing:.01em;
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform .12s ease, opacity .12s ease;
+}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.btn svg{width:19px;height:19px;flex:none}
+.btn--call{background:var(--accent);color:var(--on-accent)}
+.btn--wa{background:var(--wa);color:var(--on-wa)}
+
+/* ---------- footer ---------- */
+.foot{
+  margin:0;
+  padding-top:var(--s2);
+  border-top:1px solid var(--line);
+  font-size:13px;
+  color:var(--muted);
+  text-align:center;
+}
+.foot a{color:var(--muted)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+  <header class="head">
+    <p class="eyebrow">Barcelona</p>
+    <h1>Music That Keeps The Floor Full</h1>
+    <p class="sub">DJ for weddings, private parties and corporate events. Tell me the date and I'll tell you if I'm free.</p>
+  </header>
+
+  <div class="video">
+    <video
+      id="reel"
+      src="loop.mp4"
+      poster="poster.jpg"
+      autoplay muted loop playsinline
+      preload="metadata"
+      disablepictureinpicture
+      aria-label="DJ set video"></video>
+  </div>
+
+  <nav class="actions" aria-label="Contact">
+    <a class="btn btn--call" id="callBtn" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+      Call
+    </a>
+    <a class="btn btn--wa" id="waBtn" href="#">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4a1 1 0 0 1 .8-.4h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.3 0 .5l-.4.5-.3.3c-.1.2-.3.3-.1.6.1.3.6 1.1 1.4 1.8 1 .8 1.7 1.1 2 1.2.3.1.4.1.6-.1l.8-1c.2-.2.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.6-.1 1.2Z"/></svg>
+      WhatsApp
+    </a>
+  </nav>
+
+  <p class="foot">Liav Chanoch, Barcelona &middot; <a id="footMail" href="mailto:liavch1@gmail.com">liavch1@gmail.com</a></p>
+
+</main>
+
+<script>
+/* ------------------------------------------------------------------
+   CONFIG: the only thing that needs editing to go live.
+   PHONE  - Spanish number, full international format, dialled by the Call button.
+   WA     - Israeli number, a different line: digits only, no + and no spaces,
+            which is the format wa.me requires.
+------------------------------------------------------------------ */
+var CONFIG = {
+  PHONE: "+34682747316",
+  WA:    "972502197706"
+};
+
+document.getElementById('callBtn').href = 'tel:' + CONFIG.PHONE;
+
+function waLink(text){
+  return 'https://wa.me/' + CONFIG.WA + (text ? '?text=' + encodeURIComponent(text) : '');
+}
+
+document.getElementById('waBtn').href = waLink("Hi Liav, I'd like to ask about DJ availability.");
+
+/* Some mobile browsers refuse the initial autoplay until the tab is interacted
+   with or becomes visible. Retry rather than leaving a frozen poster frame. */
+(function(){
+  var vid = document.getElementById('reel');
+  if (!vid) return;
+  var play = function(){ var p = vid.play(); if (p && p.catch) p.catch(function(){}); };
+  play();
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) play(); });
+  document.addEventListener('touchstart', play, { once:true, passive:true });
+})();
+</script>
+
+</body>
+</html>
