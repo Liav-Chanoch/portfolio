@@ -326,7 +326,13 @@ h1{
   /* Portrait band crops horizontally rather than vertically, so the zoom is
      what controls how much of him is visible. 2.1 cut the top of his head off
      on a real phone once the browser chrome took its share of the height. */
-  .photo img{transform:scale(var(--hero-zoom-m,1.75)) translateY(var(--hero-y-m,4%))}
+  /* scale(2.1) translateY(9%) is the mockup's exact framing at 844 tall, and it
+     is kept verbatim for screens that tall. On a real phone the browser chrome
+     takes a slice of the height, the band shrinks with it, and 2.1 pushes the
+     top of his head off frame, so shorter viewports step the zoom back.
+     Stepped rather than computed: scale() takes a unitless number, and a number
+     cannot be derived from vh in CSS. */
+  .photo img{transform:scale(2.1) translateY(9%)}
 
   .scrim{
     background:linear-gradient(to bottom,
@@ -391,6 +397,26 @@ h1{
   .meta .where{font-size:11px;color:#5f6a63}
 
   .foot{padding-top:22px}
+}
+
+@media (max-width:760px) and (max-height:819px){
+  .photo img{transform:scale(1.86) translateY(8%)}
+}
+@media (max-width:760px) and (max-height:759px){
+  .photo img{transform:scale(1.68) translateY(7%)}
+}
+@media (max-width:760px) and (max-height:699px){
+  .photo img{transform:scale(1.58) translateY(6%)}
+}
+
+/* Once the band is wider than the photo's own 3:2, cover switches to cropping
+   height rather than width, which eats the headroom again. Wide phones get a
+   further step back. */
+@media (max-width:760px) and (min-aspect-ratio:48/100){
+  .photo img{transform:scale(1.74) translateY(6%)}
+}
+@media (max-width:760px) and (min-aspect-ratio:48/100) and (max-height:759px){
+  .photo img{transform:scale(1.56) translateY(5%)}
 }
 
 /* =========================================================================
