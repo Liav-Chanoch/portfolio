@@ -69,7 +69,7 @@ body{
   height:100%;
   object-fit:cover;
   object-position:center 100%;
-  transform:scale(var(--hero-zoom,1.03));
+  transform:scale(var(--hero-zoom,1.00));
   transform-origin:center bottom;
   display:block;
 }
@@ -140,6 +140,23 @@ body{
   pointer-events:none;
   fill:none;
   stroke:var(--stroke);
+}
+
+/* The panel starts higher than the photo band ends, so the top of the controller
+   graphic lies over the photo and its outer rect draws a hard line across him.
+   Fade it in instead, reaching full strength exactly at the band's bottom edge.
+   That edge sits (panel height - 22vh) below the art's own top, which is
+   calc(100% - 22vh) here since the art is the full height of the panel. */
+.art--h{
+  --art-fade:calc(100% - 22vh);
+  -webkit-mask-image:linear-gradient(to bottom,
+     transparent 0,
+     transparent calc(var(--art-fade) * .28),
+     #000 var(--art-fade));
+  mask-image:linear-gradient(to bottom,
+     transparent 0,
+     transparent calc(var(--art-fade) * .28),
+     #000 var(--art-fade));
 }
 .art *{fill:none;stroke:var(--stroke)}
 .art--v{display:none}
