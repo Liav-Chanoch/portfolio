@@ -58,12 +58,18 @@ body{
   height:var(--band);
   overflow:hidden;
 }
+/* Framing note. With object-position "center 100%" the subject's height in the
+   band works out as 1 - 0.6677 * scale * 0.54 * (width / band-height). That is
+   14% at the mockup's 1440x900, but it goes NEGATIVE on a wider, shorter window
+   (a real browser, where chrome eats the height) and crops the head off. The
+   scale below is solved so there is still headroom at ~2.4 width/band, which
+   costs a little extra headroom at the mockup's own aspect. */
 .photo img{
   width:100%;
   height:100%;
   object-fit:cover;
   object-position:center 100%;
-  transform:scale(1.16);
+  transform:scale(var(--hero-zoom,1.03));
   transform-origin:center bottom;
   display:block;
 }
@@ -298,9 +304,10 @@ h1{
 @media (max-width:760px){
   :root{--band:32%}
 
-  /* Tighter crop: keeps the trees above the sail out of frame and puts the
-     head in the upper third of the band. */
-  .photo img{transform:scale(2.1) translateY(9%)}
+  /* Portrait band crops horizontally rather than vertically, so the zoom is
+     what controls how much of him is visible. 2.1 cut the top of his head off
+     on a real phone once the browser chrome took its share of the height. */
+  .photo img{transform:scale(var(--hero-zoom-m,1.75)) translateY(var(--hero-y-m,4%))}
 
   .scrim{
     background:linear-gradient(to bottom,
