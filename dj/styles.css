@@ -148,14 +148,16 @@ body{
    That edge sits (panel height - 22vh) below the art's own top, which is
    calc(100% - 22vh) here since the art is the full height of the panel. */
 .art--h{
-  --art-fade:calc(100% - 22vh);
+  /* Full strength lands below the photo's bottom edge, not on it, and the ramp
+     starts late, so nothing shows over him or over the DJ table. */
+  --art-fade:calc(100% - 22vh + 56px);
   -webkit-mask-image:linear-gradient(to bottom,
      transparent 0,
-     transparent calc(var(--art-fade) * .28),
+     transparent calc(var(--art-fade) * .58),
      #000 var(--art-fade));
   mask-image:linear-gradient(to bottom,
      transparent 0,
-     transparent calc(var(--art-fade) * .28),
+     transparent calc(var(--art-fade) * .58),
      #000 var(--art-fade));
 }
 .art *{fill:none;stroke:var(--stroke)}
