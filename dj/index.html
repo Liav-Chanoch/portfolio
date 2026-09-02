@@ -4,259 +4,155 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Liav: DJ for Hire</title>
-<meta name="description" content="DJ for weddings, private parties and corporate events. Barcelona and beyond.">
+
+<title>DJ Liav Chanoch — Barcelona</title>
+<meta name="description" content="15 years of keeping the dance floor alive. With extensive musical knowledge, I perfectly match the vibe to you and your crowd. Let's talk and make your event unforgettable.">
+<meta name="theme-color" content="#07090a">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="DJ Liav Chanoch — Barcelona">
+<meta property="og:description" content="15 years of keeping the dance floor alive. With extensive musical knowledge, I perfectly match the vibe to you and your crowd. Let's talk and make your event unforgettable.">
+<meta property="og:image" content="https://liav-chanoch.com/dj/assets/hero.jpeg">
+<meta property="og:url" content="https://liav-chanoch.com/dj/">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307090a'/%3E%3Cg fill='none' stroke='%236fe0a6' stroke-width='2'%3E%3Ccircle cx='16' cy='16' r='9'/%3E%3Ccircle cx='16' cy='16' r='2.4'/%3E%3C/g%3E%3C/svg%3E">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  /* --- palette: swap these in Claude Design, nothing else needs to change --- */
-  --bg:        #08070b;
-  --surface:   #131019;
-  --line:      #2a2434;
-  --fg:        #f6f4fb;
-  --muted:     #9d95ae;
-  --accent:    #b8ff2e;
-  --on-accent: #0d1400;
-  --wa:        #25d366;
-  --on-wa:     #04240f;
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  /* --- rhythm: one scale drives all vertical spacing --- */
-  --s1: 8px;
-  --s2: 14px;
-  --s3: 22px;
-  --s4: 34px;
-  --s5: 52px;
-
-  --radius: 14px;
-  --col: 460px;          /* single content column, everything aligns to this */
-  --gutter: 22px;
-  --vmax: 64svh;         /* desktop only: tallest the 9:16 video is allowed to get */
-}
-
-/* On desktop the video would otherwise be height-capped and end up narrower
-   than the text column, so the column is derived from the video instead: both
-   land on exactly the same left and right edge at every viewport height. */
-@media (min-width:768px){
-  :root{ --col: min(460px, calc(var(--vmax) * 9 / 16 + var(--gutter) * 2)) }
-}
-
-*,*::before,*::after{box-sizing:border-box}
-html,body{margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
-body{
-  background:var(--bg);
-  color:var(--fg);
-  font-family:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-weight:500;
-  line-height:1.45;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
-
-/* One column. Every direct child of .wrap shares the same left/right edge. */
-.wrap{
-  width:100%;
-  max-width:var(--col);
-  margin-inline:auto;
-  padding:var(--s5) var(--gutter) calc(var(--s5) + env(safe-area-inset-bottom));
-  display:flex;
-  flex-direction:column;
-  gap:var(--s4);
-}
-
-/* ---------- header ---------- */
-.head{display:flex;flex-direction:column;gap:var(--s2);text-align:center}
-.eyebrow{
-  margin:0;
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--accent);
-}
-h1{
-  margin:0;
-  font-size:clamp(30px,8vw,42px);
-  font-weight:700;
-  line-height:1.08;
-  text-transform:uppercase;
-  letter-spacing:.01em;   /* caps need a touch of positive tracking, not the negative a lowercase display line wants */
-  text-wrap:balance;
-}
-.sub{
-  margin:0;
-  font-size:16px;
-  color:var(--muted);
-  text-wrap:balance;
-}
-
-/* ---------- video ---------- */
-/* Full column width so its edges line up with the header, buttons and footer.
-   Height follows from the 9:16 source; it is only capped on screens tall
-   enough that the cap doesn't pull the video narrower than the column. */
-.video{
-  position:relative;
-  width:100%;
-  aspect-ratio:9/16;
-  margin-inline:auto;
-  border-radius:var(--radius);
-  overflow:hidden;
-  background:var(--surface);
-  border:1px solid var(--line);
-}
-@media (min-width:768px){
-  /* svh, not dvh: dvh tracks the mobile toolbar and reflows mid-scroll */
-  .video{max-height:var(--vmax)}
-}
-.video video,
-.video iframe{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border:0;
-  display:block;
-}
-
-/* ---------- buttons ---------- */
-/* Desktop: the two CTAs sit in normal flow under the video, inside the column.
-   Mobile: the same element is pinned as a fixed bottom bar, matching the bottom
-   chrome the main site already uses below 768px, so Call and WhatsApp are
-   reachable from first paint without duplicating the buttons into a second bar. */
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:var(--s2);
-}
-@media (max-width:767px){
-  /* tighter vertical rhythm on phones: buys back ~34px of video that would
-     otherwise sit behind the fixed bar on first paint */
-  .wrap{padding-top:28px;gap:var(--s3)}
-  .head{gap:var(--s1)}
-  .actions{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:20;
-    padding:var(--s2) var(--gutter) calc(var(--s2) + env(safe-area-inset-bottom));
-    background:var(--bg);
-    border-top:1px solid var(--line);
-  }
-  /* the fixed bar overlays the page, so reserve its height at the end of the column */
-  .wrap{padding-bottom:calc(var(--s5) + 84px + env(safe-area-inset-bottom))}
-  /* keep the bar's buttons on the same left/right edge as every other block */
-  .actions>.btn{max-width:none}
-}
-.btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:var(--s1);
-  min-height:54px;
-  padding:0 var(--s3);
-  border:1px solid transparent;
-  border-radius:var(--radius);
-  font:inherit;
-  font-weight:700;
-  font-size:16px;
-  letter-spacing:.01em;
-  text-decoration:none;
-  cursor:pointer;
-  transition:transform .12s ease, opacity .12s ease;
-}
-.btn:active{transform:translateY(1px)}
-.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.btn svg{width:19px;height:19px;flex:none}
-.btn--call{background:var(--accent);color:var(--on-accent)}
-.btn--wa{background:var(--wa);color:var(--on-wa)}
-
-/* ---------- footer ---------- */
-.foot{
-  margin:0;
-  padding-top:var(--s2);
-  border-top:1px solid var(--line);
-  font-size:13px;
-  color:var(--muted);
-  text-align:center;
-}
-.foot a{color:var(--muted)}
-
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important}
-}
-</style>
+<link rel="preload" as="image" href="assets/hero.jpeg">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<main class="wrap">
+<main class="stage">
 
-  <header class="head">
-    <p class="eyebrow">Barcelona</p>
-    <h1>DJ Liav Chanoch</h1>
-    <p class="sub">15 years of keeping the dance floor alive. With extensive musical knowledge, I perfectly match the vibe to you and your crowd. Let's talk and make your event unforgettable.</p>
-  </header>
-
-  <div class="video">
-    <video
-      id="reel"
-      src="loop.mp4"
-      poster="poster.jpg"
-      autoplay muted loop playsinline
-      preload="metadata"
-      disablepictureinpicture
-      aria-label="DJ set video"></video>
+  <!-- 1. photo band. The wrapper clips: the scaled image must never spill past it. -->
+  <div class="photo">
+    <img src="assets/hero.jpeg" alt="Liav Chanoch DJing outdoors under a green and white checkered shade sail, pine trees behind him.">
   </div>
 
-  <nav class="actions" aria-label="Contact">
-    <a class="btn btn--call" id="callBtn" href="#">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
-      Call
-    </a>
-    <a class="btn btn--wa" id="waBtn" href="#">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4a1 1 0 0 1 .8-.4h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.3 0 .5l-.4.5-.3.3c-.1.2-.3.3-.1.6.1.3.6 1.1 1.4 1.8 1 .8 1.7 1.1 2 1.2.3.1.4.1.6-.1l.8-1c.2-.2.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.6-.1 1.2Z"/></svg>
-      WhatsApp
-    </a>
-  </nav>
+  <!-- 2. scrim -->
+  <div class="scrim" aria-hidden="true"></div>
 
-  <p class="foot">Liav Chanoch, Barcelona &middot; <a id="footMail" href="mailto:liavch1@gmail.com">liavch1@gmail.com</a></p>
+  <!-- 3. eyebrow -->
+  <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Barcelona · Open for bookings</p>
+
+  <!-- 4. spacer -->
+  <div class="spacer" aria-hidden="true"></div>
+
+  <!-- 5. bottom panel -->
+  <section class="panel">
+
+    <svg class="art art--h" viewBox="0 0 520 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <rect x="18" y="18" width="484" height="264" rx="14" stroke-width="1.1"/>
+      <rect x="196" y="46" width="128" height="208" rx="8" stroke-width=".9"/>
+      <line x1="18" y1="96" x2="196" y2="96" stroke-width=".6"/>
+      <line x1="324" y1="96" x2="502" y2="96" stroke-width=".6"/>
+
+      <g class="jog jog--a">
+        <circle cx="106" cy="176" r="62" stroke-width=".9"/>
+        <circle cx="106" cy="176" r="46" stroke-width=".7" stroke-dasharray="3 9"/>
+        <circle cx="106" cy="176" r="18" stroke-width=".9"/>
+      </g>
+      <g class="jog jog--b">
+        <circle cx="414" cy="176" r="62" stroke-width=".9"/>
+        <circle cx="414" cy="176" r="46" stroke-width=".7" stroke-dasharray="3 9"/>
+        <circle cx="414" cy="176" r="18" stroke-width=".9"/>
+      </g>
+
+      <line x1="222" y1="70" x2="222" y2="150" stroke-width=".6"/>
+      <line x1="248" y1="70" x2="248" y2="150" stroke-width=".6"/>
+      <line x1="274" y1="70" x2="274" y2="150" stroke-width=".6"/>
+      <line x1="300" y1="70" x2="300" y2="150" stroke-width=".6"/>
+      <rect class="cap f1" x="214" y="106" width="16" height="7" rx="2" stroke-width=".8"/>
+      <rect class="cap f2" x="240" y="106" width="16" height="7" rx="2" stroke-width=".8"/>
+      <rect class="cap f3" x="266" y="106" width="16" height="7" rx="2" stroke-width=".8"/>
+      <rect class="cap f4" x="292" y="106" width="16" height="7" rx="2" stroke-width=".8"/>
+
+      <line x1="216" y1="200" x2="304" y2="200" stroke-width=".6"/>
+      <rect class="cap xf" x="251" y="194" width="18" height="12" rx="2" stroke-width=".8"/>
+    </svg>
+
+    <svg class="art art--v" viewBox="0 0 300 440" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <g class="jog jog--b" opacity=".38">
+        <circle cx="150" cy="34" r="66" stroke-width=".9"/>
+        <circle cx="150" cy="34" r="48" stroke-width=".7"/>
+        <circle cx="150" cy="34" r="18" stroke-width=".9"/>
+      </g>
+
+      <rect x="56" y="150" width="188" height="126" rx="10" stroke-width=".9"/>
+      <line x1="88" y1="168" x2="88" y2="228" stroke-width=".6"/>
+      <line x1="122" y1="168" x2="122" y2="228" stroke-width=".6"/>
+      <line x1="178" y1="168" x2="178" y2="228" stroke-width=".6"/>
+      <line x1="212" y1="168" x2="212" y2="228" stroke-width=".6"/>
+      <rect class="cap f1" x="80" y="194" width="16" height="7" rx="2" stroke-width=".8"/>
+      <rect class="cap f2" x="114" y="194" width="16" height="7" rx="2" stroke-width=".8"/>
+      <rect class="cap f3" x="170" y="194" width="16" height="7" rx="2" stroke-width=".8"/>
+      <rect class="cap f4" x="204" y="194" width="16" height="7" rx="2" stroke-width=".8"/>
+
+      <line x1="96" y1="252" x2="204" y2="252" stroke-width=".6"/>
+      <rect class="cap xf" x="141" y="246" width="18" height="12" rx="2" stroke-width=".8"/>
+
+      <g class="jog jog--a">
+        <circle cx="150" cy="368" r="66" stroke-width=".9"/>
+        <circle cx="150" cy="368" r="48" stroke-width=".7" stroke-dasharray="4 12"/>
+        <circle cx="150" cy="368" r="18" stroke-width=".9"/>
+      </g>
+    </svg>
+
+    <div class="row">
+
+      <div class="left">
+        <h1>DJ Liav Chanoch</h1>
+
+        <p class="lede">15 years of keeping the dance floor alive. With extensive musical knowledge, I perfectly match the vibe to you and your crowd. Let's talk and make your event unforgettable.</p>
+
+        <div class="ctas">
+          <a class="btn btn--wa" href="https://wa.me/972502197706">
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            <span>WhatsApp +972 50 219 7706</span>
+          </a>
+          <a class="btn btn--tel" href="tel:+34682747316">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <span>+34 682 747 316</span>
+          </a>
+        </div>
+
+        <p class="chips">
+          <span>Weddings</span><span class="sep" aria-hidden="true">/</span><span>Private Parties</span><span class="sep" aria-hidden="true">/</span><span>Corporate</span>
+        </p>
+      </div>
+
+      <div class="right">
+        <div class="card">
+          <video src="assets/loop.mp4" poster="assets/poster.jpg"
+                 autoplay muted loop playsinline preload="metadata"
+                 disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+        </div>
+
+        <div class="meta" aria-hidden="true">
+          <span>Weddings</span>
+          <span>Private Parties</span>
+          <span>Corporate</span>
+          <span class="rule"></span>
+          <span class="where">Barcelona · Israel</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="foot">
+      <span class="foot__name">Liav Chanoch · Barcelona</span>
+      <a class="foot__mail" href="mailto:liavch1@gmail.com">liavch1@gmail.com</a>
+    </div>
+
+  </section>
 
 </main>
-
-<script>
-/* ------------------------------------------------------------------
-   CONFIG: the only thing that needs editing to go live.
-   PHONE  - Spanish number, full international format, dialled by the Call button.
-   WA     - Israeli number, a different line: digits only, no + and no spaces,
-            which is the format wa.me requires.
------------------------------------------------------------------- */
-var CONFIG = {
-  PHONE: "+34682747316",
-  WA:    "972502197706"
-};
-
-document.getElementById('callBtn').href = 'tel:' + CONFIG.PHONE;
-
-function waLink(text){
-  return 'https://wa.me/' + CONFIG.WA + (text ? '?text=' + encodeURIComponent(text) : '');
-}
-
-document.getElementById('waBtn').href = waLink("Hi Liav, I'd like to ask about DJ availability.");
-
-/* Some mobile browsers refuse the initial autoplay until the tab is interacted
-   with or becomes visible. Retry rather than leaving a frozen poster frame. */
-(function(){
-  var vid = document.getElementById('reel');
-  if (!vid) return;
-  var play = function(){ var p = vid.play(); if (p && p.catch) p.catch(function(){}); };
-  play();
-  document.addEventListener('visibilitychange', function(){ if (!document.hidden) play(); });
-  document.addEventListener('touchstart', play, { once:true, passive:true });
-})();
-</script>
 
 </body>
 </html>

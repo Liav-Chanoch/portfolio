@@ -1,0 +1,406 @@
+/* =========================================================================
+   DJ Liav Chanoch — single-screen landing page.
+   One viewport, no scrolling: the stage is height:100dvh with overflow hidden,
+   and every vertical measurement is either a percentage of that or a vh-aware
+   clamp, so nothing can push the panel past the fold.
+   ========================================================================= */
+
+:root{
+  --bg:            #07090a;
+  --text:          #a7b0a9;
+  --heading:       #ffffff;
+  /* Spec called for #6f7a72, but on #07090a that measures 4.47:1 and the
+     brief sets a hard floor of 4.5:1 for text. Nudged the minimum amount
+     that clears it (4.66:1); visually indistinguishable. */
+  --label:         #727d75;
+  --label-light:   #cfd6d0;
+  --mint:          #6fe0a6;
+  --mint-hover:    #8ff0b0;
+  --mint-ink:      #05130c;
+  --dot:           #4ade80;
+  --eyebrow:       #d6f5e2;
+  --stroke:        #8ff0b0;
+
+  --pad-x:  clamp(28px, 5vw, 64px);
+  --band:   78%;              /* height of the photo band */
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow:hidden;            /* belt and braces with .stage */
+}
+
+.stage{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  height:100dvh;
+  overflow:hidden;
+  background:var(--bg);
+}
+
+/* ---------- 1. photo band ------------------------------------------------ */
+/* The wrapper is the clip. Without it the scale(1.16) image bleeds past the
+   band and leaves a hard horizontal edge showing through the scrim. */
+.photo{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:var(--band);
+  overflow:hidden;
+}
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 100%;
+  transform:scale(1.16);
+  transform-origin:center bottom;
+  display:block;
+}
+
+/* ---------- 2. scrim ----------------------------------------------------- */
+.scrim{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:var(--band);
+  pointer-events:none;
+  background:linear-gradient(to bottom,
+    rgba(7,9,10,.5)  0%,
+    rgba(7,9,10,.14) 22%,
+    rgba(7,9,10,.26) 42%,
+    rgba(7,9,10,.62) 60%,
+    rgba(7,9,10,.88) 76%,
+    rgba(7,9,10,.97) 89%,
+    #07090a          100%);
+}
+
+/* ---------- 3. eyebrow --------------------------------------------------- */
+.eyebrow{
+  position:absolute;
+  left:var(--pad-x);
+  top:clamp(24px,4vh,44px);
+  z-index:3;
+  margin:0;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  color:var(--eyebrow);
+  text-shadow:0 2px 12px rgba(0,0,0,.6);
+  animation:riseIn .8s ease-out both;
+}
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--dot);
+  flex:none;
+  animation:pulseDot 2.6s ease-in-out infinite;
+}
+
+/* ---------- 4. spacer ---------------------------------------------------- */
+.spacer{flex:1 1 auto;min-height:0}
+
+/* ---------- 5. bottom panel ---------------------------------------------- */
+.panel{
+  position:relative;
+  flex:0 0 auto;
+  background:transparent;    /* the scrim has already blacked this out */
+}
+
+/* line art ---------------------------------------------------------------- */
+.art{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:.14;
+  pointer-events:none;
+  fill:none;
+  stroke:var(--stroke);
+}
+.art *{fill:none;stroke:var(--stroke)}
+.art--v{display:none}
+
+.jog{transform-box:fill-box;transform-origin:center}
+.jog--a{animation:spinSlow 26s linear infinite}
+.jog--b{animation:spinSlower 32s linear infinite reverse}
+
+.cap{transform-box:fill-box;transform-origin:center}
+.f1{animation:faderA 7.5s  ease-in-out infinite}
+.f2{animation:faderB 9s    ease-in-out infinite}
+.f3{animation:faderC 8.2s  ease-in-out infinite}
+.f4{animation:faderA 10.5s ease-in-out infinite}
+.xf{animation:xfade 11s    ease-in-out infinite}
+
+/* content row -------------------------------------------------------------- */
+.row{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:clamp(28px,4vw,64px);
+  max-width:1360px;
+  margin:0 auto;
+  padding:clamp(26px,4.4vh,46px) var(--pad-x) clamp(20px,3vh,30px);
+}
+
+.left{
+  display:flex;
+  flex-direction:column;
+  /* Matched to the mockup: the gap above the intro paragraph is tighter than
+     the gaps below it, so the shared column gap is set to the larger value and
+     the paragraph pulls itself back up (see .lede margin-top). */
+  gap:clamp(14px,2.3vh,26px);
+  animation:riseIn .9s ease-out both;
+}
+
+h1{
+  margin:0;
+  font-family:"Sora",system-ui,sans-serif;
+  font-weight:800;
+  font-size:clamp(28px, 3.8vh + .7vw, 46px);
+  line-height:1.04;
+  letter-spacing:-.035em;
+  text-transform:uppercase;
+  color:var(--heading);
+}
+
+.lede{
+  /* Pulls the paragraph, and everything below it, up to the mockup's rhythm.
+     Solved across both reference heights: -5px at 900 tall, -3px at 720. */
+  margin:calc(5px - 1.11vh) 0 0;
+  max-width:520px;
+  font-size:clamp(12.5px, 1.2vh + .22vw, 14px);
+  line-height:1.6;
+  color:var(--text);
+  text-wrap:pretty;
+}
+
+/* CTAs --------------------------------------------------------------------- */
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  text-decoration:none;
+  white-space:nowrap;
+  transition:background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.btn:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+
+.btn--wa{
+  border-radius:999px;
+  padding:13px 22px;
+  background:var(--mint);
+  color:var(--mint-ink);
+  font-size:14.5px;
+  font-weight:700;
+  box-shadow:0 12px 28px rgba(111,224,166,.18);
+}
+.btn--wa i{font-size:18px}
+.btn--wa:hover{background:var(--mint-hover);transform:translateY(-2px)}
+
+.btn--tel{
+  border-radius:999px;
+  padding:12px 20px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.22);
+  color:#f2f4f1;
+  font-size:14.5px;
+  font-weight:600;
+}
+.btn--tel i{font-size:15px}
+.btn--tel:hover{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
+
+/* chips -------------------------------------------------------------------- */
+.chips{
+  margin:0;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--label);
+}
+.chips .sep{opacity:.4}
+
+/* right column ------------------------------------------------------------- */
+.right{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex:none;
+  animation:riseIn 1.05s ease-out both;
+}
+.card{
+  width:min(190px, 22vh);
+  aspect-ratio:9/16;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 26px 60px rgba(0,0,0,.6);
+  flex:none;
+}
+.card video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.meta{display:none}
+
+/* footer ------------------------------------------------------------------- */
+.foot{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  max-width:1360px;
+  margin:0 auto;
+  padding:0 var(--pad-x) clamp(18px,2.6vh,26px);
+  font-size:12.5px;
+}
+.foot__name{
+  font-family:"Sora",system-ui,sans-serif;
+  font-weight:700;
+  color:var(--label-light);
+}
+.foot__mail{color:var(--label-light);text-decoration:none}
+.foot__mail:hover{color:#fff}
+
+/* =========================================================================
+   Mobile
+   ========================================================================= */
+@media (max-width:760px){
+  :root{--band:32%}
+
+  /* Tighter crop: keeps the trees above the sail out of frame and puts the
+     head in the upper third of the band. */
+  .photo img{transform:scale(2.1) translateY(9%)}
+
+  .scrim{
+    background:linear-gradient(to bottom,
+      rgba(7,9,10,.45) 0%,
+      rgba(7,9,10,.12) 34%,
+      rgba(7,9,10,.6)  74%,
+      #07090a          100%);
+  }
+
+  /* Text must never sit on the bright photo, so the panel goes solid. */
+  .panel{background:var(--bg)}
+
+  .art--h{display:none}
+  .art--v{display:block;opacity:.17}
+
+  .row{
+    flex-wrap:wrap;
+    gap:20px;
+    /* The panel is anchored to the bottom of the viewport, so content is
+       positioned by the padding BELOW it: padding-top only changes where
+       the panel starts, not where its contents land. */
+    padding-top:22px;
+    padding-bottom:13.5px;
+  }
+
+  /* Vertical rhythm matched to the approved mockup: the gap above the intro
+     is tighter than the gap above the buttons, so the single column gap is
+     split rather than averaged. */
+  .left{gap:19.5px}
+  .lede{margin-top:-6px}
+
+  .ctas .btn{flex:1 1 auto;justify-content:center}
+
+  .chips{display:none}
+
+  .card{width:108px}
+
+  /* The meta column sits lower than a centred alignment would put it, so it
+     is pinned to the card's top edge and offset explicitly. */
+  .right{gap:24px;align-items:flex-start}
+
+  .meta{
+    display:flex;
+    flex-direction:column;
+    /* Capped so "Private Parties" and "Barcelona · Israel" break onto two
+       lines exactly as they do in the mockup. Wide enough that "Corporate"
+       (the longest single line, 84px) still fits unbroken. */
+    max-width:100px;
+    gap:13px;
+    margin-top:36px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#7f8a82;
+  }
+  .meta .rule{
+    width:34px;
+    height:1px;
+    background:rgba(143,240,176,.45);
+  }
+  .meta .where{font-size:11px;color:#5f6a63}
+
+  .foot{padding-top:22px}
+}
+
+/* =========================================================================
+   Keyframes
+   ========================================================================= */
+@keyframes riseIn{
+  from{opacity:0;transform:translateY(14px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+@keyframes pulseDot{
+  0%,100%{opacity:1}
+  50%    {opacity:.25}
+}
+@keyframes spinSlow  {to{transform:rotate(360deg)}}
+@keyframes spinSlower{to{transform:rotate(360deg)}}
+
+@keyframes faderA{
+  0%,100%{transform:translateY(-26px)}
+  50%    {transform:translateY(10px)}
+}
+@keyframes faderB{
+  0%,100%{transform:translateY(10px)}
+  50%    {transform:translateY(-26px)}
+}
+@keyframes faderC{
+  0%,100%{transform:translateY(-14px)}
+  50%    {transform:translateY(6px)}
+}
+@keyframes xfade{
+  0%,100%{transform:translateX(-22px)}
+  50%    {transform:translateX(24px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
