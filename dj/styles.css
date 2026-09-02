@@ -342,8 +342,22 @@ h1{
       #07090a          100%);
   }
 
-  /* Text must never sit on the bright photo, so the panel goes solid. */
-  .panel{background:var(--bg)}
+  /* The panel is taller than the space under the photo band on any real phone,
+     so a flat background paints over the bottom of the band: it swallows the
+     scrim's fade (hard edge, no gradient) and eats up to 98px of the photo at
+     375x667. Instead the fill starts part-way opaque and only goes solid at the
+     band's bottom edge, which sits calc(100% - 68vh) below the panel's own top.
+     On tall screens that value is negative, clamps to 0, and the panel is solid
+     from its first pixel exactly as before. Text stays readable because the
+     scrim is already most of the way dark wherever the two overlap. */
+  .panel{
+    background:linear-gradient(to bottom,
+      rgba(7,9,10,.72) 0,
+      rgba(7,9,10,.93) calc((100% - 68vh) * .6),
+      var(--bg) calc(100% - 68vh + 10px));
+  }
+
+
 
   .art--h{display:none}
   .art--v{display:block;opacity:.17}
@@ -417,6 +431,17 @@ h1{
 }
 @media (max-width:760px) and (min-aspect-ratio:48/100) and (max-height:759px){
   .photo img{transform:scale(1.56) translateY(5%)}
+}
+
+/* Short phones: claw height back out of the panel so the photo keeps as much of
+   its 32% band as possible instead of being painted over by it. */
+@media (max-width:760px) and (max-height:790px){
+  .row{gap:14px;padding-top:16px;padding-bottom:10px}
+  .left{gap:14px}
+  .lede{font-size:12.5px;line-height:1.5}
+  .card{width:92px}
+  .meta{gap:11px;font-size:11px}
+  .foot{padding-top:14px}
 }
 
 /* =========================================================================
