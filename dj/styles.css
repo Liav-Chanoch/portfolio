@@ -87,6 +87,10 @@ body{
 }
 /* Deliberately mismatched periods, and both prime-ish, so the two never settle
    into a shared rhythm and the twitches keep landing at different moments. */
+/* Two parts. An ambient tint that barely moves, and a defined band of light
+   that crosses the frame. The first version was only the ambient part, drifting
+   5%: it measured as moving but two very large, very soft gradients sliding
+   slowly are invisible to the eye. The band is what you actually see. */
 .photo__glow{
   position:absolute;
   inset:-25%;
@@ -96,26 +100,35 @@ body{
      own structure and the colour follows them instead of flattening them */
   mix-blend-mode:soft-light;
   background:
-    radial-gradient(42% 48% at 24% 32%, rgba(111,224,166,.90), rgba(111,224,166,0) 68%),
-    radial-gradient(34% 42% at 72% 64%, rgba(143,240,176,.62), rgba(143,240,176,0) 70%),
-    radial-gradient(46% 40% at 56% 12%, rgba(47,111,99,.55),  rgba(47,111,99,0)  72%);
-  animation:glowWash 28s ease-in-out infinite;
+    radial-gradient(38% 44% at 26% 34%, rgba(111,224,166,.78), rgba(111,224,166,0) 66%),
+    radial-gradient(32% 38% at 74% 62%, rgba(47,111,99,.60),  rgba(47,111,99,0)  70%);
+  animation:glowWash 34s ease-in-out infinite;
   will-change:transform;
 }
 
-/* A second, much fainter pass on screen. soft-light alone tints; this lets the
-   already-bright parts of the sail bloom a little, which is what makes the light
-   look like it is falling on the objects rather than sitting in front of them. */
-.photo__glow::after{
-  content:"";
+/* The travelling band, as a SIBLING of the wash rather than a child of it.
+   .photo__glow carries a mix-blend-mode, which makes it a stacking context, so
+   a child blends against that layer's own gradients instead of against the
+   photograph, and the band arrived at the image already muted to nothing. As a
+   sibling it blends straight onto the plate below.
+
+   screen, not soft-light: soft-light tints what is already there, which suits
+   the ambient wash but reads as nothing for a moving band. screen ADDS light,
+   which is what a light passing over a scene does, and it still scales with the
+   underlying brightness, so the sail facets and the foliage keep separation. */
+.photo__sweep{
   position:absolute;
   inset:0;
+  pointer-events:none;
   mix-blend-mode:screen;
-  opacity:.16;
-  background:
-    radial-gradient(40% 44% at 30% 40%, rgba(111,224,166,.7), rgba(111,224,166,0) 66%),
-    radial-gradient(36% 38% at 68% 58%, rgba(214,245,226,.5), rgba(214,245,226,0) 70%);
-  animation:glowWashAlt 34s ease-in-out infinite;
+  background:linear-gradient(74deg,
+    rgba(111,224,166,0)   34%,
+    rgba(111,224,166,.26) 44%,
+    rgba(200,242,218,.38) 50%,
+    rgba(143,240,176,.24) 56%,
+    rgba(143,240,176,0)   66%);
+  animation:glowSweep 17s ease-in-out infinite;
+  will-change:transform,opacity;
 }
 
 /* Framing note. With object-position "center 100%" the subject's height in the
@@ -529,12 +542,17 @@ h1{
    its own soft edges never arrive in view. The two passes run on different
    periods so the light keeps recombining differently. */
 @keyframes glowWash{
-  0%,100%{transform:translate3d(-5%,-2%,0) scale(1)}
-  50%    {transform:translate3d(5%,3%,0)   scale(1.06)}
+  0%,100%{transform:translate3d(-4%,-2%,0) scale(1)}
+  50%    {transform:translate3d(4%,3%,0)   scale(1.05)}
 }
-@keyframes glowWashAlt{
-  0%,100%{transform:translate3d(4%,2%,0)}
-  50%    {transform:translate3d(-4%,-3%,0)}
+
+/* One direction, then a rest before it comes round again, rather than sliding
+   back and forth. */
+@keyframes glowSweep{
+  0%     {transform:translate3d(-78%,0,0); opacity:0}
+  10%    {opacity:1}
+  58%    {opacity:1}
+  70%,100%{transform:translate3d(78%,0,0);  opacity:0}
 }
 
 @keyframes riseIn{
