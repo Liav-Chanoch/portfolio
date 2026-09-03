@@ -23,12 +23,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<link rel="preload" as="image" href="assets/hero-bg.jpeg">
+<link rel="preload" as="image" href="assets/hero.jpeg">
 <link rel="preload" as="image" href="assets/hero-subject.webp">
 <!-- Bump ?v= on every stylesheet change. Pages is served with a long
      cache lifetime, so without this the HTML updates while the CSS does not,
      which looks exactly like a change that failed to deploy. -->
-<link rel="stylesheet" href="styles.css?v=11">
+<link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
 
@@ -38,11 +38,11 @@
   <div class="photo">
     <!-- The inner layer carries the ambient drift so it composes with the
          framing transform on the image, which differs per breakpoint. -->
-    <!-- Two plates. The background has him painted out, so the cutout on top can
-         drift against it without uncovering the original silhouette. They share
-         the same box and the same object-fit, so they line up exactly. -->
+    <!-- Two plates over the untouched photo. Nothing is painted out: the jitter
+         is small enough that the most the cutout ever uncovers is a pixel or two
+         of the original edge, which reads as a registration glitch. -->
     <div class="photo__plate photo__plate--back">
-      <img src="assets/hero-bg.jpeg" alt="Liav Chanoch DJing outdoors under a green and white checkered shade sail, pine trees behind him.">
+      <img src="assets/hero.jpeg" alt="Liav Chanoch DJing outdoors under a green and white checkered shade sail, pine trees behind him.">
     </div>
     <div class="photo__plate photo__plate--fore" aria-hidden="true">
       <img src="assets/hero-subject.webp" alt="">
