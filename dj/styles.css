@@ -64,15 +64,14 @@ body{
 }
 /* Ambient drift. A separate layer from the image so it multiplies whatever
    framing transform that breakpoint is using, rather than having to be rewritten
-   for each of the seven zoom steps. It only ever scales UP: on desktop the photo
-   already sits at the cover floor, and anything below 1 would open gaps at the
-   band's edges. 3.5% over 34s, easing at both ends so it never appears to start
-   or stop. Disabled wholesale by the reduced-motion rule at the end of the file. */
+   for each of the seven zoom steps. Origin is the centre so the scale leaves
+   equal headroom on all four sides for the pan to move within.
+   Disabled wholesale by the reduced-motion rule at the end of the file. */
 .photo__drift{
   position:absolute;
   inset:0;
-  transform-origin:center bottom;
-  animation:heroDrift 34s ease-in-out infinite;
+  transform-origin:center center;
+  animation:heroDrift 26s ease-in-out infinite;
   will-change:transform;
 }
 
@@ -483,9 +482,16 @@ h1{
 /* =========================================================================
    Keyframes
    ========================================================================= */
+/* A slow pan rather than a pulse: it wanders rather than breathing in and out,
+   which reads as movement at a scale a pure zoom would have to be far larger to
+   match. Every position stays inside the headroom the scale opens up, so no edge
+   can ever appear: at the tightest point of the cycle the layer is 2.8% oversize
+   against 1.1% of pan. It passes through scale(1) with zero offset at each end,
+   so the framing lands back exactly where it was tuned. */
 @keyframes heroDrift{
-  0%,100%{transform:scale(1)}
-  50%    {transform:scale(1.035)}
+  0%,100%{transform:scale(1)     translate(0,0)}
+  30%    {transform:scale(1.055) translate(-1.1%,-0.7%)}
+  62%    {transform:scale(1.06)  translate(1%,.5%)}
 }
 @keyframes riseIn{
   from{opacity:0;transform:translateY(14px)}
