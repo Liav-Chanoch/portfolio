@@ -27,7 +27,7 @@
 <!-- Bump ?v= on every stylesheet change. Pages is served with a long
      cache lifetime, so without this the HTML updates while the CSS does not,
      which looks exactly like a change that failed to deploy. -->
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 
@@ -35,7 +35,11 @@
 
   <!-- 1. photo band. The wrapper clips: the scaled image must never spill past it. -->
   <div class="photo">
-    <img src="assets/hero.jpeg" alt="Liav Chanoch DJing outdoors under a green and white checkered shade sail, pine trees behind him.">
+    <!-- The inner layer carries the ambient drift so it composes with the
+         framing transform on the image, which differs per breakpoint. -->
+    <div class="photo__drift">
+      <img src="assets/hero.jpeg" alt="Liav Chanoch DJing outdoors under a green and white checkered shade sail, pine trees behind him.">
+    </div>
   </div>
 
   <!-- 2. scrim -->
