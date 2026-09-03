@@ -87,8 +87,36 @@ body{
 }
 /* Deliberately mismatched periods, and both prime-ish, so the two never settle
    into a shared rhythm and the twitches keep landing at different moments. */
-.photo__plate--back{animation:jitterBack 9.1s steps(1,end) infinite}
-.photo__plate--fore{animation:jitterFore 6.7s steps(1,end) infinite}
+.photo__glow{
+  position:absolute;
+  inset:-25%;
+  pointer-events:none;
+  /* soft-light multiplies against what is already there rather than painting
+     over it, so the sail facets, the foliage and the shadows all keep their
+     own structure and the colour follows them instead of flattening them */
+  mix-blend-mode:soft-light;
+  background:
+    radial-gradient(42% 48% at 24% 32%, rgba(111,224,166,.90), rgba(111,224,166,0) 68%),
+    radial-gradient(34% 42% at 72% 64%, rgba(143,240,176,.62), rgba(143,240,176,0) 70%),
+    radial-gradient(46% 40% at 56% 12%, rgba(47,111,99,.55),  rgba(47,111,99,0)  72%);
+  animation:glowWash 28s ease-in-out infinite;
+  will-change:transform;
+}
+
+/* A second, much fainter pass on screen. soft-light alone tints; this lets the
+   already-bright parts of the sail bloom a little, which is what makes the light
+   look like it is falling on the objects rather than sitting in front of them. */
+.photo__glow::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  mix-blend-mode:screen;
+  opacity:.16;
+  background:
+    radial-gradient(40% 44% at 30% 40%, rgba(111,224,166,.7), rgba(111,224,166,0) 66%),
+    radial-gradient(36% 38% at 68% 58%, rgba(214,245,226,.5), rgba(214,245,226,0) 70%);
+  animation:glowWashAlt 34s ease-in-out infinite;
+}
 
 /* Framing note. With object-position "center 100%" the subject's height in the
    band works out as 1 - 0.6677 * scale * 0.54 * (width / band-height). That is
@@ -497,22 +525,16 @@ h1{
 /* =========================================================================
    Keyframes
    ========================================================================= */
-/* Electric jitter. Mostly dead still, punctuated by single-frame displacements
-   of a pixel or two. steps(1,end) on the animation is what makes them snap
-   rather than glide: interpolating between these would just be a slow wobble. */
-@keyframes jitterBack{
-  0%,  16%, 18%, 47%, 49%, 71%, 73%, 100%{transform:translate3d(0,0,0)}
-  17%  {transform:translate3d(0,2px,0)}
-  48%  {transform:translate3d(0,1px,0)}
-  72%  {transform:translate3d(0,2px,0)}
+/* The wash drifts across the frame. The layer is inset well beyond the band so
+   its own soft edges never arrive in view. The two passes run on different
+   periods so the light keeps recombining differently. */
+@keyframes glowWash{
+  0%,100%{transform:translate3d(-5%,-2%,0) scale(1)}
+  50%    {transform:translate3d(5%,3%,0)   scale(1.06)}
 }
-@keyframes jitterFore{
-  0%,  11%, 13%, 29%, 31%, 58%, 60%, 61%, 63%, 86%, 88%, 100%{transform:translate3d(0,0,0)}
-  12%  {transform:translate3d(1px,1px,0)}
-  30%  {transform:translate3d(-1px,2px,0)}
-  59%  {transform:translate3d(2px,0,0)}
-  62%  {transform:translate3d(-1px,1px,0)}
-  87%  {transform:translate3d(1px,2px,0)}
+@keyframes glowWashAlt{
+  0%,100%{transform:translate3d(4%,2%,0)}
+  50%    {transform:translate3d(-4%,-3%,0)}
 }
 
 @keyframes riseIn{

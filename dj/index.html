@@ -28,7 +28,7 @@
 <!-- Bump ?v= on every stylesheet change. Pages is served with a long
      cache lifetime, so without this the HTML updates while the CSS does not,
      which looks exactly like a change that failed to deploy. -->
-<link rel="stylesheet" href="styles.css?v=12">
+<link rel="stylesheet" href="styles.css?v=13">
 </head>
 <body>
 
@@ -38,12 +38,14 @@
   <div class="photo">
     <!-- The inner layer carries the ambient drift so it composes with the
          framing transform on the image, which differs per breakpoint. -->
-    <!-- Two plates over the untouched photo. Nothing is painted out: the jitter
-         is small enough that the most the cutout ever uncovers is a pixel or two
-         of the original edge, which reads as a registration glitch. -->
+    <!-- Two plates over the untouched photo, one behind the wash and one in
+         front of it. Both are static: they exist to sandwich the glow. -->
     <div class="photo__plate photo__plate--back">
       <img src="assets/hero.jpeg" alt="Liav Chanoch DJing outdoors under a green and white checkered shade sail, pine trees behind him.">
     </div>
+    <!-- The wash sits BETWEEN the two plates, so he is protected by stacking
+         order rather than by a mask: it simply never paints over him. -->
+    <div class="photo__glow" aria-hidden="true"></div>
     <div class="photo__plate photo__plate--fore" aria-hidden="true">
       <img src="assets/hero-subject.webp" alt="">
     </div>
