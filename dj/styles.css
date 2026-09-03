@@ -204,50 +204,6 @@ body{
   background:transparent;    /* the scrim has already blacked this out */
 }
 
-/* line art ---------------------------------------------------------------- */
-.art{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  opacity:.085;
-  pointer-events:none;
-  fill:none;
-  stroke:var(--stroke);
-}
-
-/* The panel starts higher than the photo band ends, so the top of the controller
-   graphic lies over the photo and its outer rect draws a hard line across him.
-   Fade it in instead, reaching full strength exactly at the band's bottom edge.
-   That edge sits (panel height - 22svh) below the art's own top, which is
-   calc(100% - 22svh) here since the art is the full height of the panel. */
-.art--h{
-  /* Full strength lands below the photo's bottom edge, not on it, and the ramp
-     starts late, so nothing shows over him or over the DJ table. */
-  --art-fade:calc(100% - 22svh + 56px);
-  -webkit-mask-image:linear-gradient(to bottom,
-     transparent 0,
-     transparent calc(var(--art-fade) * .58),
-     #000 var(--art-fade));
-  mask-image:linear-gradient(to bottom,
-     transparent 0,
-     transparent calc(var(--art-fade) * .58),
-     #000 var(--art-fade));
-}
-.art *{fill:none;stroke:var(--stroke)}
-.art--v{display:none}
-
-.jog{transform-box:fill-box;transform-origin:center}
-.jog--a{animation:spinSlow 26s linear infinite}
-.jog--b{animation:spinSlower 32s linear infinite reverse}
-
-.cap{transform-box:fill-box;transform-origin:center}
-.f1{animation:faderA 7.5s  ease-in-out infinite}
-.f2{animation:faderB 9s    ease-in-out infinite}
-.f3{animation:faderC 8.2s  ease-in-out infinite}
-.f4{animation:faderA 10.5s ease-in-out infinite}
-.xf{animation:xfade 11s    ease-in-out infinite}
-
 /* content row -------------------------------------------------------------- */
 .row{
   position:relative;
@@ -460,21 +416,6 @@ h1{
   }
 
 
-
-  .art--h{display:none}
-  /* The mixer fills the whole row under the phone button, stretched to it, with
-     the video card and the labels stacked above. It lives inside .right now
-     rather than being positioned against the panel, so it tracks that row
-     exactly instead of being guessed at with offsets. */
-  .art--v{
-    display:block;
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    opacity:.17;
-  }
-
   /* Every vertical size here scales with svh rather than sitting behind a
      max-height media query. iOS Safari evaluates media-query height against the
      LARGE viewport while the stage is sized in svh, so height queries simply do
@@ -511,11 +452,6 @@ h1{
   .lede{margin-top:-6px}
 
 
-
-
-
-
-
   .foot{padding-top:clamp(10px,2.6svh,22px)}
 
   /* display:contents lets the two wrappers dissolve so their children become
@@ -545,9 +481,7 @@ h1{
   .chips .sep{opacity:.28}
   .card{grid-area:card;width:clamp(104px,17svh,132px);align-self:stretch;aspect-ratio:auto}
 
-  /* Gone on mobile: the mixer graphic drew a large empty framed box in the
-     middle of the panel, and the label column repeated the tags. */
-  .art--v{display:none}
+  /* The label column repeated the tags row. */
   .meta{display:none}
 
   /* Actions read as buttons rather than banners: they carry the verb only, sit
@@ -614,27 +548,6 @@ h1{
   0%,100%{opacity:1}
   50%    {opacity:.25}
 }
-@keyframes spinSlow  {to{transform:rotate(360deg)}}
-@keyframes spinSlower{to{transform:rotate(360deg)}}
-
-/* Travel matched to the shorter fader throw, so the caps stay on their slots. */
-@keyframes faderA{
-  0%,100%{transform:translateY(-17px)}
-  50%    {transform:translateY(7px)}
-}
-@keyframes faderB{
-  0%,100%{transform:translateY(7px)}
-  50%    {transform:translateY(-17px)}
-}
-@keyframes faderC{
-  0%,100%{transform:translateY(-9px)}
-  50%    {transform:translateY(4px)}
-}
-@keyframes xfade{
-  0%,100%{transform:translateX(-22px)}
-  50%    {transform:translateX(24px)}
-}
-
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
     animation:none!important;
