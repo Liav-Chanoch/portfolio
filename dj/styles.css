@@ -148,25 +148,6 @@ body{
   display:block;
 }
 
-/* Desktop framing. Bottom-anchored cover crops the top of the photograph, and
-   how much it crops depends on the window: a short window (browser chrome eats
-   the height) hid 695 of the 1688 source rows, which cut the shade sail off
-   right above his head. Anchor the crop to a FIXED source row instead, so the
-   framing is the same picture at every desktop size.
-
-   Row 400 is the target: 15.82vw is that row's depth once the photo is drawn at
-   the full viewport width (image height = 100/1.4976 = 66.7735vw). The max()
-   is the safety floor: on a window with less overflow than that, it falls back
-   to the old bottom anchor rather than lifting the photo off the band's bottom
-   edge and leaving a gap. The facets SVG is bottom-anchored the same way, so it
-   moves down by exactly the amount the photograph does or it drifts off the
-   cloth it was traced from. */
-@media (min-width:761px){
-  .photo{--reveal:max(0px, calc(50.95vw - 78svh - 6px))}
-  .photo img{object-position:center max(-15.82vw, calc(78svh + 6px - 66.7735vw))}
-  .photo__facets{transform:translateY(var(--reveal))}
-}
-
 /* ---------- 2. scrim ----------------------------------------------------- */
 .scrim{
   position:absolute;
