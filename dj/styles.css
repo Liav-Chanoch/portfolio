@@ -106,29 +106,30 @@ body{
   will-change:transform;
 }
 
-/* The travelling band, as a SIBLING of the wash rather than a child of it.
-   .photo__glow carries a mix-blend-mode, which makes it a stacking context, so
-   a child blends against that layer's own gradients instead of against the
-   photograph, and the band arrived at the image already muted to nothing. As a
-   sibling it blends straight onto the plate below.
+/* The sail's own facets, lit one after another so the light travels across the
+   cloth rather than over it. A gradient band could not do this: the panels have
+   hard edges and their own orientations, and a soft band ignores both. These are
+   traced from the photograph, so each one lights to its actual shape.
 
-   screen, not soft-light: soft-light tints what is already there, which suits
-   the ambient wash but reads as nothing for a moving band. screen ADDS light,
-   which is what a light passing over a scene does, and it still scales with the
-   underlying brightness, so the sail facets and the foliage keep separation. */
-.photo__sweep{
+   A sibling of the wash, not a child: .photo__glow carries a mix-blend-mode and
+   is therefore a stacking context, so a child would blend against that layer's
+   gradients rather than against the photograph. And it sits below his plate, so
+   it never reaches him. */
+.photo__facets{
   position:absolute;
   inset:0;
+  width:100%;
+  height:100%;
   pointer-events:none;
   mix-blend-mode:screen;
-  background:linear-gradient(74deg,
-    rgba(111,224,166,0)   34%,
-    rgba(111,224,166,.26) 44%,
-    rgba(200,242,218,.38) 50%,
-    rgba(143,240,176,.24) 56%,
-    rgba(143,240,176,0)   66%);
-  animation:glowSweep 17s ease-in-out infinite;
-  will-change:transform,opacity;
+}
+.photo__facets polygon{
+  fill:var(--mint);
+  opacity:0;
+  /* --i is the facet's rank from left to right, so the delay carries the light
+     across the sail instead of lighting the whole thing at once */
+  animation:facetGlint 13s ease-in-out infinite;
+  animation-delay:calc(var(--i) * .42s);
 }
 
 /* Framing note. With object-position "center 100%" the subject's height in the
@@ -546,13 +547,14 @@ h1{
   50%    {transform:translate3d(4%,3%,0)   scale(1.05)}
 }
 
-/* One direction, then a rest before it comes round again, rather than sliding
-   back and forth. */
-@keyframes glowSweep{
-  0%     {transform:translate3d(-78%,0,0); opacity:0}
-  10%    {opacity:1}
-  58%    {opacity:1}
-  70%,100%{transform:translate3d(78%,0,0);  opacity:0}
+/* Each facet lifts and falls once per cycle. Short window, low peak: it should
+   read as a panel catching the light, not as a panel switching on. */
+@keyframes facetGlint{
+  0%      {opacity:0}
+  5%      {opacity:.34}
+  9%      {opacity:.30}
+  17%     {opacity:0}
+  100%    {opacity:0}
 }
 
 @keyframes riseIn{
