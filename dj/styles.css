@@ -336,13 +336,19 @@ h1{
      top of his head off frame, so shorter viewports step the zoom back.
      Stepped rather than computed: scale() takes a unitless number, and a number
      cannot be derived from vh in CSS. */
-  .photo img{transform:scale(2.1) translateY(9%)}
+  .photo img{transform:scale(2.1) translateY(14%)}
 
+  /* The old ramp did most of its work in the last few percent, which reads as a
+     cut rather than a fade. This one starts dissolving from just past halfway. */
   .scrim{
     background:linear-gradient(to bottom,
       rgba(7,9,10,.45) 0%,
-      rgba(7,9,10,.12) 34%,
-      rgba(7,9,10,.6)  74%,
+      rgba(7,9,10,.10) 26%,
+      rgba(7,9,10,.28) 48%,
+      rgba(7,9,10,.52) 64%,
+      rgba(7,9,10,.74) 78%,
+      rgba(7,9,10,.90) 89%,
+      rgba(7,9,10,.97) 96%,
       #07090a          100%);
   }
 
@@ -364,7 +370,19 @@ h1{
 
 
   .art--h{display:none}
-  .art--v{display:block;opacity:.17}
+  /* Sits to the right of the video card rather than washing over the whole
+     panel, and it is the mixer alone now: the jog wheels are gone from the
+     markup. */
+  .art--v{
+    display:block;
+    opacity:.17;
+    left:auto;
+    right:var(--pad-x);
+    width:min(232px,60%);
+    top:auto;
+    bottom:clamp(62px,10.2svh,94px);
+    height:clamp(104px,15svh,150px);
+  }
 
   /* Every vertical size here scales with svh rather than sitting behind a
      max-height media query. iOS Safari evaluates media-query height against the
@@ -392,7 +410,7 @@ h1{
 
   .chips{display:none}
 
-  .card{width:clamp(84px,12.8svh,108px)}
+  .card{width:clamp(96px,15svh,126px)}
 
   /* The meta column sits lower than a centred alignment would put it, so it
      is pinned to the card's top edge and offset explicitly. */
@@ -424,23 +442,23 @@ h1{
 }
 
 @media (max-width:760px) and (max-height:819px){
-  .photo img{transform:scale(1.86) translateY(8%)}
+  .photo img{transform:scale(1.86) translateY(13%)}
 }
 @media (max-width:760px) and (max-height:759px){
-  .photo img{transform:scale(1.68) translateY(7%)}
+  .photo img{transform:scale(1.68) translateY(12%)}
 }
 @media (max-width:760px) and (max-height:699px){
-  .photo img{transform:scale(1.58) translateY(6%)}
+  .photo img{transform:scale(1.58) translateY(11%)}
 }
 
 /* Once the band is wider than the photo's own 3:2, cover switches to cropping
    height rather than width, which eats the headroom again. Wide phones get a
    further step back. */
 @media (max-width:760px) and (min-aspect-ratio:48/100){
-  .photo img{transform:scale(1.74) translateY(6%)}
+  .photo img{transform:scale(1.74) translateY(11%)}
 }
 @media (max-width:760px) and (min-aspect-ratio:48/100) and (max-height:759px){
-  .photo img{transform:scale(1.56) translateY(5%)}
+  .photo img{transform:scale(1.56) translateY(10%)}
 }
 
 
