@@ -71,7 +71,7 @@ body{
   position:absolute;
   inset:0;
   transform-origin:center center;
-  animation:heroDrift 26s ease-in-out infinite;
+  animation:heroDrift 30s ease-in-out infinite;
   will-change:transform;
 }
 
@@ -383,6 +383,8 @@ h1{
 
 
 
+  .photo__drift{animation-name:heroDriftMobile}
+
   .art--h{display:none}
   /* The mixer fills the whole row under the phone button, stretched to it, with
      the video card and the labels stacked above. It lives inside .right now
@@ -482,16 +484,28 @@ h1{
 /* =========================================================================
    Keyframes
    ========================================================================= */
-/* A slow pan rather than a pulse: it wanders rather than breathing in and out,
-   which reads as movement at a scale a pure zoom would have to be far larger to
-   match. Every position stays inside the headroom the scale opens up, so no edge
-   can ever appear: at the tightest point of the cycle the layer is 2.8% oversize
-   against 1.1% of pan. It passes through scale(1) with zero offset at each end,
-   so the framing lands back exactly where it was tuned. */
+/* A slow swipe across the frame. It eases out to the left, sweeps left to right
+   across the middle half of the cycle, then settles back.
+
+   Scale and offset ramp together from scale(1)/0 at both ends, which is what
+   keeps it safe: the headroom a scale of S opens on each side is (S-1)/2, so
+   across the whole cycle headroom runs 0 to 2.5% while the pan runs 0 to 1.9%.
+   The ratio is constant, so the pan can never outrun the headroom and slide an
+   edge into frame, at any point, not just at the keyframes. Ending at scale(1)
+   with no offset also returns the framing to exactly where it was tuned. */
 @keyframes heroDrift{
-  0%,100%{transform:scale(1)     translate(0,0)}
-  30%    {transform:scale(1.055) translate(-1.1%,-0.7%)}
-  62%    {transform:scale(1.06)  translate(1%,.5%)}
+  0%,100%{transform:scale(1)    translateX(0)}
+  25%    {transform:scale(1.05) translateX(-1.9%)}
+  75%    {transform:scale(1.05) translateX(1.9%)}
+}
+
+/* A phone band is a third of the width of a desktop one, so the same percentage
+   buys a third of the travel. Mobile gets its own amplitude, kept to the same
+   safe ratio: headroom 4.5% against 3.4% of pan. */
+@keyframes heroDriftMobile{
+  0%,100%{transform:scale(1)    translateX(0)}
+  25%    {transform:scale(1.09) translateX(-3.4%)}
+  75%    {transform:scale(1.09) translateX(3.4%)}
 }
 @keyframes riseIn{
   from{opacity:0;transform:translateY(14px)}
