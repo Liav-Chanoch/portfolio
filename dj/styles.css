@@ -306,6 +306,7 @@ h1{
   transition:background .18s ease, border-color .18s ease, transform .18s ease;
 }
 .btn:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.btn__num{margin-left:.35em}
 
 .btn--wa{
   border-radius:999px;
@@ -479,9 +480,22 @@ h1{
      not fire there and the panel keeps full-height spacing inside a much
      shorter stage, which is what put it back over the photo. The clamp maxima
      are the values that match the mockup at 844 tall. */
+  /* Mobile is a grid, not a stack. Everything used to be a full-width slab of
+     the same weight, which is why it read as clutter: six bars, no hierarchy.
+     Now the name leads, the intro and the two actions sit beside the video, and
+     only the player and the tags run full width. */
   .row{
-    flex-wrap:wrap;
-    gap:clamp(11px,2.4svh,20px);
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-areas:
+      "name name"
+      "lede card"
+      "cta  card"
+      "mix  mix"
+      "tags tags";
+    align-items:start;
+    column-gap:16px;
+    row-gap:clamp(11px,2.2svh,18px);
     /* The panel is anchored to the bottom of the viewport, so content is
        positioned by the padding BELOW it: padding-top only changes where
        the panel starts, not where its contents land. */
@@ -495,43 +509,56 @@ h1{
   .left{gap:clamp(11px,2.31svh,19.5px)}
   .lede{margin-top:-6px}
 
-  .ctas .btn{flex:1 1 auto;justify-content:center}
 
-  .chips{display:none}
 
-  .card{width:clamp(96px,15svh,126px)}
 
-  /* The meta column sits lower than a centred alignment would put it, so it
-     is pinned to the card's top edge and offset explicitly. Full width and
-     positioned so the mixer behind it has a box to fill. */
-  .right{
-    gap:24px;
-    align-items:flex-start;
-    justify-content:space-between;
-    position:relative;
-    width:100%;
-  }
-  .right .card,
-  .right .meta{position:relative;z-index:1}
 
-  /* Pushed to the right-hand edge of the row rather than sitting mid-span.
-     Capped so "Private Parties" still breaks onto two lines. */
-  .meta{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-end;
-    text-align:right;
-    max-width:100px;
-    gap:clamp(9px,1.54svh,13px);
-    margin-top:clamp(14px,4.27svh,36px);
-    font-size:12px;
-    font-weight:700;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:#7f8a82;
-  }
+
 
   .foot{padding-top:clamp(10px,2.6svh,22px)}
+
+  /* display:contents lets the two wrappers dissolve so their children become
+     grid items directly, which is what allows the video to sit beside the text
+     without duplicating any markup between breakpoints. */
+  .left,.right{display:contents}
+  h1{grid-area:name}
+  .lede{grid-area:lede;margin-top:0}
+  /* The clause is dropped on mobile rather than the paragraph being duplicated,
+     so there is one copy of the sentence to keep in step. It ends on a full
+     stop and the next word is already capitalised, so the sentence still reads. */
+  .lede__more{display:none}
+  .ctas{grid-area:cta;flex-direction:column;gap:10px;align-self:end}
+  .mix{grid-area:mix;max-width:none}
+  /* One line, edge to edge. At the desktop tracking these three wrap and the
+     row sprawls, so the type tightens rather than the row growing taller. */
+  .chips{
+    grid-area:tags;
+    display:flex;
+    flex-wrap:nowrap;
+    justify-content:space-between;
+    gap:0;
+    font-size:10px;
+    letter-spacing:.08em;
+    white-space:nowrap;
+  }
+  .chips .sep{opacity:.28}
+  .card{grid-area:card;width:clamp(104px,17svh,132px);align-self:stretch;aspect-ratio:auto}
+
+  /* Gone on mobile: the mixer graphic drew a large empty framed box in the
+     middle of the panel, and the label column repeated the tags. */
+  .art--v{display:none}
+  .meta{display:none}
+
+  /* Actions read as buttons rather than banners: they carry the verb only, sit
+     in the column beside the video, and stop short of the full width. The
+     numbers are what forced them to span edge to edge, and a tap does not need
+     to see the number it is dialling. */
+  .btn__num{display:none}
+  .ctas .btn{justify-content:center;padding:13px 18px}
+
+  /* Grid children must be allowed to shrink below their content width, or a
+     nowrap label pushes the whole column past the viewport. */
+  .row>*{min-width:0}
 }
 
 @media (max-width:760px) and (max-height:819px){
