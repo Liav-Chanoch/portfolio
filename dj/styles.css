@@ -338,17 +338,18 @@ h1{
      cannot be derived from vh in CSS. */
   .photo img{transform:scale(2.1) translateY(14%)}
 
-  /* The old ramp did most of its work in the last few percent, which reads as a
-     cut rather than a fade. This one starts dissolving from just past halfway. */
+  /* Starts dissolving from around a third of the way down, so the photo is
+     already on its way out well before the band ends. */
   .scrim{
     background:linear-gradient(to bottom,
       rgba(7,9,10,.45) 0%,
-      rgba(7,9,10,.10) 26%,
-      rgba(7,9,10,.28) 48%,
-      rgba(7,9,10,.52) 64%,
-      rgba(7,9,10,.74) 78%,
-      rgba(7,9,10,.90) 89%,
-      rgba(7,9,10,.97) 96%,
+      rgba(7,9,10,.10) 16%,
+      rgba(7,9,10,.26) 32%,
+      rgba(7,9,10,.46) 46%,
+      rgba(7,9,10,.66) 60%,
+      rgba(7,9,10,.82) 73%,
+      rgba(7,9,10,.93) 85%,
+      rgba(7,9,10,.98) 94%,
       #07090a          100%);
   }
 
@@ -370,18 +371,17 @@ h1{
 
 
   .art--h{display:none}
-  /* Sits to the right of the video card rather than washing over the whole
-     panel, and it is the mixer alone now: the jog wheels are gone from the
-     markup. */
+  /* The mixer fills the whole row under the phone button, stretched to it, with
+     the video card and the labels stacked above. It lives inside .right now
+     rather than being positioned against the panel, so it tracks that row
+     exactly instead of being guessed at with offsets. */
   .art--v{
     display:block;
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
     opacity:.17;
-    left:auto;
-    right:var(--pad-x);
-    width:min(232px,60%);
-    top:auto;
-    bottom:clamp(62px,10.2svh,94px);
-    height:clamp(104px,15svh,150px);
   }
 
   /* Every vertical size here scales with svh rather than sitting behind a
@@ -413,8 +413,16 @@ h1{
   .card{width:clamp(96px,15svh,126px)}
 
   /* The meta column sits lower than a centred alignment would put it, so it
-     is pinned to the card's top edge and offset explicitly. */
-  .right{gap:24px;align-items:flex-start}
+     is pinned to the card's top edge and offset explicitly. Full width and
+     positioned so the mixer behind it has a box to fill. */
+  .right{
+    gap:24px;
+    align-items:flex-start;
+    position:relative;
+    width:100%;
+  }
+  .right .card,
+  .right .meta{position:relative;z-index:1}
 
   .meta{
     display:flex;

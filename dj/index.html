@@ -27,7 +27,7 @@
 <!-- Bump ?v= on every stylesheet change. Pages is served with a long
      cache lifetime, so without this the HTML updates while the CSS does not,
      which looks exactly like a change that failed to deploy. -->
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 
@@ -80,20 +80,6 @@
       <rect class="cap xf" x="251" y="194" width="18" height="12" rx="2" stroke-width=".8"/>
     </svg>
 
-    <!-- Mobile: just the mixer, sat beside the video card. No jog wheels. -->
-    <svg class="art art--v" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-      <rect x="8" y="8" width="184" height="134" rx="10" stroke-width="1"/>
-      <line x1="44" y1="28" x2="44" y2="88" stroke-width=".7"/>
-      <line x1="78" y1="28" x2="78" y2="88" stroke-width=".7"/>
-      <line x1="122" y1="28" x2="122" y2="88" stroke-width=".7"/>
-      <line x1="156" y1="28" x2="156" y2="88" stroke-width=".7"/>
-      <rect class="cap f1" x="36" y="54" width="16" height="7" rx="2" stroke-width=".9"/>
-      <rect class="cap f2" x="70" y="54" width="16" height="7" rx="2" stroke-width=".9"/>
-      <rect class="cap f3" x="114" y="54" width="16" height="7" rx="2" stroke-width=".9"/>
-      <rect class="cap f4" x="148" y="54" width="16" height="7" rx="2" stroke-width=".9"/>
-      <line x1="50" y1="112" x2="150" y2="112" stroke-width=".7"/>
-      <rect class="cap xf" x="91" y="106" width="18" height="12" rx="2" stroke-width=".9"/>
-    </svg>
 
     <div class="row">
 
@@ -119,6 +105,21 @@
       </div>
 
       <div class="right">
+          <!-- Mobile: the mixer fills this whole row; the card and the
+               labels sit on top of it. No jog wheels. -->
+          <svg class="art art--v" viewBox="0 0 200 150" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <rect x="8" y="8" width="184" height="134" rx="10" stroke-width="1"/>
+            <line x1="44" y1="28" x2="44" y2="88" stroke-width=".7"/>
+            <line x1="78" y1="28" x2="78" y2="88" stroke-width=".7"/>
+            <line x1="122" y1="28" x2="122" y2="88" stroke-width=".7"/>
+            <line x1="156" y1="28" x2="156" y2="88" stroke-width=".7"/>
+            <rect class="cap f1" x="36" y="54" width="16" height="7" rx="2" stroke-width=".9"/>
+            <rect class="cap f2" x="70" y="54" width="16" height="7" rx="2" stroke-width=".9"/>
+            <rect class="cap f3" x="114" y="54" width="16" height="7" rx="2" stroke-width=".9"/>
+            <rect class="cap f4" x="148" y="54" width="16" height="7" rx="2" stroke-width=".9"/>
+            <line x1="50" y1="112" x2="150" y2="112" stroke-width=".7"/>
+            <rect class="cap xf" x="91" y="106" width="18" height="12" rx="2" stroke-width=".9"/>
+          </svg>
         <div class="card">
           <video src="assets/loop.mp4" poster="assets/poster.jpg"
                  autoplay muted loop playsinline preload="metadata"
