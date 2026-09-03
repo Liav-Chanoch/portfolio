@@ -62,18 +62,29 @@ body{
   height:var(--band);
   overflow:hidden;
 }
-/* Ambient drift. A separate layer from the image so it multiplies whatever
-   framing transform that breakpoint is using, rather than having to be rewritten
-   for each of the seven zoom steps. Origin is the centre so the scale leaves
-   equal headroom on all four sides for the pan to move within.
+/* Parallax plates. Both are the same box carrying the same image framing, so
+   they register exactly; only their motion differs. The near plate travels
+   further than the far one, which is the whole of the effect.
+
+   Costs no zoom, which is the point: nothing pans across the frame, so no
+   off-screen image is needed. The plates are inset slightly beyond the band so
+   their own travel cannot pull an edge into view. Because object-fit:cover here
+   scales to the band's WIDTH, a taller box crops less rather than magnifying,
+   so the inset changes no framing.
+
    Disabled wholesale by the reduced-motion rule at the end of the file. */
-.photo__drift{
+.photo__plate{
   position:absolute;
-  inset:0;
-  transform-origin:center center;
-  animation:heroDrift 24s ease-in-out infinite;
+  left:0;
+  right:0;
+  top:-28px;      /* headroom lives entirely ABOVE the band */
+  bottom:0;       /* bottom stays flush, so the framing is unchanged: the image
+                     is bottom-anchored, and cover scales to width here, so a
+                     taller box crops less rather than magnifying */
   will-change:transform;
 }
+.photo__plate--back{animation:plateBack 19s ease-in-out infinite}
+.photo__plate--fore{animation:plateFore 19s ease-in-out infinite}
 
 /* Framing note. With object-position "center 100%" the subject's height in the
    band works out as 1 - 0.6677 * scale * 0.54 * (width / band-height). That is
@@ -383,7 +394,8 @@ h1{
 
 
 
-  .photo__drift{animation-name:heroDriftMobile}
+  .photo__plate--back{animation-name:plateBackMobile}
+  .photo__plate--fore{animation-name:plateForeMobile}
 
   .art--h{display:none}
   /* The mixer fills the whole row under the phone button, stretched to it, with
@@ -484,30 +496,41 @@ h1{
 /* =========================================================================
    Keyframes
    ========================================================================= */
-/* A pure horizontal swipe. The scale is CONSTANT: an earlier version ramped it
-   from 1 up and back, which reads as breathing and drowns out the pan entirely.
+/* The plates move in opposition, which is what the eye reads as depth. They
+   cross at the midpoint, where he sits exactly in his own hole, and separate by
+   at most 8px vertically and 3px horizontally at the extremes.
 
-   The constant zoom is what makes panning possible at all. The photo is 3:2 and
-   both bands are wider than that, so object-fit:cover already fills the width
-   exactly and crops vertically: there is no horizontal overflow to pan into. The
-   zoom manufactures it. 7% of scale opens 3.5% of headroom on each side, and the
-   pan uses 3% of it.
+   That budget is set by the inpainting, not picked by eye: the hole was dilated
+   about 4px beyond his silhouette and feathered over 12px, so anything he
+   uncovers within roughly 10px is reconstructed background rather than the
+   original edge of him.
 
-   Translate is written BEFORE scale deliberately. The other way round the
-   translate is applied in the scaled coordinate system, so a 5.5% pan actually
-   moves 5.5% x 1.12, which quietly overran the headroom on mobile. */
-@keyframes heroDrift{
-  0%,100%{transform:translateX(-3%) scale(1.07)}
-  50%    {transform:translateX(3%)  scale(1.07)}
+   The back plate never translates negative. Its headroom is all above the band,
+   so a downward-only range can never pull its bottom edge into view. The fore
+   plate is a cutout with transparent surrounds and no edges to expose, so it is
+   free to move either way. */
+@keyframes plateBack{
+  0%,100%{transform:translate3d(0,4px,0)}
+  50%    {transform:translate3d(0,12px,0)}
+}
+@keyframes plateFore{
+  0%,100%{transform:translate3d(3px,12px,0)}
+  50%    {transform:translate3d(-3px,4px,0)}
 }
 
-/* A phone band is a third the width of a desktop one, so the same percentage
-   buys a third of the travel. Same rule: headroom 6%, pan 5.2%, leaving a few px of cushion for subpixel
-   rounding rather than sitting right on the limit. */
-@keyframes heroDriftMobile{
-  0%,100%{transform:translateX(-5.2%) scale(1.12)}
-  50%    {transform:translateX(5.2%)  scale(1.12)}
+/* Mobile magnifies the photo 2.1x, so the same screen-space offset is 2.1x the
+   displacement measured against the reconstructed ring, which is what decides
+   whether the original edge of him shows. A faint halo appeared above his head
+   at the desktop amplitudes. Mobile runs at roughly half. */
+@keyframes plateBackMobile{
+  0%,100%{transform:translate3d(0,4px,0)}
+  50%    {transform:translate3d(0,8px,0)}
 }
+@keyframes plateForeMobile{
+  0%,100%{transform:translate3d(1.5px,8px,0)}
+  50%    {transform:translate3d(-1.5px,4px,0)}
+}
+
 @keyframes riseIn{
   from{opacity:0;transform:translateY(14px)}
   to  {opacity:1;transform:translateY(0)}
