@@ -128,8 +128,8 @@ body{
   opacity:0;
   /* --i is the facet's rank from left to right, so the delay carries the light
      across the sail instead of lighting the whole thing at once */
-  animation:facetGlint 13s ease-in-out infinite;
-  animation-delay:calc(var(--i) * .42s);
+  animation:facetGlint 6.5s ease-in-out infinite;
+  animation-delay:calc(var(--i) * .17s);
 }
 
 /* Framing note. With object-position "center 100%" the subject's height in the
@@ -547,13 +547,15 @@ h1{
   50%    {transform:translate3d(4%,3%,0)   scale(1.05)}
 }
 
-/* Each facet lifts and falls once per cycle. Short window, low peak: it should
-   read as a panel catching the light, not as a panel switching on. */
+/* Each facet lifts and falls once per cycle. The peak is deliberately low: it
+   should read as cloth catching a little light, not as a panel switching on.
+   The cycle is short and the stagger tight, so the light crosses the sail
+   roughly every six seconds rather than every thirteen. */
 @keyframes facetGlint{
   0%      {opacity:0}
-  5%      {opacity:.34}
-  9%      {opacity:.30}
-  17%     {opacity:0}
+  7%      {opacity:.11}
+  13%     {opacity:.09}
+  24%     {opacity:0}
   100%    {opacity:0}
 }
 
