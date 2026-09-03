@@ -150,11 +150,17 @@ body{
 
 /* Desktop framing. Bottom-anchored cover crops the top of the photograph, and
    how much it crops depends on the window: a short window (browser chrome eats
-   the height) hid 695 of the 1688 source rows, which cut the shade sail off
-   right above his head. Anchor the crop to a FIXED source row instead, so the
-   framing is the same picture at every desktop size.
+   the height) hid 695 of the 1688 source rows while a 900px-tall one hid 456.
+   Same code, different picture. Anchor the crop to a FIXED source row instead.
 
-   Row 400 is the target: 15.82vw is that row's depth once the photo is drawn at
+   Row 660 is where the decks survive. The flight case's top edge is at source
+   row 1440 and the scrim has gone effectively opaque by about 470px down the
+   screen, so the case only reads while the anchor stays near 660. Pulling the
+   anchor up to show more of the sail pushes the case past that point and the
+   whole desk goes black: the sail's top and the decks cannot both fit in the
+   readable band.
+
+   Row 660 is the target: 26.106vw is that row's depth once the photo is drawn at
    the full viewport width (image height = 100/1.4976 = 66.7735vw). The max()
    is the safety floor: on a window with less overflow than that, it falls back
    to the old bottom anchor rather than lifting the photo off the band's bottom
@@ -162,8 +168,8 @@ body{
    moves down by exactly the amount the photograph does or it drifts off the
    cloth it was traced from. */
 @media (min-width:761px){
-  .photo{--reveal:max(0px, calc(50.95vw - 78svh - 6px))}
-  .photo img{object-position:center max(-15.82vw, calc(78svh + 6px - 66.7735vw))}
+  .photo{--reveal:max(0px, calc(40.665vw - 78svh - 6px))}
+  .photo img{object-position:center max(-26.108vw, calc(78svh + 6px - 66.7735vw))}
   .photo__facets{transform:translateY(var(--reveal))}
 }
 
