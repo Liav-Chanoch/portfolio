@@ -331,6 +331,25 @@ h1{
 .btn--tel i{font-size:15px}
 .btn--tel:hover{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
 
+/* mixcloud ----------------------------------------------------------------- */
+/* The widget's interior is Mixcloud's and cannot be restyled, so the wrapper
+   does the work: same radius and hairline border as the video card, and a dark
+   ground so the player sits on the panel rather than on top of it. */
+.mix{
+  width:100%;
+  max-width:520px;
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.03);
+}
+.mix iframe{
+  display:block;
+  width:100%;
+  height:60px;
+  border:0;
+}
+
 /* chips -------------------------------------------------------------------- */
 .chips{
   margin:0;
