@@ -140,7 +140,7 @@ body{
   inset:0;
   width:100%;
   height:100%;
-  opacity:.14;
+  opacity:.085;
   pointer-events:none;
   fill:none;
   stroke:var(--stroke);
@@ -418,18 +418,20 @@ h1{
   .right{
     gap:24px;
     align-items:flex-start;
+    justify-content:space-between;
     position:relative;
     width:100%;
   }
   .right .card,
   .right .meta{position:relative;z-index:1}
 
+  /* Pushed to the right-hand edge of the row rather than sitting mid-span.
+     Capped so "Private Parties" still breaks onto two lines. */
   .meta{
     display:flex;
     flex-direction:column;
-    /* Capped so "Private Parties" and "Barcelona · Israel" break onto two
-       lines exactly as they do in the mockup. Wide enough that "Corporate"
-       (the longest single line, 84px) still fits unbroken. */
+    align-items:flex-end;
+    text-align:right;
     max-width:100px;
     gap:clamp(9px,1.54svh,13px);
     margin-top:clamp(14px,4.27svh,36px);
@@ -439,12 +441,6 @@ h1{
     text-transform:uppercase;
     color:#7f8a82;
   }
-  .meta .rule{
-    width:34px;
-    height:1px;
-    background:rgba(143,240,176,.45);
-  }
-  .meta .where{font-size:11px;color:#5f6a63}
 
   .foot{padding-top:clamp(10px,2.6svh,22px)}
 }
@@ -484,17 +480,18 @@ h1{
 @keyframes spinSlow  {to{transform:rotate(360deg)}}
 @keyframes spinSlower{to{transform:rotate(360deg)}}
 
+/* Travel matched to the shorter fader throw, so the caps stay on their slots. */
 @keyframes faderA{
-  0%,100%{transform:translateY(-26px)}
-  50%    {transform:translateY(10px)}
+  0%,100%{transform:translateY(-17px)}
+  50%    {transform:translateY(7px)}
 }
 @keyframes faderB{
-  0%,100%{transform:translateY(10px)}
-  50%    {transform:translateY(-26px)}
+  0%,100%{transform:translateY(7px)}
+  50%    {transform:translateY(-17px)}
 }
 @keyframes faderC{
-  0%,100%{transform:translateY(-14px)}
-  50%    {transform:translateY(6px)}
+  0%,100%{transform:translateY(-9px)}
+  50%    {transform:translateY(4px)}
 }
 @keyframes xfade{
   0%,100%{transform:translateX(-22px)}
