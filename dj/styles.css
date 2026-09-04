@@ -1,6 +1,6 @@
 /* =========================================================================
    DJ Liav Chanoch — single-screen landing page.
-   One viewport, no scrolling: the stage is height:100svh with overflow hidden,
+   One viewport, no scrolling: the stage is height:100dvh with overflow hidden,
    and every vertical measurement is either a percentage of that or a vh-aware
    clamp, so nothing can push the panel past the fold.
    ========================================================================= */
@@ -43,10 +43,14 @@ body{
   display:flex;
   flex-direction:column;
   height:100vh;    /* fallback for anything without the newer units */
-  height:100svh;   /* svh, not dvh: on iOS Safari a bare vh means the LARGE
-                      viewport, so any calc mixing vh with a dvh-sized box
-                      disagrees with it while the toolbar is on screen. svh is
-                      stable, and every viewport-relative value below matches it. */
+  height:100dvh;   /* dvh, the viewport the browser is ACTUALLY handing us.
+                      dvh is the smallest possible viewport, which a browser
+                      showing a top address bar AND a bottom toolbar does not
+                      reach: the stage came out a third shorter than the screen,
+                      leaving dead black under the footer and squeezing the
+                      photo band from 172px to 111px, which cropped his head
+                      off. Nothing here scrolls, so the bars never collapse and
+                      dvh does not move. Every viewport unit below matches it. */
   overflow:hidden;
   background:var(--bg);
 }
@@ -177,8 +181,8 @@ body{
    moves down by exactly the amount the photograph does or it drifts off the
    cloth it was traced from. */
 @media (min-width:761px){
-  .photo{--reveal:max(0px, calc(40.665vw - 78svh - 6px))}
-  .photo img{object-position:center max(-26.108vw, calc(78svh + 6px - 66.7735vw))}
+  .photo{--reveal:max(0px, calc(40.665vw - 78dvh - 6px))}
+  .photo img{object-position:center max(-26.108vw, calc(78dvh + 6px - 66.7735vw))}
   .photo__facets{transform:translateY(var(--reveal))}
 }
 
@@ -204,7 +208,7 @@ body{
 .eyebrow{
   position:absolute;
   left:var(--pad-x);
-  top:clamp(24px,4svh,44px);
+  top:clamp(24px,4dvh,44px);
   z-index:3;
   margin:0;
   display:flex;
@@ -248,7 +252,7 @@ body{
   gap:clamp(28px,4vw,64px);
   max-width:1360px;
   margin:0 auto;
-  padding:clamp(26px,4.4svh,46px) var(--pad-x) clamp(20px,3svh,30px);
+  padding:clamp(26px,4.4dvh,46px) var(--pad-x) clamp(20px,3dvh,30px);
 }
 
 .left{
@@ -257,7 +261,7 @@ body{
   /* Matched to the mockup: the gap above the intro paragraph is tighter than
      the gaps below it, so the shared column gap is set to the larger value and
      the paragraph pulls itself back up (see .lede margin-top). */
-  gap:clamp(14px,2.3svh,26px);
+  gap:clamp(14px,2.3dvh,26px);
   animation:riseIn .9s ease-out both;
 }
 
@@ -265,7 +269,7 @@ h1{
   margin:0;
   font-family:"Sora",system-ui,sans-serif;
   font-weight:800;
-  font-size:clamp(28px, 3.8svh + .7vw, 46px);
+  font-size:clamp(28px, 3.8dvh + .7vw, 46px);
   line-height:1.04;
   letter-spacing:-.035em;
   text-transform:uppercase;
@@ -275,9 +279,9 @@ h1{
 .lede{
   /* Pulls the paragraph, and everything below it, up to the mockup's rhythm.
      Solved across both reference heights: -5px at 900 tall, -3px at 720. */
-  margin:calc(5px - 1.11svh) 0 0;
+  margin:calc(5px - 1.11dvh) 0 0;
   max-width:520px;
-  font-size:clamp(12.5px, 1.2svh + .22vw, 14px);
+  font-size:clamp(12.5px, 1.2dvh + .22vw, 14px);
   line-height:1.6;
   color:var(--text);
   text-wrap:pretty;
@@ -364,7 +368,7 @@ h1{
   animation:riseIn 1.05s ease-out both;
 }
 .card{
-  width:min(190px, 22svh);
+  width:min(190px, 22dvh);
   aspect-ratio:9/16;
   border-radius:16px;
   overflow:hidden;
@@ -390,7 +394,7 @@ h1{
   gap:16px;
   max-width:1360px;
   margin:0 auto;
-  padding:0 var(--pad-x) clamp(18px,2.6svh,26px);
+  padding:0 var(--pad-x) clamp(18px,2.6dvh,26px);
   font-size:12.5px;
 }
 .foot__name{
@@ -416,12 +420,30 @@ h1{
      top of his head off frame, so shorter viewports step the zoom back.
      Stepped rather than computed: scale() takes a unitless number, and a number
      cannot be derived from vh in CSS. */
-  /* The facets carry the SAME framing transform as the photograph. They did
-     not before, so on a phone the glints lit wherever the desktop crop put
-     them rather than on the cloth: at scale 1.86 that is most of a panel out.
-     One variable now drives both, and the stepped values below only set it. */
-  .photo{--fit:scale(2.1) translateY(10%)}
-  .photo img,.photo__facets{transform:var(--fit);transform-origin:center bottom}
+  /* Framing is sized in dvh, not by scale(). A fixed scale on a band that is
+     32% of the viewport means the taller the browser chrome, the less of him
+     survives: a browser with a top address bar AND a bottom toolbar cropped the
+     band to 98px and his head went off the top of the frame. Here the plate is
+     1.174 viewport-heights wide, so the zoom shrinks exactly as fast as the
+     band does and the SAME picture shows at every height. Those constants are
+     the framing measured off the approved phone screenshot, which showed source
+     rows 682 to 1371 at 64% of the photo's width.
+
+     The plate carries the size instead of the image because scale() takes a
+     unitless number and CSS cannot derive one from dvh. max(..., 100vw) keeps
+     the photo full-bleed on a viewport wider than it is tall, and top tracks
+     the same expression so the crop stays put when it does. */
+  .photo__plate,.photo__facets{
+    left:50%;
+    right:auto;
+    bottom:auto;
+    top:calc(max(117.4dvh, 100vw) * -.2697);
+    width:max(117.4dvh, 100vw);
+    margin-left:calc(max(117.4dvh, 100vw) / -2);
+    height:auto;
+    aspect-ratio:2528/1688;
+    transform:none;
+  }
 
   /* The fade is held back so the DJ table, which sits near the bottom of the
      band, is still readable before the photo goes. It was reaching .93 by the
@@ -443,21 +465,21 @@ h1{
      so a flat background paints over the bottom of the band: it swallows the
      scrim's fade (hard edge, no gradient) and eats up to 98px of the photo at
      375x667. Instead the fill starts part-way opaque and only goes solid at the
-     band's bottom edge, which sits calc(100% - 68svh) below the panel's own top.
+     band's bottom edge, which sits calc(100% - 68dvh) below the panel's own top.
      On tall screens that value is negative, clamps to 0, and the panel is solid
      from its first pixel exactly as before. Text stays readable because the
      scrim is already most of the way dark wherever the two overlap. */
   .panel{
     background:linear-gradient(to bottom,
       rgba(7,9,10,.72) 0,
-      rgba(7,9,10,.93) calc((100% - 68svh) * .6),
-      var(--bg) calc(100% - 68svh + 10px));
+      rgba(7,9,10,.93) calc((100% - 68dvh) * .6),
+      var(--bg) calc(100% - 68dvh + 10px));
   }
 
 
-  /* Every vertical size here scales with svh rather than sitting behind a
+  /* Every vertical size here scales with dvh rather than sitting behind a
      max-height media query. iOS Safari evaluates media-query height against the
-     LARGE viewport while the stage is sized in svh, so height queries simply do
+     LARGE viewport while the stage is sized in dvh, so height queries simply do
      not fire there and the panel keeps full-height spacing inside a much
      shorter stage, which is what put it back over the photo. The clamp maxima
      are the values that match the mockup at 844 tall. */
@@ -476,22 +498,22 @@ h1{
       "tags tags";
     align-items:start;
     column-gap:16px;
-    row-gap:clamp(11px,2.2svh,18px);
+    row-gap:clamp(11px,2.2dvh,18px);
     /* The panel is anchored to the bottom of the viewport, so content is
        positioned by the padding BELOW it: padding-top only changes where
        the panel starts, not where its contents land. */
-    padding-top:clamp(12px,2.6svh,22px);
-    padding-bottom:clamp(8px,1.6svh,13.5px);
+    padding-top:clamp(12px,2.6dvh,22px);
+    padding-bottom:clamp(8px,1.6dvh,13.5px);
   }
 
   /* Vertical rhythm matched to the approved mockup: the gap above the intro
      is tighter than the gap above the buttons, so the single column gap is
      split rather than averaged. */
-  .left{gap:clamp(11px,2.31svh,19.5px)}
+  .left{gap:clamp(11px,2.31dvh,19.5px)}
   .lede{margin-top:-6px}
 
 
-  .foot{padding-top:clamp(10px,2.6svh,22px)}
+  .foot{padding-top:clamp(10px,2.6dvh,22px)}
 
   /* display:contents lets the two wrappers dissolve so their children become
      grid items directly, which is what allows the video to sit beside the text
@@ -518,7 +540,7 @@ h1{
     white-space:nowrap;
   }
   .chips .sep{opacity:.28}
-  .card{grid-area:card;width:clamp(104px,17svh,132px);align-self:stretch;aspect-ratio:auto}
+  .card{grid-area:card;width:clamp(104px,17dvh,132px);align-self:stretch;aspect-ratio:auto}
 
   /* The label column repeated the tags row. */
   .meta{display:none}
@@ -533,26 +555,6 @@ h1{
   /* Grid children must be allowed to shrink below their content width, or a
      nowrap label pushes the whole column past the viewport. */
   .row>*{min-width:0}
-}
-
-@media (max-width:760px) and (max-height:819px){
-  .photo{--fit:scale(1.86) translateY(9%)}
-}
-@media (max-width:760px) and (max-height:759px){
-  .photo{--fit:scale(1.68) translateY(8%)}
-}
-@media (max-width:760px) and (max-height:699px){
-  .photo{--fit:scale(1.58) translateY(7%)}
-}
-
-/* Once the band is wider than the photo's own 3:2, cover switches to cropping
-   height rather than width, which eats the headroom again. Wide phones get a
-   further step back. */
-@media (max-width:760px) and (min-aspect-ratio:48/100){
-  .photo{--fit:scale(1.74) translateY(7%)}
-}
-@media (max-width:760px) and (min-aspect-ratio:48/100) and (max-height:759px){
-  .photo{--fit:scale(1.56) translateY(6%)}
 }
 
 
