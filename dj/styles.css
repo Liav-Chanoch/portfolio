@@ -345,6 +345,10 @@ h1{
   border:0;
 }
 
+/* The email as a third way to book him, sitting with the two buttons. Desktop
+   only: on a phone the footer still carries it, so this stays out of the way. */
+.mail-inline{display:none}
+
 /* chips -------------------------------------------------------------------- */
 .chips{
   margin:0;
@@ -404,6 +408,83 @@ h1{
 }
 .foot__mail{color:var(--label-light);text-decoration:none}
 .foot__mail:hover{color:#fff}
+
+
+/* =========================================================================
+   Desktop layout
+   =========================================================================
+   Three things were wrong, all of them measurable.
+
+   1. There was no left spine. The eyebrow was positioned against the stage
+      while everything else sat inside the 1360px centred container, so the two
+      disagreed by 55px at 1470 wide and by 280px at 1920, where the eyebrow was
+      stranded in the corner. It now shares the container.
+
+   2. Every gap down the column was 17px, so the name, the paragraph, the
+      buttons and the player read as four slabs of equal weight. The buttons are
+      what the page is for, so the break above them is the one to feel.
+
+   3. 522px of a 1920px window held nothing: the copy stopped at 864 and the
+      card began at 1386. The player was the only element wide enough to cross
+      that gap but it was stacked inside the copy column at the copy's width.
+      Spanning the container it becomes a rail along the base of the panel, the
+      copy anchors the left and the card the right, and the width gets used.
+
+   Nothing here applies below 761px. The phone layout is untouched. */
+@media (min-width:761px){
+
+  /* one spine: the same box the row and the footer already use */
+  .eyebrow{
+    left:0;
+    right:0;
+    width:auto;
+    max-width:1360px;
+    margin:0 auto;
+    padding:0 var(--pad-x);
+    box-sizing:border-box;
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "copy card"
+      "rail rail";
+    align-items:end;
+    row-gap:clamp(16px,2.6dvh,26px);
+  }
+  .left{grid-area:copy;gap:0}
+  .right{grid-area:card}
+  .mix{grid-area:rail;max-width:none;margin-top:0}
+
+  /* rhythm: tight under the name, a real break above the actions */
+  h1{margin:0}
+  .lede{margin:10px 0 0}
+  .ctas{margin-top:clamp(20px,3.4dvh,30px);align-items:center}
+
+  /* The chips restated the sentence directly above them and the footer printed
+     "Barcelona · Tel Aviv" a second time under the eyebrow that already says
+     it. Both gone; the height goes back to the photograph. */
+  .chips{display:none}
+  .foot{display:none}
+
+  .mail-inline{
+    display:inline-flex;
+    align-items:center;
+    margin-left:6px;
+    font-size:13px;
+    color:var(--label);
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,.16);
+    padding-bottom:1px;
+    transition:color .18s ease, border-color .18s ease;
+  }
+  .mail-inline:hover,
+  .mail-inline:focus-visible{color:var(--mint);border-color:var(--mint)}
+
+  /* The card is the only proof he works. 190px was a thumbnail. */
+  .card{width:min(248px, 30dvh)}
+}
 
 /* =========================================================================
    Mobile
