@@ -411,15 +411,6 @@ h1{
 @media (max-width:760px){
   :root{--band:32%}
 
-  /* Portrait band crops horizontally rather than vertically, so the zoom is
-     what controls how much of him is visible. 2.1 cut the top of his head off
-     on a real phone once the browser chrome took its share of the height. */
-  /* scale(2.1) translateY(9%) is the mockup's exact framing at 844 tall, and it
-     is kept verbatim for screens that tall. On a real phone the browser chrome
-     takes a slice of the height, the band shrinks with it, and 2.1 pushes the
-     top of his head off frame, so shorter viewports step the zoom back.
-     Stepped rather than computed: scale() takes a unitless number, and a number
-     cannot be derived from vh in CSS. */
   /* Framing is sized in dvh, not by scale(). A fixed scale on a band that is
      32% of the viewport means the taller the browser chrome, the less of him
      survives: a browser with a top address bar AND a bottom toolbar cropped the
