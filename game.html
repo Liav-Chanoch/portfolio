@@ -41,6 +41,8 @@
     --sym-o-border: #2D7DD2;
     --sym-v-bg: rgba(63,163,77,0.1);
     --sym-v-border: #3FA34D;
+    --grid-line: #D3C5A2;
+    --grid-frame: #7A6E55;
   }
 
   html { scroll-behavior: smooth; }
@@ -56,6 +58,8 @@
   body.active-x { background: #F6E0DC; }
   body.active-o { background: #DCE9F4; }
   body.active-v { background: #DEEFE0; }
+  /* Gameplay never scrolls: the page is exactly one viewport tall */
+  body.in-game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior: none; }
 
   /* NAV */
   nav {
@@ -230,9 +234,9 @@
   .match-bar.visible { display: block; }
 
   .status-bar {
-    border-radius: 0; padding: 0.9rem 1.5rem; margin-bottom: 1.25rem;
-    margin-left: -1.5rem; margin-right: -1.5rem;
-    display: flex; align-items: center; gap: 1rem;
+    border-radius: 0; padding: 0.55rem 1.25rem; margin-bottom: 0.75rem;
+    margin-left: calc(-1 * var(--bleed, 1.5rem)); margin-right: calc(-1 * var(--bleed, 1.5rem));
+    display: flex; align-items: center; gap: 0.85rem;
     background: var(--paper);
     border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
     box-shadow: 0 4px 0 var(--ink);
@@ -242,10 +246,10 @@
   .status-bar.active-o { background: var(--sym-o); }
   .status-bar.active-v { background: var(--sym-v); }
   .status-sym-icon {
-    width: 44px; height: 44px; border-radius: 0; flex-shrink: 0;
+    width: 38px; height: 38px; border-radius: 0; flex-shrink: 0;
     background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'VT323', monospace; font-size: 1.8rem; color: #fff;
+    font-family: 'VT323', monospace; font-size: 1.6rem; color: #fff;
   }
   .status-bar:not(.active-x):not(.active-o):not(.active-v) .status-sym-icon {
     background: var(--paper); color: var(--ink); border-color: var(--ink);
@@ -255,6 +259,9 @@
     color: var(--ink); text-transform: uppercase; letter-spacing: 1px; line-height: 1.3;
   }
   .status-sub { font-family: 'VT323', monospace; font-size: 17px; color: var(--muted); margin-top: 2px; }
+  .status-sub:empty { display: none; }
+  /* the "place on any open cell" instruction: present, but quiet */
+  .status-sub.hint { font-size: 14px; letter-spacing: 0.03em; opacity: 0.55; }
   .status-bar.active-x .status-label,
   .status-bar.active-o .status-label,
   .status-bar.active-v .status-label { color: #fff; }
@@ -263,20 +270,20 @@
   .status-bar.active-v .status-sub { color: rgba(255,255,255,0.8); }
 
   /* QUEUE */
-  .queue-wrap { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .queue-wrap { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; flex-wrap: nowrap; }
   .queue-label {
     font-family: 'Silkscreen', monospace; font-size: 9px; font-weight: 700;
     letter-spacing: 1px; text-transform: uppercase; color: var(--muted2); flex-shrink: 0;
   }
-  .queue-items { display: flex; gap: 4px; align-items: center; }
+  .queue-items { display: flex; gap: 4px; align-items: center; position: relative; min-width: 0; }
   .queue-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .queue-chip {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 36px; height: 36px; border-radius: 0;
+    width: 32px; height: 32px; border-radius: 0;
     font-family: 'VT323', monospace; font-size: 20px;
     border: 2px solid var(--ink); background: var(--paper); opacity: 0.6;
   }
-  .queue-chip.current { width: 50px; height: 50px; font-size: 28px; border-width: 3px; opacity: 1; box-shadow: 3px 3px 0 var(--ink); }
+  .queue-chip.current { width: 44px; height: 44px; font-size: 26px; border-width: 3px; opacity: 1; box-shadow: 3px 3px 0 var(--ink); }
   .queue-chip.sym-x { color: var(--sym-x); }
   .queue-chip.sym-o { color: var(--sym-o); }
   .queue-chip.sym-v { color: var(--sym-v); }
@@ -284,7 +291,7 @@
   .queue-arrow { color: var(--ink); font-size: 14px; opacity: 0.45; padding-bottom: 16px; }
 
   /* RESULT BANNER */
-  .result-banner { display: none; margin-bottom: 1.25rem; }
+  .result-banner { display: none; margin-bottom: 0.6rem; }
   .result-banner.visible { display: block; }
   @keyframes result-name-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes result-bubble-in { 0% { transform: scale(0.8); } 60% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -297,17 +304,62 @@
     100% { background: #F2C14E; color: #211E1A; }
   }
   @keyframes win-cell-appear-flat { from { opacity: 0; } to { opacity: 1; } }
+  /* A mark landing: overshoot punch + a ring in the mark's colour */
   @keyframes cell-place {
-    0%   { transform: scale(0.6); opacity: 0; }
-    70%  { transform: scale(1.1); opacity: 1; }
+    0%   { transform: scale(0.3); opacity: 0; }
+    55%  { transform: scale(1.28); opacity: 1; }
+    80%  { transform: scale(0.94); opacity: 1; }
     100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes cell-ring {
+    0%   { opacity: 0.9; transform: scale(0.55); }
+    100% { opacity: 0; transform: scale(1.12); }
+  }
+  /* The rest of the board dips dark for 0.2s so the new mark pops */
+  @keyframes cell-shade {
+    0%, 35% { filter: brightness(0.74); }
+    100%    { filter: brightness(1); }
+  }
+  /* 0.6s: the mark you must play now punches in the status icon + "up next" chip */
+  @keyframes sym-punch {
+    0%   { transform: scale(1); }
+    28%  { transform: scale(1.4); }
+    58%  { transform: scale(0.92); }
+    100% { transform: scale(1); }
+  }
+  /* 0.6s: every board mark of that kind glows once */
+  @keyframes sym-glow {
+    0%   { transform: scale(1); text-shadow: 0 0 0 transparent; }
+    35%  { transform: scale(1.14); text-shadow: 0 0 6px currentColor, 0 0 16px currentColor; }
+    100% { transform: scale(1); text-shadow: 0 0 0 transparent; }
+  }
+  @keyframes think-bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.45; } 40% { transform: translateY(-4px); opacity: 1; } }
+  @keyframes bot-think {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50%      { transform: translateY(-2px) rotate(6deg); }
   }
   @keyframes cell-dim-anim { to { opacity: 0.3; } }
   @keyframes bubble-shake { 0% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } 100% { transform: translateX(0); } }
   @keyframes status-turn-in { from { opacity: 0.15; } to { opacity: 1; } }
   @keyframes status-win-flash { 0% { background: var(--accent); } 70% { background: var(--accent); opacity: 1; } 100% { background: var(--accent); opacity: 0; } }
-  .cell-place { animation: cell-place 0.14s cubic-bezier(.2,1.4,.4,1) both; }
+  .cell-place { animation: cell-place 0.3s cubic-bezier(.2,1.2,.4,1) both; z-index: 1; }
+  .cell-place::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    box-shadow: inset 0 0 0 3px currentColor; opacity: 0;
+    animation: cell-ring 0.35s ease-out;
+  }
+  .cell-shade { animation: cell-shade 0.2s ease-out both; }
+  .cell.sym-glow { animation: sym-glow 0.6s ease-out 0.2s both; z-index: 1; }
+  .cell.cell-shade.sym-glow { animation: cell-shade 0.2s ease-out both, sym-glow 0.6s ease-out 0.2s both; }
+  .status-sym-icon.punch, .queue-chip.current.punch { animation: sym-punch 0.6s cubic-bezier(.2,1.3,.4,1) 0.12s backwards; }
   .cell-dim { animation: cell-dim-anim 0.3s ease-out forwards; }
+
+  /* AI is thinking: pixel dots in the status bar + the bot bobbing */
+  .think-dots { display: inline-flex; gap: 4px; vertical-align: middle; }
+  .think-dots i { width: 6px; height: 6px; background: currentColor; display: block; animation: think-bounce 0.9s infinite ease-in-out; }
+  .think-dots i:nth-child(2) { animation-delay: 0.15s; }
+  .think-dots i:nth-child(3) { animation-delay: 0.3s; }
+  .rhp-pic.thinking { animation: bot-think 0.8s infinite ease-in-out; }
   .cell.win-cell { animation: win-cell-highlight 0.45s steps(1, end) forwards; }
   .cell.win-cell.win-cell-loss { animation: win-cell-appear-flat 0.25s ease-out both; background: #F2C14E; color: #211E1A; }
   .rscore-bubble.bubble-shake { animation: bubble-shake 0.3s ease-out 0.4s both; }
@@ -315,31 +367,36 @@
   .status-bar.status-win-flash { animation: status-win-flash 0.35s ease-out forwards; color: #fff; }
 
   @media (prefers-reduced-motion: reduce) {
-    .cell-place, .rscore-bubble.bubble-shake, .status-bar.status-turn-in, .status-bar.status-win-flash { animation: none; }
+    .cell-place, .cell-place::before, .cell-shade, .cell.sym-glow, .cell.cell-shade.sym-glow, .status-sym-icon.punch, .queue-chip.current.punch,
+    .think-dots i, .rhp-pic.thinking,
+    .rscore-bubble.bubble-shake, .status-bar.status-turn-in, .status-bar.status-win-flash { animation: none; }
     .cell.win-cell { animation: none; background: #F2C14E; color: #211E1A; }
     .cell.win-cell.win-cell-loss { animation: none; background: #F2C14E; color: #211E1A; }
   }
 
   .result-game-lbl {
     font-family: 'Silkscreen', monospace; font-size: 9px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase; color: var(--muted2); margin-bottom: 0.4rem;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--muted2); margin-bottom: 0.15rem;
   }
+  .result-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.7rem; }
+  .result-top-text { min-width: 0; }
+  .result-actions { display: flex; align-items: center; gap: 0.6rem; }
   .result-winner-heading {
-    font-family: 'Silkscreen', monospace; font-size: 1.8rem; font-weight: 700;
-    color: var(--ink); line-height: 1.3; margin-bottom: 0.3rem;
+    font-family: 'Silkscreen', monospace; font-size: 1.35rem; font-weight: 700;
+    color: var(--ink); line-height: 1.25; margin-bottom: 0.1rem;
     text-shadow: 3px 3px 0 var(--accent); text-transform: uppercase;
     opacity: 0; animation: result-name-in 0.3s ease-out 0.1s forwards;
   }
-  .result-winner-heading.draw-heading { font-size: 1.4rem; text-shadow: 2px 2px 0 var(--accent); }
-  .result-sub-lbl { font-size: 18px; color: var(--muted); margin-bottom: 1.25rem; }
+  .result-winner-heading.draw-heading { font-size: 1.2rem; text-shadow: 2px 2px 0 var(--accent); }
+  .result-sub-lbl { font-size: 17px; color: var(--muted); }
   .result-score-row {
     display: flex; align-items: center; justify-content: center;
-    gap: 0.75rem; margin-bottom: 1.5rem;
+    gap: 0.5rem; flex-shrink: 0;
   }
   .rscore-bubble {
-    width: 48px; height: 48px; border-radius: 0; flex-shrink: 0;
+    width: 36px; height: 36px; border-radius: 0; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'VT323', monospace; font-size: 1.6rem;
+    font-family: 'VT323', monospace; font-size: 1.4rem;
     border: 3px solid var(--ink);
   }
   .rscore-bubble.bubble-losing { background: var(--paper); color: var(--muted); box-shadow: 3px 3px 0 var(--ink); opacity: 0.6; }
@@ -349,21 +406,22 @@
     animation: result-bubble-in 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.35s both;
   }
   .rscore-dash { font-size: 18px; color: var(--muted2); }
+  @media (max-width: 420px) { .result-top .rscore-dots { display: none; } }
   .rscore-dots { display: flex; gap: 4px; align-items: center; }
   .rscore-dot { width: 8px; height: 8px; border-radius: 0; background: var(--paper); border: 2px solid var(--ink); }
   .rscore-dot.dot-filled { background: var(--ink); }
   .result-cta {
-    display: block; width: 100%; padding: 0.75rem 1.5rem;
+    display: block; flex: 1; min-width: 0; padding: 0.6rem 1rem;
     background: var(--accent); color: var(--ink);
     border: 3px solid var(--ink); border-radius: 6px;
     font-family: 'Silkscreen', monospace; font-size: 12px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 1px;
     cursor: pointer; box-shadow: 5px 5px 0 var(--ink);
-    transition: transform 0.05s, box-shadow 0.05s; margin-bottom: 0.75rem;
+    transition: transform 0.05s, box-shadow 0.05s;
   }
   .result-cta:active { transform: translate(4px,4px); box-shadow: 0 0 0 var(--ink); }
   .result-leave {
-    display: block; width: 100%; text-align: center;
+    display: block; flex-shrink: 0; text-align: center;
     font-family: 'Silkscreen', monospace; font-size: 9px;
     text-transform: uppercase; letter-spacing: 1px;
     color: var(--muted2); background: none; border: none;
@@ -374,8 +432,8 @@
   /* MATCH END OVERLAY */
   #match-end-overlay {
     display: none; position: fixed; inset: 0; z-index: 500;
-    flex-direction: column; align-items: center; justify-content: flex-start;
-    overflow-y: auto; padding: 2.5rem 1.5rem 3rem;
+    flex-direction: column; align-items: center; justify-content: center;
+    overflow: hidden; padding: 0.75rem 1.25rem;
   }
   #match-end-overlay.visible { display: flex; }
   .meo-bg {
@@ -387,16 +445,16 @@
     position: relative; z-index: 1;
     width: 100%; max-width: 380px;
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding-top: max(3rem, env(safe-area-inset-top));
+    max-height: 100%; padding-top: env(safe-area-inset-top);
   }
   .meo-label {
     font-family: 'Silkscreen', monospace; font-size: 11px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
-    color: rgba(244,231,201,0.6); margin-bottom: 1rem;
+    color: rgba(244,231,201,0.6); margin-bottom: 0.6rem;
   }
   .meo-winner-name {
     font-family: 'Silkscreen', monospace;
-    font-size: 36px; font-weight: 700; color: #fff;
+    font-size: clamp(24px, 8vw, 36px); font-weight: 700; color: #fff;
     line-height: 1.2; letter-spacing: 2px; text-transform: uppercase;
     text-shadow: 4px 4px 0 rgba(0,0,0,0.25);
     opacity: 0; transform: translateY(20px);
@@ -406,13 +464,13 @@
     font-family: 'Silkscreen', monospace;
     font-size: 16px; font-weight: 700; color: rgba(244,231,201,0.65);
     line-height: 1.4; text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     opacity: 0; transform: translateY(20px);
     animation: meo-name-in 0.35s ease-out 0.25s forwards;
   }
   @keyframes meo-name-in { to { opacity: 1; transform: translateY(0); } }
   .meo-score-rows {
-    width: 100%; margin-bottom: 1.75rem; display: flex; flex-direction: column; gap: 0.35rem;
+    width: 100%; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.35rem;
   }
   .meo-score-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -435,7 +493,7 @@
     font-family: 'Silkscreen', monospace; color: rgba(244,231,201,0.3); font-weight: 700; font-size: 12px; text-transform: uppercase;
   }
   .meo-board-wrap {
-    width: 100%; max-width: 240px; margin: 0 auto 2rem;
+    width: 100%; max-width: 190px; margin: 0 auto 1rem;
     opacity: 0; animation: meo-fade 0.3s ease-out 0.5s forwards;
   }
   .meo-board {
@@ -485,26 +543,39 @@
     .meo-buttons { animation: none; opacity: 1; transform: none; }
   }
 
-  /* BOARD */
-  .board-wrap { display: flex; justify-content: center; margin-bottom: 1.25rem; }
-  .board {
-    display: grid; gap: 4px; width: 100%; max-width: 380px;
-    background: var(--ink); border-radius: 0; overflow: hidden;
-    border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink);
+  /* BOARD — fills whatever height is left (container query), never taller than wide */
+  .board-wrap {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 0; min-width: 0; container-type: size;
   }
+  .board {
+    --cols: 4;
+    display: grid; gap: 2px; width: min(100%, 380px);
+    background: var(--grid-line); border-radius: 0; overflow: hidden; position: relative;
+    border: 2px solid var(--grid-frame); box-shadow: 4px 4px 0 rgba(33,30,26,0.28);
+    aspect-ratio: 1; container-type: inline-size;
+    transition: filter 0.25s, opacity 0.25s;
+  }
+  @supports (width: 1cqw) { .board { width: min(100cqw, 100cqh, 380px); } }
   .cell {
     aspect-ratio: 1; background: var(--paper); border: none; border-radius: 0;
     display: flex; align-items: center; justify-content: center;
     font-family: 'VT323', monospace;
-    font-size: clamp(2.8rem, 14vw, 4.8rem);
+    font-size: clamp(1.6rem, 14vw, 4.8rem);
     cursor: default; user-select: none; position: relative; overflow: hidden;
-    transition: background 0.1s;
+    transition: background 0.1s; min-height: 0;
   }
-  .cell.cell-sm { font-size: clamp(1.8rem, 9vw, 3rem); }
-  .cell.cell-xs { font-size: clamp(1.1rem, 5.5vw, 2rem); }
+  @supports (width: 1cqw) { .cell { font-size: calc(100cqi / var(--cols) * 0.7); } }
+  /* Not your turn (AI / opponent thinking): board is visibly locked — dimmed, hatched, no hover */
+  .board.locked { filter: saturate(0.55) brightness(0.96); }
+  .board.locked::after {
+    content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: repeating-linear-gradient(45deg, rgba(33,30,26,0.07) 0 2px, transparent 2px 8px);
+  }
+  .board.locked .cell { cursor: not-allowed; }
 
   /* ONLINE ROOM HEADER */
-  .rh-band { display: none; margin-bottom: 1rem; }
+  .rh-band { display: none; margin-bottom: 0.6rem; }
   .rh-band.visible { display: block; }
   body.active-x .rh-band.visible { background: var(--sym-x); }
   body.active-o .rh-band.visible { background: var(--sym-o); }
@@ -512,29 +583,21 @@
   body.active-x .rh-band.visible,
   body.active-o .rh-band.visible,
   body.active-v .rh-band.visible {
-    margin-top: -1.25rem;
-    margin-left: -1.5rem; margin-right: -1.5rem;
-    margin-bottom: 0; padding: 0.6rem 1.5rem;
-  }
-  @media (max-width: 480px) {
-    body.active-x .rh-band.visible,
-    body.active-o .rh-band.visible,
-    body.active-v .rh-band.visible {
-      margin-left: -1rem; margin-right: -1rem;
-      padding-left: 1rem; padding-right: 1rem;
-    }
+    margin-top: calc(-1 * var(--gp-top, 0.6rem));
+    margin-left: calc(-1 * var(--bleed, 1.5rem)); margin-right: calc(-1 * var(--bleed, 1.5rem));
+    margin-bottom: 0; padding: 0.5rem var(--bleed, 1.5rem);
   }
   .room-header-card {
     background: #fff; border: 3px solid var(--ink);
     border-radius: 0; box-shadow: 4px 4px 0 var(--ink);
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
   }
   .room-header-players { display: flex; align-items: center; gap: 0.5rem; }
   .room-header-player { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
   .room-header-player.rhp-right { flex-direction: row-reverse; }
   .room-header-player.rhp-right .rhp-player-info { text-align: right; }
   .rhp-pic {
-    width: 40px; height: 40px; border-radius: 0; flex-shrink: 0;
+    width: 34px; height: 34px; border-radius: 0; flex-shrink: 0;
     border: 3px solid var(--ink); background: var(--paper);
     display: flex; align-items: center; justify-content: center;
     font-family: 'Silkscreen', monospace; font-size: 14px; font-weight: 700;
@@ -560,7 +623,7 @@
   /* Personal scoreboard in room header */
   .rhp-scoreboard {
     display: none; align-items: stretch;
-    margin-top: 0.6rem; padding-top: 0.6rem;
+    margin-top: 0.45rem; padding-top: 0.45rem;
     border-top: 2px solid var(--ink);
   }
   .rhp-scoreboard.visible { display: flex; }
@@ -593,11 +656,9 @@
   }
   .cell.clickable::after {
     content: attr(data-preview); position: absolute;
-    font-family: 'VT323', monospace;
-    font-size: clamp(2.8rem,14vw,4.8rem); opacity: 0; transition: opacity 0.12s;
+    font-family: 'VT323', monospace; font-size: inherit;
+    opacity: 0; transition: opacity 0.12s;
   }
-  .cell.cell-sm.clickable::after { font-size: clamp(1.8rem,9vw,3rem); }
-  .cell.cell-xs.clickable::after { font-size: clamp(1.1rem,5.5vw,2rem); }
   .cell.clickable:hover::after { opacity: 0.3; }
   .cell.preview-x::after { color: var(--sym-x); }
   .cell.preview-o::after { color: var(--sym-o); }
@@ -629,7 +690,7 @@
   .pass-player.p2 { color: var(--sym-o); }
 
   /* GAME CONTROLS */
-  .game-controls { display: flex; align-items: center; justify-content: space-between; padding-top: 0.25rem; }
+  .game-controls { display: flex; align-items: center; justify-content: space-between; padding-top: 0.4rem; }
   .room-info { font-size: 16px; color: var(--muted); }
   .room-info strong { font-family: 'Silkscreen', monospace; color: var(--ink); letter-spacing: 1px; font-size: 10px; }
 
@@ -637,9 +698,60 @@
     .page-wrap { padding: 2rem 1rem 4rem; }
     .game-title { font-size: 2rem; }
     .nav-name { display: none; }
-    .status-bar { margin-left: -1rem; margin-right: -1rem; padding-left: 1.25rem; padding-right: 1.25rem; }
   }
-  #screen-game .page-wrap { padding-top: 1.25rem; }
+
+  /* ── GAMEPLAY LAYOUT: exactly one viewport tall, never scrolls ───────────── */
+  #screen-game { --gp-top: 0.6rem; }
+  #screen-game .page-wrap { --bleed: 1.5rem; }
+  @media (max-width: 480px) { #screen-game .page-wrap { --bleed: 1rem; } }
+  #screen-game.active {
+    display: flex; flex-direction: column;
+    height: calc(100vh - 52px); height: calc(100dvh - 52px); overflow: hidden;
+  }
+  #screen-game .page-wrap {
+    flex: 1; min-height: 0; width: 100%;
+    display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "info" "board" "controls";
+    padding-top: var(--gp-top); padding-bottom: 0.6rem;
+  }
+  .game-info { grid-area: info; min-width: 0; }
+  .board-wrap { grid-area: board; }
+  .game-controls { grid-area: controls; }
+
+  /* Very narrow phones: tighter "up next" row so it never overflows */
+  @media (max-width: 360px) {
+    .queue-chip { width: 28px; height: 28px; font-size: 18px; }
+    .queue-chip.current { width: 40px; height: 40px; font-size: 24px; }
+    .queue-arrow { display: none; }
+  }
+
+  /* Shorter screens give up the extras first, so the board keeps its room */
+  @media (max-height: 780px) { .rhp-scoreboard { display: none !important; } }
+  @media (max-height: 660px) {
+    .queue-who, .status-sub { display: none; }
+    .game-controls .room-info { display: none; }
+    .game-controls { justify-content: flex-end; }
+    .status-bar { padding-top: 0.4rem; padding-bottom: 0.4rem; margin-bottom: 0.5rem; }
+    .queue-wrap { margin-bottom: 0.4rem; }
+    .result-sub-lbl { display: none; }
+  }
+  @media (max-height: 560px) {
+    .queue-label { display: none; }
+    .rhp-you { display: none; }
+    .rh-band { margin-bottom: 0.4rem; }
+  }
+
+  /* Landscape phones: board on the left, everything else stacked on the right */
+  @media (orientation: landscape) and (max-height: 560px) {
+    #screen-game .page-wrap {
+      --bleed: 0px; max-width: none; column-gap: 1rem; padding-bottom: 0.5rem;
+      grid-template-columns: minmax(0, 1fr) minmax(230px, 340px); grid-template-rows: minmax(0, 1fr) auto;
+      grid-template-areas: "board info" "board controls";
+    }
+    .game-info { align-self: start; }
+    .status-bar { border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+    .game-controls .room-info { display: block; }
+  }
 
   .nav-refresh { font-family: 'Silkscreen', monospace; font-size: 14px; line-height: 1; padding: 0.2rem 0.5rem; color: var(--paper); }
   .modal-overlay {
@@ -673,40 +785,131 @@
   .difficulty-btn:hover { background: #ede0c0; }
   .difficulty-btn:active { transform: translate(3px,3px); box-shadow: 0 0 0 var(--ink); }
 
-  /* ── DRUM PICKERS ── */
-  .pickers-row { display: flex; gap: 12px; }
-  .picker-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .picker-lbl {
-    font-family: 'Silkscreen', monospace; font-size: 10px; font-weight: 700;
-    color: var(--ink); text-transform: uppercase; letter-spacing: 0.5px; text-align: center;
+  /* ── WIN CELEBRATION ─────────────────────────────────────────────────────── */
+  #victory-overlay {
+    display: none; position: fixed; inset: 0; z-index: 450; overflow: hidden;
+    align-items: center; justify-content: center; cursor: pointer;
   }
-  .picker-unit {
-    font-family: 'VT323', monospace; font-size: 20px;
-    color: var(--muted); text-transform: uppercase; text-align: center;
+  #victory-overlay.visible { display: flex; }
+  #victory-overlay.leaving { animation: cele-out 0.25s ease-in forwards; }
+  @keyframes cele-out { to { opacity: 0; } }
+  .cele-bg { position: absolute; inset: 0; opacity: 0; animation: cele-fade 0.2s ease-out forwards; }
+  @keyframes cele-fade { to { opacity: 1; } }
+  .cele-rays {
+    position: absolute; left: 50%; top: 42%; width: 150vmax; height: 150vmax;
+    margin: -75vmax 0 0 -75vmax; pointer-events: none;
+    background: repeating-conic-gradient(from 0deg, rgba(255,255,255,0.22) 0deg 9deg, transparent 9deg 18deg);
+    -webkit-mask-image: radial-gradient(circle, #000 8%, transparent 52%);
+            mask-image: radial-gradient(circle, #000 8%, transparent 52%);
+    animation: cele-spin 14s linear infinite;
   }
-  .picker-drum {
-    position: relative; width: 100%; height: 192px; /* 3 × 64px rows */
-    overflow: hidden; border: 3px solid var(--ink);
-    background: var(--paper); cursor: ns-resize;
-    user-select: none; -webkit-user-select: none;
-    touch-action: none; box-shadow: 4px 4px 0 var(--ink);
+  @keyframes cele-spin { to { transform: rotate(360deg); } }
+  .cele-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .cele-confetti i {
+    position: absolute; top: -14px; left: var(--x); width: var(--s); height: var(--s);
+    background: var(--c); border: 2px solid rgba(33,30,26,0.55);
+    animation: confetti-fall var(--d) linear var(--dl) forwards;
   }
-  .picker-band {
-    position: absolute; top: 64px; left: 0; right: 0; height: 64px;
-    background: var(--ink); pointer-events: none;
+  @keyframes confetti-fall {
+    0%   { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate3d(var(--dx), 112dvh, 0) rotate(var(--r)); opacity: 1; }
   }
-  /* No z-index / will-change on track — lets .sel item pierce above the band */
-  .picker-track { position: absolute; top: 0; left: 0; right: 0; }
-  .picker-item {
-    height: 64px; display: flex; align-items: center; justify-content: center;
-    font-family: 'VT323', monospace; font-size: 56px; line-height: 1;
-    color: var(--muted2);
+  .cele-stage {
+    position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
+    text-align: center; max-width: 360px; width: 100%; padding: 0 1.25rem; margin-top: -4dvh;
   }
-  .picker-item.sel { color: var(--paper); position: relative; z-index: 2; }
-  .picker-fade {
-    position: absolute; inset: 0; pointer-events: none; z-index: 1;
-    background: linear-gradient(to bottom, var(--paper) 0%, transparent 34%, transparent 66%, var(--paper) 100%);
+  .cele-kicker {
+    font-family: 'Silkscreen', monospace; font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: rgba(255,255,255,0.8); margin-bottom: 0.9rem;
+    opacity: 0; animation: meo-name-in 0.3s ease-out 0.1s forwards;
   }
+  .cele-hero { position: relative; width: min(54vw, 30dvh, 230px); aspect-ratio: 1; margin-bottom: 1.4rem; }
+  .cele-frame {
+    width: 100%; height: 100%; border: 4px solid var(--ink); background: var(--paper);
+    box-shadow: 8px 8px 0 var(--ink); overflow: hidden; display: flex; align-items: center; justify-content: center;
+    transform: scale(0.3) rotate(-8deg); opacity: 0;
+    animation: cele-pop 0.5s cubic-bezier(.2,1.4,.4,1) 0.1s forwards;
+  }
+  @keyframes cele-pop { 0% { transform: scale(0.3) rotate(-8deg); opacity: 0; } 70% { transform: scale(1.08) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(-1.5deg); opacity: 1; } }
+  .cele-frame { position: relative; }
+  .cele-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cele-hero svg { display: block; width: 100%; height: auto; }
+  .cele-frame .cele-glyph { font-family: 'Silkscreen', monospace; font-weight: 700; font-size: min(26vw, 15dvh); color: #fff; line-height: 1; }
+  .cele-medal { position: absolute; right: -22px; bottom: -26px; width: 64px; z-index: 3; opacity: 0; transform-origin: 50% 0; animation: cele-medal 0.55s cubic-bezier(.2,1.3,.4,1) 0.55s forwards; filter: drop-shadow(3px 3px 0 rgba(33,30,26,0.55)); }
+  .cele-trophy { position: absolute; left: -26px; bottom: -16px; width: 62px; z-index: 3; opacity: 0; animation: cele-medal 0.55s cubic-bezier(.2,1.3,.4,1) 0.7s forwards; filter: drop-shadow(3px 3px 0 rgba(33,30,26,0.55)); }
+  @keyframes cele-medal { 0% { opacity: 0; transform: translateY(-14px) rotate(-18deg) scale(0.5); } 70% { opacity: 1; transform: translateY(2px) rotate(6deg) scale(1.1); } 100% { opacity: 1; transform: none; } }
+  .cele-star { position: absolute; width: 34px; opacity: 0; animation: cele-star 1.4s ease-in-out infinite; }
+  .cele-star.s1 { top: -22px; left: 8%; animation-delay: 0.7s; }
+  .cele-star.s2 { top: -30px; right: 10%; width: 26px; animation-delay: 1.0s; }
+  .cele-star.s3 { top: 38%; right: -34px; width: 22px; animation-delay: 1.3s; }
+  .cele-star.s4 { top: 34%; left: -32px; width: 24px; animation-delay: 0.9s; }
+  @keyframes cele-star { 0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); } 40% { opacity: 1; transform: scale(1.15) rotate(12deg); } 70% { opacity: 1; transform: scale(0.95) rotate(-6deg); } }
+  .cele-title {
+    font-family: 'Silkscreen', monospace; font-weight: 700; font-size: clamp(34px, 11vw, 52px); line-height: 1;
+    letter-spacing: 3px; color: #fff; text-transform: uppercase; text-shadow: 4px 4px 0 var(--ink);
+    opacity: 0; animation: cele-title 0.4s cubic-bezier(.2,1.5,.4,1) 0.45s forwards;
+  }
+  @keyframes cele-title { 0% { opacity: 0; transform: scale(1.8); } 100% { opacity: 1; transform: scale(1); } }
+  .cele-name {
+    font-family: 'Silkscreen', monospace; font-weight: 700; font-size: 16px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--paper); margin-top: 0.6rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    opacity: 0; animation: meo-name-in 0.3s ease-out 0.7s forwards;
+  }
+  .cele-sub { font-size: 19px; color: rgba(255,255,255,0.8); margin-top: 0.15rem; opacity: 0; animation: meo-name-in 0.3s ease-out 0.8s forwards; }
+  .cele-tap {
+    position: absolute; left: 0; right: 0; bottom: max(1.25rem, env(safe-area-inset-bottom)); text-align: center; z-index: 2;
+    font-family: 'Silkscreen', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6);
+    opacity: 0; animation: meo-name-in 0.3s ease-out 1.4s forwards;
+  }
+  /* match-over hero reuses the same pieces, a little smaller, in flow */
+  .meo-content .cele-hero { width: min(40vw, 22dvh, 170px); margin-bottom: 1.1rem; }
+  .meo-content .cele-medal { width: 50px; right: -18px; bottom: -20px; }
+  .meo-content .cele-trophy { width: 48px; left: -20px; bottom: -12px; }
+  @media (max-height: 700px) { .meo-board-wrap { display: none; } .meo-wins-text { margin-bottom: 0.6rem; } }
+  @media (max-height: 560px) { .meo-score-rows { display: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .cele-rays, .cele-star, .cele-confetti { display: none; }
+    .cele-bg, .cele-kicker, .cele-frame, .cele-medal, .cele-trophy, .cele-title, .cele-name, .cele-sub, .cele-tap { animation: none; opacity: 1; transform: none; }
+  }
+
+  /* ── GAME TYPE PICKER: two compact dropdowns + a live preview of the board ── */
+  .gt-card { gap: 0.9rem; padding: 1.25rem 1.25rem 1rem; max-height: calc(100vh - 1.5rem); max-height: calc(100dvh - 1.5rem); overflow-y: auto; }
+  @media (max-height: 560px) {
+    .gt-card { gap: 0.5rem; padding: 0.75rem 1rem; }
+    .gt-card .modal-sub, .gt-caption { display: none; }
+    .gt-board { width: min(120px, 30dvh); }
+    .gt-card .btn-large { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+  }
+  .gt-selects { display: flex; gap: 10px; }
+  .gt-field { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+  .gt-lbl {
+    font-family: 'Silkscreen', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .gt-select {
+    -webkit-appearance: none; appearance: none; width: 100%;
+    border: 3px solid var(--ink); border-radius: 0; background-color: var(--paper); color: var(--ink);
+    font-family: 'Silkscreen', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 0.5rem 1.7rem 0.5rem 0.6rem; box-shadow: 3px 3px 0 var(--ink); cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' shape-rendering='crispEdges'%3E%3Cpath fill='%23211E1A' d='M0 0h10v2H8v2H6v2H4V4H2V2H0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.6rem center;
+  }
+  .gt-select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .gt-preview { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+  .gt-board {
+    --cols: 4; display: grid; gap: 2px; width: min(200px, 26dvh, 60vw); aspect-ratio: 1;
+    background: var(--grid-line); border: 2px solid var(--grid-frame); box-shadow: 3px 3px 0 rgba(33,30,26,0.28);
+    container-type: inline-size;
+  }
+  .gt-cell {
+    background: var(--paper); display: flex; align-items: center; justify-content: center; min-height: 0;
+    font-family: 'VT323', monospace; font-size: calc(100cqi / var(--cols) * 0.7); color: var(--sym-x); line-height: 1;
+  }
+  .gt-cell.hit { background: var(--accent); animation: gt-hit 0.28s cubic-bezier(.2,1.4,.4,1) both; animation-delay: calc(var(--i) * 90ms); }
+  @keyframes gt-hit { 0% { transform: scale(0.4); opacity: 0.2; } 100% { transform: scale(1); opacity: 1; } }
+  .gt-caption { font-size: 18px; line-height: 1.25; color: var(--muted); text-align: center; max-width: 250px; }
+  .gt-caption strong { color: var(--ink); font-weight: normal; }
+  @media (prefers-reduced-motion: reduce) { .gt-cell.hit { animation: none; } }
 </style>
 </head>
 <body>
@@ -829,6 +1032,7 @@
 <div id="screen-game" class="screen">
   <div class="page-wrap">
 
+    <div class="game-info">
     <div class="rh-band" id="online-room-header">
       <div class="room-header-card">
         <div class="room-header-players">
@@ -897,6 +1101,7 @@
     </div>
 
     <div class="result-banner" id="result-banner"></div>
+    </div><!-- /game-info -->
 
     <div class="board-wrap">
       <div class="board" id="board"></div>
@@ -915,6 +1120,9 @@
   <div class="meo-bg" id="meo-bg"></div>
   <div class="meo-content" id="meo-content"></div>
 </div>
+
+<!-- ── WIN CELEBRATION OVERLAY ── -->
+<div id="victory-overlay" role="dialog" aria-label="You won" onclick="hideVictory()"></div>
 
 <!-- ── PASS PHONE OVERLAY ── -->
 <div class="pass-overlay" id="pass-overlay">
@@ -1208,6 +1416,7 @@
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    document.body.classList.toggle('in-game', id === 'screen-game');
   }
 
   function goHome() {
@@ -1222,99 +1431,71 @@
 
   // ── GAME TYPE MODAL ───────────────────────────────────────────
 
-  // ── PICKER DRUMS ─────────────────────────────────────────────
-  const PICKER_H   = 64; // must match CSS .picker-item height and .picker-band top
-  const PICKER_PAD = 1;  // spacer items above and below
-  let _pickerGrid = null, _pickerWin = null;
+  // ── GAME TYPE PICKER: two dropdowns + a live preview of the board ──
+  let _gtTimer = null, _gtDir = 0;
+  const GT_DIRS  = [[0,1],[1,1],[1,0],[1,-1]];            // across, diagonal, down, anti-diagonal
+  const GT_WORDS = ['','','','three','four'];
 
-  function setupPicker(drum, track, items, initialVal, onChange) {
-    let selIdx = Math.max(0, items.indexOf(initialVal));
-    let startY = 0, startOff = 0, curOff = 0, dragging = false;
-
-    function render() {
-      track.innerHTML = '';
-      for (let i = 0; i < PICKER_PAD; i++) {
-        const d = document.createElement('div'); d.className = 'picker-item'; track.appendChild(d);
-      }
-      items.forEach((v, i) => {
-        const d = document.createElement('div');
-        d.className = 'picker-item' + (i === selIdx ? ' sel' : '');
-        d.textContent = v; track.appendChild(d);
-      });
-      for (let i = 0; i < PICKER_PAD; i++) {
-        const d = document.createElement('div'); d.className = 'picker-item'; track.appendChild(d);
-      }
-    }
-
-    function applyOff(y, animate) {
-      y = Math.max(-(items.length - 1) * PICKER_H, Math.min(0, y));
-      curOff = y;
-      track.style.transition = animate ? 'transform 0.18s cubic-bezier(.25,.46,.45,.94)' : 'none';
-      track.style.transform = `translateY(${y}px)`;
-      const idx = Math.round(-y / PICKER_H);
-      track.querySelectorAll('.picker-item').forEach((el, i) => {
-        el.classList.toggle('sel', i - PICKER_PAD === idx);
-      });
-    }
-
-    function snapTo(idx) {
-      selIdx = Math.max(0, Math.min(items.length - 1, idx));
-      applyOff(-selIdx * PICKER_H, true);
-      onChange(items[selIdx]);
-    }
-
-    drum.addEventListener('touchstart', e => {
-      dragging = true; startY = e.touches[0].clientY; startOff = curOff;
-      track.style.transition = 'none';
-    }, { passive: true });
-    drum.addEventListener('touchmove', e => {
-      if (dragging) applyOff(startOff + (e.touches[0].clientY - startY), false);
-    }, { passive: true });
-    drum.addEventListener('touchend', () => {
-      dragging = false; snapTo(Math.round(-curOff / PICKER_H));
-    });
-    drum.addEventListener('mousedown', e => {
-      dragging = true; startY = e.clientY; startOff = curOff;
-      track.style.transition = 'none'; e.preventDefault();
-    });
-    document.addEventListener('mousemove', e => { if (dragging) applyOff(startOff + (e.clientY - startY), false); });
-    document.addEventListener('mouseup',   () => { if (dragging) { dragging = false; snapTo(Math.round(-curOff / PICKER_H)); } });
-    drum.addEventListener('wheel', e => {
-      e.preventDefault(); snapTo(selIdx + (e.deltaY > 0 ? 1 : -1));
-    }, { passive: false });
-
-    render();
-    applyOff(-selIdx * PICKER_H, false);
-    return { get: () => items[selIdx], snap: val => { const i = items.indexOf(val); if (i >= 0) snapTo(i); } };
+  function gtValues() {
+    const cols = +document.getElementById('gt-grid').value || 4;
+    const win  = Math.min(+document.getElementById('gt-win').value || 3, cols);
+    return { cols, win };
   }
+
+  // Draws an empty board of the chosen size with one example winning line marked
+  function gtRenderPreview() {
+    const { cols, win } = gtValues();
+    const [dr, dc] = GT_DIRS[_gtDir % GT_DIRS.length];
+    let r0, c0;
+    if (dr === 0)      { r0 = 1;           c0 = cols > win ? 1 : 0; }   // across
+    else if (dc === 0) { r0 = cols - win;  c0 = cols - 2; }             // down
+    else if (dc === 1) { r0 = 0;           c0 = cols - win; }           // diagonal ↘
+    else               { r0 = cols - win;  c0 = cols - 1; }             // diagonal ↙
+    const hits = new Map();
+    for (let k = 0; k < win; k++) hits.set((r0 + dr * k) * cols + (c0 + dc * k), k);
+
+    const board = document.getElementById('gt-board');
+    board.style.setProperty('--cols', cols);
+    board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    board.innerHTML = '';
+    for (let i = 0; i < cols * cols; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'gt-cell';
+      if (hits.has(i)) {
+        cell.classList.add('hit');
+        cell.style.setProperty('--i', hits.get(i));
+        cell.textContent = 'X';
+      }
+      board.appendChild(cell);
+    }
+    document.getElementById('gt-caption').innerHTML =
+      `Line up <strong>${GT_WORDS[win] || win} of the same mark</strong> — across, down or diagonal — to win.`;
+  }
+
+  function gtStartCycle() {
+    clearInterval(_gtTimer); _gtTimer = null;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    _gtTimer = setInterval(() => { _gtDir++; gtRenderPreview(); }, 2200);
+  }
+
+  window.gtChanged = function() { _gtDir = 0; gtRenderPreview(); gtStartCycle(); };
 
   window.openTypeModal = function(mode) {
     pendingMode = mode;
-    if (!_pickerGrid) {
-      _pickerGrid = setupPicker(
-        document.getElementById('picker-grid'),
-        document.getElementById('picker-grid-track'),
-        [4,5], gridCols,
-        val => { if (_pickerWin && _pickerWin.get() > val) _pickerWin.snap(val); }
-      );
-      _pickerWin = setupPicker(
-        document.getElementById('picker-win'),
-        document.getElementById('picker-win-track'),
-        [3,4], winLen,
-        () => {}
-      );
-    }
+    document.getElementById('gt-grid').value = String(gridCols) === '5' ? '5' : '4';
+    document.getElementById('gt-win').value  = String(winLen)   === '4' ? '4' : '3';
+    _gtDir = 0; gtRenderPreview(); gtStartCycle();
     document.getElementById('type-modal').classList.add('open');
   };
 
   window.closeTypeModal = function() {
+    clearInterval(_gtTimer); _gtTimer = null;
     document.getElementById('type-modal').classList.remove('open');
   };
 
   window.confirmGameType = function() {
-    const cols = _pickerGrid ? _pickerGrid.get() : 4;
-    const wl   = _pickerWin  ? Math.min(_pickerWin.get(), cols) : 3;
-    setGameConfig(cols, wl);
+    const { cols, win } = gtValues();
+    setGameConfig(cols, win);
     closeTypeModal();
     if (pendingMode === 'online') {
       createGame();
@@ -1379,6 +1560,7 @@
   window.dismissPass = function() {
     document.getElementById('pass-overlay').classList.remove('open');
     passBlocked = false;
+    pendingFx = true;
     render(localGame);
   };
 
@@ -1452,6 +1634,8 @@
   let prevRenderTurn = -1;
   let lastPlacedIdx  = -1;
   let prevBoardStr   = null;
+  let pendingFx      = false;   // replay the turn effects (after the pass-the-phone screen closes)
+  const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function render(g) {
     const curP   = g.turn % 2 === 0 ? 'p1' : 'p2';
@@ -1482,10 +1666,18 @@
       else              iWon = g.winner === myPlayer;
     }
 
+    // Did the turn just advance? Drives the punch / glow / queue-slide effects (once per turn)
+    const fx = {
+      turnChanged: g.status === 'playing' && ((prevRenderTurn !== -1 && g.turn !== prevRenderTurn) || pendingFx),
+    };
+    pendingFx = false;
+    prevRenderTurn = g.turn;
+    if (!done) cancelVictory();
+
     renderMatchBar(g, symIdx, curP);
-    renderStatus(g, myTurn, symIdx, curP, iWon);
-    renderBoard(g, myTurn, symIdx, done, curP, iWon);
-    renderQueue(g);
+    renderStatus(g, myTurn, symIdx, curP, iWon, fx);
+    renderBoard(g, myTurn, symIdx, done, curP, iWon, fx);
+    renderQueue(g, fx);
     lastPlacedIdx = -1;
     if (done) showResult(g);
     else document.getElementById('result-banner').classList.remove('visible');
@@ -1494,6 +1686,7 @@
   function renderMatchBar(g, symIdx, curP) {
     const barEl = document.getElementById('match-bar');
     const rhEl  = document.getElementById('online-room-header');
+    document.getElementById('rhp-right-pic').classList.remove('thinking');
 
     if (isLocal) {
       rhEl.classList.remove('visible');
@@ -1527,6 +1720,7 @@
       rightPicEl.style.background  = curP === 'p2' ? color : '';
       rightPicEl.style.color       = curP === 'p2' ? '#fff' : '';
       rightPicEl.style.borderColor = curP === 'p2' ? color : '';
+      rightPicEl.classList.toggle('thinking', g.status === 'playing' && curP === 'p2');
       // Personal scoreboard — MY STATS only (no h2h for AI)
       if (!isGuest && currentUser) {
         document.getElementById('rhp-my-wins').textContent   = document.getElementById('stat-wins').textContent   || '0';
@@ -1606,7 +1800,7 @@
     }
   }
 
-  function renderStatus(g, myTurn, symIdx, curP, iWon) {
+  function renderStatus(g, myTurn, symIdx, curP, iWon, fx) {
     const bar  = document.getElementById('status-bar');
     const icon = document.getElementById('status-sym-icon');
     const lbl  = document.getElementById('status-label');
@@ -1624,41 +1818,54 @@
       return;
     }
 
-    const turnChanged = g.turn !== prevRenderTurn && prevRenderTurn !== -1;
-    prevRenderTurn = g.turn;
-
     bar.style.display = '';
     bar.className = 'status-bar';
     bar.classList.add('active-' + SYM_KEY[symIdx]);
-    if (turnChanged) bar.classList.add('status-turn-in');
+    if (fx.turnChanged) bar.classList.add('status-turn-in');
     setTheme(SYM_KEY[symIdx]);
     icon.textContent = SYMBOLS[symIdx];
+    // restart the 0.6s punch on the mark that must be played now
+    icon.classList.remove('punch');
+    if (fx.turnChanged) { void icon.offsetWidth; icon.classList.add('punch'); }
+
+    const HINT = 'Place on any open cell';
+    const setSub = (text, quiet) => { sub.textContent = text; sub.classList.toggle('hint', !!quiet); };
+    setSub('', false);
 
     if (isLocal) {
       const pName = curP === 'p1' ? 'Player 1' : 'Player 2';
       lbl.textContent = `${pName}'s turn — Play ${SYMBOLS[symIdx]}`;
-      sub.textContent = 'Place on any open cell';
+      setSub(HINT, true);
     } else if (isAI) {
-      const myN = shortName(currentUser?.displayName) || 'You';
-      lbl.textContent = myTurn ? `${myN}'s turn — Play ${SYMBOLS[symIdx]}` : 'AI is thinking…';
-      sub.textContent = myTurn ? 'Place on any open cell' : '';
+      const myN = shortName(currentUser?.displayName);   // guests have no name → "Your turn"
+      if (myTurn) {
+        lbl.textContent = myN ? `${myN}'s turn — Play ${SYMBOLS[symIdx]}` : `Your turn — Play ${SYMBOLS[symIdx]}`;
+        setSub(HINT, true);
+      } else {
+        lbl.innerHTML = 'AI is thinking <span class="think-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+      }
     } else {
       const oppN = myPlayer === 'p1' ? shortName(g.p2Name) : shortName(g.p1Name);
       lbl.textContent = myTurn
         ? `Your turn — Play ${SYMBOLS[symIdx]}`
         : `${oppN || 'Opponent'}'s turn`;
-      sub.textContent = myTurn ? 'Place on any open cell' : 'Waiting for their move…';
+      if (myTurn) setSub(HINT, true); else setSub('Waiting for their move…', false);
     }
   }
 
-  function renderBoard(g, myTurn, symIdx, done, curP, iWon) {
+  function renderBoard(g, myTurn, symIdx, done, curP, iWon, fx) {
     const el = document.getElementById('board');
     el.innerHTML = '';
     el.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
+    el.style.setProperty('--cols', gridCols);
+    // AI / opponent to move → the board reads as locked for you
+    el.classList.toggle('locked', !done && !myTurn && !isLocal);
     const board    = parseBoard(g.board);
     const winCells = parseWinCells(g.winCells);
     const sizeClass = gridCols >= 6 ? 'cell-xs' : gridCols === 5 ? 'cell-sm' : '';
     const hasDimming = done && g.winner && g.winner !== 'draw';
+    const placing = !done && lastPlacedIdx >= 0;            // a mark just landed → dip the rest of the board
+    const glow    = !done && myTurn && fx.turnChanged;      // my turn → every board mark of the symbol I play glows once
     for (let i = 0; i < boardSize; i++) {
       const cell = document.createElement('div');
       cell.className = 'cell' + (sizeClass ? ' ' + sizeClass : '');
@@ -1674,11 +1881,17 @@
           cell.classList.add('cell-dim');
         } else if (i === lastPlacedIdx) {
           cell.classList.add('cell-place');
+        } else {
+          if (placing) cell.classList.add('cell-shade');
+          if (glow && si === symIdx) cell.classList.add('sym-glow');
         }
-      } else if (!done && myTurn) {
-        cell.classList.add('clickable', 'preview-' + SYM_KEY[symIdx]);
-        cell.dataset.preview = SYMBOLS[symIdx];
-        cell.addEventListener('click', () => makeMove(i));
+      } else {
+        if (placing) cell.classList.add('cell-shade');
+        if (!done && myTurn) {
+          cell.classList.add('clickable', 'preview-' + SYM_KEY[symIdx]);
+          cell.dataset.preview = SYMBOLS[symIdx];
+          cell.addEventListener('click', () => makeMove(i));
+        }
       }
       el.appendChild(cell);
     }
@@ -1838,7 +2051,7 @@
     }
   }
 
-  const AI_DELAY = { easy: 1350, medium: 1550, hard: 1850 };
+  const AI_DELAY = { easy: 2350, medium: 2550, hard: 2850 };   // +1s so the "thinking" beat is readable
 
   function scheduleAiMove() {
     if (aiTimer) clearTimeout(aiTimer);
@@ -1858,12 +2071,26 @@
     return full.split(' ')[0].substring(0, 10);
   }
 
-  function renderQueue(g) {
+  let prevQueueTurn = -1;
+
+  function renderQueue(g, fx) {
     const turn = g.turn;
     const queueWrap = document.getElementById('queue-items').parentElement;
     if (g.status === 'finished') { queueWrap.style.display = 'none'; return; }
     queueWrap.style.display = '';
     const el = document.getElementById('queue-items');
+
+    // Remember where each chip was, so the row can slide left into its new place
+    const slide = fx.turnChanged && turn === prevQueueTurn + 1 && !prefersReducedMotion();
+    const before = new Map();
+    let ghost = null;
+    if (slide) {
+      const base = el.getBoundingClientRect().left;
+      el.querySelectorAll('.queue-item').forEach(n => before.set(+n.dataset.t, n.getBoundingClientRect().left - base));
+      const first = el.querySelector('.queue-item');
+      if (first) ghost = first.cloneNode(true);
+    }
+    prevQueueTurn = turn;
     el.innerHTML = '';
 
     let myName, oppName;
@@ -1892,13 +2119,34 @@
       if (i > 0) { const a = document.createElement('span'); a.className = 'queue-arrow'; a.textContent = '▸'; el.appendChild(a); }
       const item = document.createElement('div');
       item.className = 'queue-item';
+      item.dataset.t = t;
       const chip = document.createElement('div');
-      chip.className = 'queue-chip ' + SYM_CLS[si] + (i === 0 ? ' current' : '');
+      chip.className = 'queue-chip ' + SYM_CLS[si] + (i === 0 ? ' current' : '') + (i === 0 && fx.turnChanged ? ' punch' : '');
       chip.textContent = SYMBOLS[si];
       const who = document.createElement('div');
       who.className = 'queue-who';
       who.textContent = whoLabel;
       item.appendChild(chip); item.appendChild(who); el.appendChild(item);
+    }
+
+    if (slide && before.size && el.animate) {
+      const opts = { duration: 200, easing: 'ease-out' };
+      const base = el.getBoundingClientRect().left;
+      el.querySelectorAll('.queue-item').forEach(n => {
+        const t = +n.dataset.t;
+        if (before.has(t)) {
+          const dx = before.get(t) - (n.getBoundingClientRect().left - base);
+          if (dx) n.animate([{ transform: `translateX(${dx}px)` }, { transform: 'none' }], opts);
+        } else {
+          n.animate([{ opacity: 0, transform: 'translateX(22px)' }, { opacity: 1, transform: 'none' }], opts);
+        }
+      });
+      // the chip that just got played slides off to the left
+      if (ghost && before.has(turn - 1)) {
+        ghost.style.cssText = `position:absolute;top:0;left:${before.get(turn - 1)}px;pointer-events:none;`;
+        el.appendChild(ghost);
+        ghost.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-36px)' }], opts).onfinish = () => ghost.remove();
+      }
     }
   }
 
@@ -1912,6 +2160,156 @@
     let h = '';
     for (let i = 0; i < 3; i++) h += `<div class="rscore-dot${i < gameNum ? ' dot-filled' : ''}"></div>`;
     return h;
+  }
+
+  // ── WIN CELEBRATION ───────────────────────────────────────────
+  // Pixel sprites drawn from ASCII maps so they match the game's blocky type.
+  const PX = { Y: '#F2C14E', y: '#B8841A', h: '#FFF3C4', K: '#211E1A', W: '#FFFFFF', B: '#2D7DD2' };
+  const SPRITE_STAR = [
+    '....Y....',
+    '...YYY...',
+    '...YhY...',
+    'YYYYhYYYY',
+    '.YYYYYYY.',
+    '..YYYYY..',
+    '..YYYYY..',
+    '.YYY.YYY.',
+    '.YY...YY.',
+  ];
+  const SPRITE_MEDAL = [
+    '.KWWK..KBBK.',
+    '.KWWK..KBBK.',
+    '.KWWK..KBBK.',
+    '.KWWK..KBBK.',
+    '..KWWKKBBK..',
+    '...KWWBBK...',
+    '....KKKK....',
+    '..KKYYYYKK..',
+    '.KYYhhYYYYK.',
+    '.KYhhYYYYyK.',
+    'KYhYYYYYYYyK',
+    'KYYYYKKYYYyK',
+    'KYYYYKKYYYyK',
+    'KYYYYYYYYyyK',
+    '.KYYYYYYyyK.',
+    '.KYYYYYyyyK.',
+    '..KKyyyyKK..',
+    '....KKKK....',
+  ];
+  const SPRITE_TROPHY = [
+    '..KKKKKKKKKK..',
+    '.KYYYYYYYYYYK.',
+    'KKYYhhYYYYYYKK',
+    'KYKYhYYYYYYKYK',
+    'KYKYhYYYYYyKYK',
+    'KKKYYYYYYYyKKK',
+    '.K.KYYYYYyyK.K',
+    '...KKYYYYyyKK.',
+    '.....KYYyyK...',
+    '......KyyK....',
+    '......KyyK....',
+    '.....KYYYYK...',
+    '....KKYYYYKK..',
+    '....KKKKKKKK..',
+  ];
+
+  function pixelSVG(rows) {
+    const w = rows[0].length, h = rows.length;
+    let rects = '';
+    rows.forEach((row, y) => {
+      let x = 0;
+      while (x < w) {
+        const c = row[x];
+        if (c === '.') { x++; continue; }
+        let e = x; while (e < w && row[e] === c) e++;
+        rects += `<rect x="${x}" y="${y}" width="${e - x}" height="1" fill="${PX[c]}"/>`;
+        x = e;
+      }
+    });
+    return `<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${rects}</svg>`;
+  }
+
+  function confettiHTML(n) {
+    const palette = ['#E5484D', '#2D7DD2', '#3FA34D', '#F2C14E', '#F4E7C9'];
+    let h = '';
+    for (let i = 0; i < n; i++) {
+      h += `<i style="--x:${(Math.random() * 100).toFixed(1)}%;--s:${7 + Math.floor(Math.random() * 7)}px;` +
+           `--c:${palette[i % palette.length]};--d:${(1.9 + Math.random() * 1.6).toFixed(2)}s;` +
+           `--dl:${(Math.random() * 0.9).toFixed(2)}s;--dx:${Math.round((Math.random() - 0.5) * 120)}px;` +
+           `--r:${Math.round((Math.random() - 0.5) * 900)}deg"></i>`;
+    }
+    return h;
+  }
+
+  // The winner's photo in a pixel frame, flanked by a trophy, a medal and twinkling stars.
+  // No photo (guest / email account) → the winning mark, big, in its own colour.
+  function heroHTML(photoURL, symIdx) {
+    const star = pixelSVG(SPRITE_STAR);
+    return `
+      <div class="cele-hero">
+        <div class="cele-frame" style="background:${SYM_COLOR[symIdx]}">
+          <span class="cele-glyph">${SYMBOLS[symIdx]}</span>
+          ${photoURL ? `<img src="${esc(photoURL)}" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''}
+        </div>
+        <div class="cele-star s1">${star}</div><div class="cele-star s2">${star}</div>
+        <div class="cele-star s3">${star}</div><div class="cele-star s4">${star}</div>
+        <div class="cele-trophy">${pixelSVG(SPRITE_TROPHY)}</div>
+        <div class="cele-medal">${pixelSVG(SPRITE_MEDAL)}</div>
+      </div>`;
+  }
+
+  let victoryKey = null, victoryTimer = null, victoryAutoTimer = null, victoryLeaveTimer = null;
+
+  function cancelVictory() {
+    clearTimeout(victoryTimer); clearTimeout(victoryAutoTimer); clearTimeout(victoryLeaveTimer);
+    victoryTimer = victoryAutoTimer = victoryLeaveTimer = null;
+    const o = document.getElementById('victory-overlay');
+    if (o.classList.contains('visible')) { o.classList.remove('visible', 'leaving'); o.innerHTML = ''; }
+  }
+
+  window.hideVictory = function() {
+    const o = document.getElementById('victory-overlay');
+    if (!o.classList.contains('visible') || o.classList.contains('leaving')) return;
+    clearTimeout(victoryAutoTimer);
+    o.classList.add('leaving');
+    victoryLeaveTimer = setTimeout(() => { o.classList.remove('visible', 'leaving'); o.innerHTML = ''; }, 250);
+  };
+
+  // After the winning line has blinked on the board, take over the screen
+  function scheduleVictory(g) {
+    const key = `${g.matchGame || matchGame}|${g.turn}|${g.board}`;
+    if (victoryKey === key) return;
+    victoryKey = key;
+    clearTimeout(victoryTimer);
+    victoryTimer = setTimeout(() => showVictory(g, key), 900);
+  }
+
+  function showVictory(g, key) {
+    if (key !== victoryKey || g.status !== 'finished') return;
+    if (!document.getElementById('result-banner').classList.contains('visible')) return;
+    const wc     = parseWinCells(g.winCells);
+    const bd     = parseBoard(g.board);
+    const symIdx = wc && bd[wc[0]] !== null ? bd[wc[0]] : 0;
+    const name   = shortName(currentUser?.displayName);
+    const gameNo = (isAI || isLocal) ? matchGame : (g.matchGame || 1);
+    const cnt    = ['', '', '', 'Three', 'Four', 'Five', 'Six'][winLen] || winLen;
+    const o = document.getElementById('victory-overlay');
+    o.innerHTML = `
+      <div class="cele-bg" style="background:${SYM_COLOR[symIdx]}"></div>
+      <div class="cele-rays"></div>
+      <div class="cele-confetti">${confettiHTML(34)}</div>
+      <div class="cele-stage">
+        <div class="cele-kicker">Game ${gameNo}</div>
+        ${heroHTML(currentUser?.photoURL || '', symIdx)}
+        <div class="cele-title">Winner!</div>
+        ${name ? `<div class="cele-name">${esc(name)}</div>` : ''}
+        <div class="cele-sub">${esc(`${cnt} ${SYMBOLS[symIdx]}'s in a row`)}</div>
+      </div>
+      <div class="cele-tap">Tap to continue</div>`;
+    o.classList.remove('leaving');
+    o.classList.add('visible');
+    clearTimeout(victoryAutoTimer);
+    victoryAutoTimer = setTimeout(window.hideVictory, 3600);
   }
 
   function buildResultContent(g, iWon, isDraw) {
@@ -1959,10 +2357,10 @@
       subtitleText = sym ? `${cnt} ${sym}'s in a row` : '';
     }
 
-    // Heading
+    // Heading ("You win." for the viewer, "Name wins." otherwise)
     const headingHTML = isDraw
       ? `<div class="result-winner-heading draw-heading">It's a draw.</div>`
-      : `<div class="result-winner-heading">${esc(winnerName)}<br>wins.</div>`;
+      : `<div class="result-winner-heading">${esc(winnerName)} ${winnerName === 'You' ? 'win.' : 'wins.'}</div>`;
 
     // Score row
     let scoreRowHTML;
@@ -1995,12 +2393,18 @@
     }
 
     return `
-      <div class="result-game-lbl">GAME ${gameNum}</div>
-      ${headingHTML}
-      <div class="result-sub-lbl">${esc(subtitleText)}</div>
-      <div class="result-score-row">${scoreRowHTML}</div>
-      <button class="result-cta" onclick="${ctaOnclick}">${esc(ctaLabel)}</button>
-      <button class="result-leave" onclick="leaveGame()">Leave match</button>
+      <div class="result-top">
+        <div class="result-top-text">
+          <div class="result-game-lbl">GAME ${gameNum}</div>
+          ${headingHTML}
+          <div class="result-sub-lbl">${esc(subtitleText)}</div>
+        </div>
+        <div class="result-score-row">${scoreRowHTML}</div>
+      </div>
+      <div class="result-actions">
+        <button class="result-cta" onclick="${ctaOnclick}">${esc(ctaLabel)}</button>
+        <button class="result-leave" onclick="leaveGame()">Leave match</button>
+      </div>
     `;
   }
 
@@ -2045,7 +2449,10 @@
       mOver     = mP1 >= 2 || mP2 >= 2 || (g.matchGame || 1) >= 3;
       mWinner   = g.matchWinner && g.matchWinner !== 'tied' ? g.matchWinner : '';
     }
-    if (!mOver || !mWinner) return;
+    if (!mOver || !mWinner) {
+      if (!isDraw && iWon) scheduleVictory(g);
+      return;
+    }
 
     matchEndShown = true;
 
@@ -2071,7 +2478,7 @@
     }
 
     setTimeout(() => {
-      window.showMatchEndScreen(mWinnerName, mLoserName, mWinnerScore, mLoserScore, g.board, g.winCells, mIWon);
+      window.showMatchEndScreen(mWinnerName, mLoserName, mWinnerScore, mLoserScore, g.board, g.winCells, mIWon, mIWon ? (currentUser?.photoURL || '') : '');
     }, 800);
   }
 
@@ -2101,7 +2508,8 @@
     }
   }
 
-  window.showMatchEndScreen = function(winnerName, loserName, winnerScore, loserScore, finalBoardState, winCells, iWon) {
+  window.showMatchEndScreen = function(winnerName, loserName, winnerScore, loserScore, finalBoardState, winCells, iWon, winnerPhoto) {
+    cancelVictory();
     const overlay = document.getElementById('match-end-overlay');
     const bg      = document.getElementById('meo-bg');
     const content = document.getElementById('meo-content');
@@ -2109,6 +2517,7 @@
     const _boardArr  = parseBoard(finalBoardState);
     const _winSym    = (_wCellsArr && _boardArr[_wCellsArr[0]] !== null) ? _boardArr[_wCellsArr[0]] : null;
     bg.style.background = _winSym !== null ? SYM_COLOR[_winSym] : '#211E1A';
+    bg.innerHTML = iWon ? `<div class="cele-rays"></div><div class="cele-confetti">${confettiHTML(30)}</div>` : '';
 
     const board  = parseBoard(finalBoardState);
     const wCells = parseWinCells(winCells);
@@ -2126,8 +2535,9 @@
 
     content.innerHTML = `
       <div class="meo-label">★ Match Over ★</div>
+      ${iWon ? heroHTML(winnerPhoto, _winSym ?? 0) : ''}
       <div class="meo-winner-name">${esc(winnerName)}</div>
-      <div class="meo-wins-text">wins the match</div>
+      <div class="meo-wins-text">${winnerName === 'You' ? 'win' : 'wins'} the match</div>
       <div class="meo-score-rows">
         <div class="meo-score-row row-winner">
           <span class="meo-row-name">${esc(winnerName)}</span>
@@ -2272,6 +2682,7 @@
   };
 
   window.leaveGame = function() {
+    cancelVictory();
     setTheme(null);
     matchEndShown = false;
     h2hLoadedFor  = null;
@@ -2324,30 +2735,30 @@
 
 <!-- ── GAME TYPE MODAL ── -->
 <div class="modal-overlay" id="type-modal" onclick="if(event.target===this)closeTypeModal()">
-  <div class="modal-card">
+  <div class="modal-card gt-card">
     <div>
       <div class="modal-title">Choose game type</div>
-      <p class="modal-sub">Board size & win condition</p>
+      <p class="modal-sub">Board size &amp; win condition</p>
     </div>
-    <div class="pickers-row">
-      <div class="picker-col">
-        <div class="picker-lbl">Board Size</div>
-        <div class="picker-drum" id="picker-grid">
-          <div class="picker-band"></div>
-          <div class="picker-track" id="picker-grid-track"></div>
-          <div class="picker-fade"></div>
-        </div>
-        <div class="picker-unit">Rows</div>
-      </div>
-      <div class="picker-col">
-        <div class="picker-lbl">Win Length</div>
-        <div class="picker-drum" id="picker-win">
-          <div class="picker-band"></div>
-          <div class="picker-track" id="picker-win-track"></div>
-          <div class="picker-fade"></div>
-        </div>
-        <div class="picker-unit">In A Row</div>
-      </div>
+    <div class="gt-selects">
+      <label class="gt-field">
+        <span class="gt-lbl">Board size</span>
+        <select class="gt-select" id="gt-grid" onchange="gtChanged()">
+          <option value="4">4 × 4 rows</option>
+          <option value="5">5 × 5 rows</option>
+        </select>
+      </label>
+      <label class="gt-field">
+        <span class="gt-lbl">Win length</span>
+        <select class="gt-select" id="gt-win" onchange="gtChanged()">
+          <option value="3">3 in a row</option>
+          <option value="4">4 in a row</option>
+        </select>
+      </label>
+    </div>
+    <div class="gt-preview" aria-live="polite">
+      <div class="gt-board" id="gt-board" aria-hidden="true"></div>
+      <p class="gt-caption" id="gt-caption"></p>
     </div>
     <button class="btn btn-primary btn-large" onclick="confirmGameType()">Play</button>
     <button class="btn btn-ghost" onclick="closeTypeModal()">Cancel</button>

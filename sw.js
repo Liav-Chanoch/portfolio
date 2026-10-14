@@ -1,4 +1,4 @@
-const CACHE = 'xov-v1';
+const CACHE = 'xov-v2';
 const PRECACHE = [
   '/game.html',
   '/manifest.json',
